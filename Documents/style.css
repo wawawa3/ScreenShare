@@ -1,0 +1,78 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+/* CSS ICON */
+div.audioOnIcon{display:none;position:absolute; top:0; left:0;}
+div.audioOffIcon{position:absolute; top:0; left:0;}
+
+.drag span{height:40px; width:40px; display:block;} 
+
+.drag input[type="checkbox"]{position:absolute;z-index:100;opacity: 0;height:40px; width:40px;}
+.drag input[type=checkbox]:checked ~ div.audioOnIcon { display:inline; }
+.drag input[type=checkbox]:checked ~ div.audioOffIcon { display:none; }
+
+span.audioOn1{position:relative;}
+span.audioOn1:before{content:''; height:16px; width:12px; display:block; background:#333; position:absolute; top:12px; left:0px;}
+span.audioOn1:after{content:''; height:16px; width:0; display:block; border:10px transparent solid; border-left-width:0; border-right-color:#333; position:absolute; top:2px; left:12px;}
+
+span.audioOn2{position:absolute; top:0; left:0;}
+span.audioOn2:before{content:''; height:40px; width:40px; display:block; border:4px solid transparent; border-right:4px solid #333; border-radius:40px;-webkit-border-radius:40px;-moz-border-radius:40px; position:absolute; top:-4px; left:-6px; }
+span.audioOn2:after{content:''; height:30px; width:30px; display:block; border:4px solid transparent; border-right:4px solid #333; border-radius:20px;-webkit-border-radius:20px;-moz-border-radius:20px; position:absolute; top:2px; left:-4px; }
+
+span.audioOff1{position:relative;}
+span.audioOff1:before{content:''; height:16px; width:12px; display:block; background:#333; position:absolute; top:12px; left:6px;}
+span.audioOff1:after{content:''; height:16px; width:0; display:block; border:10px transparent solid; border-left-width:0; border-right-color:#333; position:absolute; top:2px; left:16px; }
+
+span.audioOff2{position:absolute; top:0; left:0;}
+span.audioOff2:before{content:''; height:36px; width:36px; display:block; border:2px solid #333; border-radius:40px;-webkit-border-radius:40px;-moz-border-radius:40px; position:absolute; top:0px; left:0px;}
+span.audioOff2:after{content:''; height:38px; width:2px; display:block; background:#333; position:absolute; top:0px; left:19px; transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}
+
+/* CSS STYLE */
+.drag {
+	position: absolute;
+	background: #555;
+	display: block;
+	padding: 0;
+	border: 0;
+}
+
+.block {
+	display: table;
+	width: 0%;
+	height: 0%;
+	margin: 0 auto;
+	border-style: none;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.block > div {
+	display: table-row;
+	font-size: 0;
+	line-height: 0;
+}
+
+.block > div > div {
+	display: table-cell;
+	height: 0;
+}
+
+.block > div > div > img {
+	min-width: 2;
+	min-height: 2;
+	/*width: 100%;
+	height: 100%;*/
+	vertical-align: bottom;
+}
+
+.cover {
+	position: absolute;
+	left: 0;
+	top: 0;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	-moz-opacity: 0;
+}
+
