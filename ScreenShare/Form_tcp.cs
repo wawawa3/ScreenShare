@@ -501,7 +501,7 @@ namespace ScreenShare
         {
             var connectionLocking = new Object();
 
-            m_HttpServer = new HttpServer("+", Settings.Default.Port_HTTP, Settings.Default.ScriptsPath);
+            m_HttpServer = new HttpServer("+", Settings.Default.Port_HTTP, Settings.Default.DocumentPath);
             m_HttpServer.Start();
 
             m_WebSocketServer.Start();
