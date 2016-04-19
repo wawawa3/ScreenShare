@@ -5,18 +5,6 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenShare", "ScreenShare\ScreenShare.csproj", "{F97D6CA2-DBE8-44AE-842B-14F557F54BFD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{EAE2753C-E5B1-47F7-A832-51896A6D25ED}"
-	ProjectSection(SolutionItems) = preProject
-		ScreenShare\Documents\index.html = ScreenShare\Documents\index.html
-		ScreenShare\Documents\script.js = ScreenShare\Documents\script.js
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{768A6A77-080C-49A8-B253-F8DF38CCF24E}"
-	ProjectSection(SolutionItems) = preProject
-		ScreenShare\Documents\libs\alchemy-client.js = ScreenShare\Documents\libs\alchemy-client.js
-		ScreenShare\Documents\libs\modernizr.js = ScreenShare\Documents\libs\modernizr.js
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,8 +18,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{768A6A77-080C-49A8-B253-F8DF38CCF24E} = {EAE2753C-E5B1-47F7-A832-51896A6D25ED}
 	EndGlobalSection
 EndGlobal
