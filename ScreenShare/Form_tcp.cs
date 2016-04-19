@@ -677,7 +677,7 @@ namespace ScreenShare
             {
                 m_AviWriter = new AviWriter(m_AviFilePath)
                 {
-                    FramesPerSecond = (int)m_Capture.FramesPerSecond,
+                    FramesPerSecond = m_Capture.FramesPerSecond,
                     EmitIndex1 = true,
                 };
 
@@ -877,16 +877,19 @@ namespace ScreenShare
                 return;
             }
 
-            if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked && !PrepareRecording())
+            if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked)
             {
-                label_message.Text = Resources.RecordCancelled;
-                return;
-            }
+                if(!PrepareRecording())
+                {
+                    label_message.Text = Resources.RecordCancelled;
+                    return;
+                }
 
-            if (!StartRecording())
-            {
-                label_message.Text = Resources.RecordFailed;
-                return;
+                if (!StartRecording())
+                {
+                    label_message.Text = Resources.RecordFailed;
+                    return;
+                }
             }
 
             StartCapturing();

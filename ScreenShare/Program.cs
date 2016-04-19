@@ -7,8 +7,8 @@ namespace ScreenShare
 {
     static class Program
     {
-        private static readonly string Batch_FirewallAdd = "firewall_add.bat";
-        private static readonly string Batch_FirewallDelete = "firewall_delete.bat";
+        private static readonly string Batch_FirewallAdd = "Batch/firewall_add.bat";
+        private static readonly string Batch_FirewallDelete = "Batch/firewall_delete.bat";
 
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
