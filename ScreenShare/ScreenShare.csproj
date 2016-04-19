@@ -181,12 +181,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Content Include="Documents\index.html" />
-    <Content Include="Documents\libs\alchemy-client.js" />
-    <Content Include="Documents\libs\modernizr.js" />
-    <Content Include="Documents\script.js" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
