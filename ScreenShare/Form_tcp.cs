@@ -1,143 +1,140 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Forms;
-
 using System.IO;
-using System.IO.Compression;
-
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
 
 using Alchemy;
 using Alchemy.Classes;
-using Alchemy.Handlers.WebSocket;
 
 using NAudio.Wave;
-using NAudio.CoreAudioApi;
 
-using SharpAvi;
 using SharpAvi.Codecs;
 using SharpAvi.Output;
 
 using Newtonsoft.Json;
+
+using ScreenShare.Properties;
 
 namespace ScreenShare
 {
     public partial class Form_tcp : Form
     {
         /// <summary>
-        /// HTTPサーバのポート
-        /// </summary>
-        static readonly int Port_HTTP = 8080;
-
-        /// <summary>
-        /// WebSocketサーバのポート
-        /// </summary>
-        static readonly int Port_WebSocket = 8081;
-
-        /// <summary>
         /// 最大画質
         /// </summary>
-        static readonly int MaxQuality = 100;
+        private const int MaxQuality = 100;
 
         /// <summary>
         /// 最小画質
         /// </summary>
-        static readonly int MinQuality = 0;
+        private const int MinQuality = 0;
 
         /// <summary>
         /// 最大フレームレート
         /// </summary>
-        static readonly int MaxFps = 30;
+        private const int MaxFps = 30;
 
         /// <summary>
         /// 最小フレームレート
         /// </summary>
-        static readonly int MinFps = 1;
-
-        /// <summary>
-        /// キャプチャ領域選択用フォーム
-        /// </summary>
-        Form_CaptureArea m_formCapture = new Form_CaptureArea();
-
-        /// <summary>
-        /// キャプチャ領域オーバーレイ用フォーム
-        /// </summary>
-        Form_OverRay m_formOverRay = new Form_OverRay();
-
-        /// <summary>
-        /// キャプチャ用インスタンス
-        /// </summary>
-        Capture m_capture = new Capture();
-
-        /// <summary>
-        /// HTTPサーバインスタンス
-        /// </summary>
-        HttpServer m_httpServer;
-
-        /// <summary>
-        /// WebSocketサーバインスタンス
-        /// </summary>
-        WebSocketServer m_webSocketServer;
-
-        /// <summary>
-        /// 木構造
-        /// </summary>
-        Tree<UserContext> m_webSocketClients = new Tree<UserContext>();
-
-        /// <summary>
-        /// 音声録音インスタンス
-        /// </summary>
-        WaveIn m_recorder = new WaveIn();
-
-        /// <summary>
-        /// AVI作成インスタンス
-        /// </summary>
-        AviWriter m_aviWriter;
-
-        /// <summary>
-        /// 録画用インスタンス
-        /// </summary>
-        IAviVideoStream m_aviVideoStream;
-
-        /// <summary>
-        /// 録音用インスタンス
-        /// </summary>
-        IAviAudioStream m_aviAudioStream;
-
-        /// <summary>
-        /// 起動中プロセス一覧
-        /// </summary>
-        Process[] m_runningProcesses;
-
-        /// <summary>
-        /// キャプチャ領域
-        /// </summary>
-        Rectangle m_captureBounds = Screen.PrimaryScreen.Bounds;
+        private const int MinFps = 1;
 
         /// <summary>
         /// フォームスレッドで実行するためのデリゲート
         /// </summary>
-        delegate void FormDelegate();
-        delegate T FormDelegate<T>();
+        public delegate void FormDelegate();
+        public delegate T FormDelegate<T>();
+
+        /// <summary>
+        /// キャプチャ領域選択用フォーム
+        /// </summary>
+        private Form_CaptureArea m_FormCapture = new Form_CaptureArea();
+
+        /// <summary>
+        /// キャプチャ領域オーバーレイ用フォーム
+        /// </summary>
+        private Form_OverRay m_FormOverRay = new Form_OverRay();
+
+        /// <summary>
+        /// キャプチャ用インスタンス
+        /// </summary>
+        private Capture m_Capture = new Capture();
+
+        /// <summary>
+        /// HTTPサーバインスタンス
+        /// </summary>
+        private HttpServer m_HttpServer;
+
+        /// <summary>
+        /// WebSocketサーバインスタンス
+        /// </summary>
+        private WebSocketServer m_WebSocketServer;
+
+        /// <summary>
+        /// 木構造
+        /// </summary>
+        private Tree<UserContext> m_WebSocketClients = new Tree<UserContext>();
+
+        /// <summary>
+        /// サーバの状態
+        /// </summary>
+        private bool m_ServerRunning = false;
+
+        /// <summary>
+        /// 音声録音インスタンス
+        /// </summary>
+        private WaveIn m_Recorder = new WaveIn();
+
+        /// <summary>
+        /// AVIファイル名
+        /// </summary>
+        private string m_AviFilePath = "";
+
+        /// <summary>
+        /// AVI作成インスタンス
+        /// </summary>
+        private AviWriter m_AviWriter;
+
+        /// <summary>
+        /// 録画用インスタンス
+        /// </summary>
+        private IAviVideoStream m_AviVideoStream;
+
+        /// <summary>
+        /// 録音用インスタンス
+        /// </summary>
+        private IAviAudioStream m_AviAudioStream;
+
+        /// <summary>
+        /// 起動中プロセス一覧
+        /// </summary>
+        private Process[] m_RunningProcesses;
+
+        /// <summary>
+        /// キャプチャ領域
+        /// </summary>
+        private Rectangle m_CaptureBounds = Screen.PrimaryScreen.Bounds;
 
         /// <summary>
         /// 最新の分割画面
         /// </summary>
-        byte[][] m_latestIntraFrameBuffer;
+        private byte[][] m_LatestIntraFrameBuffer;
+
+
 
         public Form_tcp()
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
+
             InitializeComponent();
 
             ReloadRunningProcesses();
@@ -146,7 +143,7 @@ namespace ScreenShare
             IPHostEntry ipentry = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in ipentry.AddressList)
             {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     textBox_ip.Text = ip.ToString();
                     break;
@@ -163,21 +160,20 @@ namespace ScreenShare
             comboBox_captureScale.SelectedIndex = 0;
             comboBox_divisionNumber.SelectedIndex = 2;
             comboBox_videoCodec.SelectedIndex = 0;
-            comboBox_waveInDevices.SelectedIndex = 0;
 
-            m_formCapture.Selected += (rect) => 
+            m_FormCapture.Selected += (rect) => 
             { 
-                m_captureBounds = rect;
+                m_CaptureBounds = rect;
 
-                m_formCapture.Hide();
+                m_FormCapture.Hide();
 
-                m_formOverRay.CaptureBounds = rect;
+                m_FormOverRay.CaptureBounds = rect;
 
                 if (checkBox_showOverRayForm.Checked)
-                    m_formOverRay.Show();
+                    m_FormOverRay.Show();
             };
 
-            m_capture.SegmentCaptured += (s, data) =>
+            m_Capture.SegmentCaptured += (s, data) =>
             {
                 var frameHeader = new FrameHeader
                 {
@@ -187,37 +183,24 @@ namespace ScreenShare
                 var headerBuffer = Utils.GetBytesFromStructure(frameHeader);
                 var buffer = Utils.Concatenation(headerBuffer, data.encodedFrameBuffer);
 
-                if (m_webSocketClients.ContainsKey(0))
+                if (m_WebSocketClients.ContainsKey(0))
                 {
                     //Debug.Log("send");
-                    m_webSocketClients[0].Send(buffer);
+                    m_WebSocketClients[0].Send(buffer);
                 }
 
-                m_latestIntraFrameBuffer[data.segmentIdx] = (byte[])buffer.Clone();
+                m_LatestIntraFrameBuffer[data.segmentIdx] = (byte[])buffer.Clone();
             };
 
-            m_capture.Captured += (s, data) =>
+            m_Capture.Captured += (s, data) =>
             {
-                if (m_aviVideoStream == null) return;
+                if (m_AviVideoStream == null) return;
 
-                Bitmap bmp = data.captureBitmap;
-
-                if (m_aviVideoStream.Codec == KnownFourCCs.Codecs.Uncompressed)
-                {
-                    bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                }
-
-                BitmapData bmpData = bmp.LockBits(
-                    new Rectangle(0, 0, bmp.Width, bmp.Height),
-                    ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-                byte[] buf = Utils.GetBytesFromPtr(bmpData.Scan0, bmp.Width * bmp.Height * 4);
-
-                bmp.UnlockBits(bmpData);
+                var buf = Utils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 4);
 
                 try
                 {
-                    m_aviVideoStream.WriteFrame(true, buf, 0, buf.Length);
+                    m_AviVideoStream.WriteFrame(true, buf, 0, buf.Length);
                 }
                 catch (Exception e)
                 {
@@ -225,14 +208,13 @@ namespace ScreenShare
                 }
             };
 
-            m_capture.Error += (s, ex) =>
+            m_Capture.Error += (s, ex) =>
             {
-                label_message.Text = ex.Message;
-                //Debug.Log("Capture Error: " + ex.Message);
+                label_message.Text = Resources.CaptureError + " : " + ex.Message;
             };
 
-            m_recorder.BufferMilliseconds = 100;
-            m_recorder.DataAvailable += (s, we) =>
+            //m_Recorder.BufferMilliseconds = 100;
+            m_Recorder.DataAvailable += (s, we) =>
             {
                 var normalizedSampleBuffer = new byte[we.BytesRecorded / 2 * 4];
 
@@ -257,43 +239,33 @@ namespace ScreenShare
 
                 if (checkBox_sendAudio.Checked)
                 {
-                    if (m_webSocketClients.ContainsKey(0))
+                    if (m_WebSocketClients.ContainsKey(0))
                     {
-                        m_webSocketClients[0].Send(buffer);
+                        m_WebSocketClients[0].Send(buffer);
                     }
                 }
 
-                if (m_aviAudioStream == null || (m_aviVideoStream != null && m_aviVideoStream.FramesWritten == 0)) return;
+                if (m_AviAudioStream == null || (m_AviVideoStream != null && m_AviVideoStream.FramesWritten == 0)) return;
 
                 try
                 {
-                    m_aviAudioStream.WriteBlock(we.Buffer, 0, we.BytesRecorded);
+                    m_AviAudioStream.WriteBlock(we.Buffer, 0, we.BytesRecorded);
                 }
                 catch (Exception e)
                 {
                     Debug.Log("Audio Recorded Exception: " + e.Message);
                 }
             };
-        }
 
-        /// <summary>
-        /// HTTPサーバとWebSocketサーバの立ち上げ
-        /// </summary>
-        private void Connect()
-        {
-            var connectionLocking = new Object();
-
-            m_httpServer = new HttpServer("+", Port_HTTP, "scripts");
-            m_httpServer.Start();
-
-            m_webSocketClients.Clear();
-            m_webSocketServer = new Alchemy.WebSocketServer(Port_WebSocket)
+            m_WebSocketServer = new Alchemy.WebSocketServer(Settings.Default.Port_WebSocket)
             {
                 OnConnected = (ctx) =>
                 {
-                    lock (connectionLocking)
+                    if (!m_ServerRunning) return;
+
+                    lock (m_WebSocketServer)
                     {
-                        int id = m_webSocketClients.Count, parentId;
+                        int id = m_WebSocketClients.Count, parentId;
                         UserContext parent;
 
                         MessageData data;
@@ -305,8 +277,8 @@ namespace ScreenShare
                         {
                             try
                             {
-                                parentId = m_webSocketClients.GetParentKey(id);
-                                parent = m_webSocketClients[parentId];
+                                parentId = m_WebSocketClients.GetParentKey(id);
+                                parent = m_WebSocketClients[parentId];
                             }
                             catch
                             {
@@ -317,18 +289,20 @@ namespace ScreenShare
                             data = new MessageData { type = MessageData.Type.Connected, id = id, };
                             json = JsonConvert.SerializeObject(data);
 
-                            m_webSocketClients[id] = ctx;
-                            m_webSocketClients[id].Send(json);
+                            m_WebSocketClients[id] = ctx;
+                            m_WebSocketClients[id].Send(json);
 
-                            if (m_capture.IsCapturing)
+                            if (m_Capture.Capturing)
                             {
-                                SendCaptureStartMessage(m_webSocketClients[id]);
+                                SendCaptureStartMessage(m_WebSocketClients[id]);
 
+                                /*
                                 if (parent == null)
                                 {
-                                    foreach (var buffer in m_latestIntraFrameBuffer)
-                                        m_webSocketClients[id].Send(buffer);
+                                    foreach (var buffer in m_LatestIntraFrameBuffer)
+                                        m_WebSocketClients[id].Send(buffer);
                                 }
+                                    * */
                             }
 
                             if (parent != null)
@@ -346,10 +320,14 @@ namespace ScreenShare
 
                         ctx.MaxFrameSize = 0x80000;
                     }
+
+                    Invoke(new FormDelegate(() => { this.label_ConnectionNum.Text = "" + m_WebSocketClients.Count; }));
                 },
                 OnDisconnect = (ctx) =>
                 {
-                    lock (connectionLocking)
+                    if (!m_ServerRunning) return;
+
+                    lock (m_WebSocketServer)
                     {
                         int id, parentId, lastId, lastParentId;
                         int[] childrenId;
@@ -362,7 +340,7 @@ namespace ScreenShare
 
                         try
                         {
-                            id = m_webSocketClients.TryGetKey(ctx);
+                            id = m_WebSocketClients.TryGetKey(ctx);
                         }
                         catch
                         {
@@ -372,8 +350,8 @@ namespace ScreenShare
 
                         try
                         {
-                            parentId = m_webSocketClients.GetParentKey(id);
-                            parent = m_webSocketClients[parentId];
+                            parentId = m_WebSocketClients.GetParentKey(id);
+                            parent = m_WebSocketClients[parentId];
                         }
                         catch
                         {
@@ -381,13 +359,13 @@ namespace ScreenShare
                             parent = null;
                         }
 
-                        lastId = m_webSocketClients.GetLastKey();
-                        last = m_webSocketClients[lastId];
+                        lastId = m_WebSocketClients.GetLastKey();
+                        last = m_WebSocketClients[lastId];
 
                         try
                         {
-                            lastParentId = m_webSocketClients.GetParentKey(lastId);
-                            lastParent = m_webSocketClients[lastParentId];
+                            lastParentId = m_WebSocketClients.GetParentKey(lastId);
+                            lastParent = m_WebSocketClients[lastParentId];
                         }
                         catch
                         {
@@ -395,8 +373,8 @@ namespace ScreenShare
                             lastParent = null;
                         }
 
-                        childrenId = m_webSocketClients.GetChildrenKey(id);
-                        children = m_webSocketClients.GetValues(childrenId);
+                        childrenId = m_WebSocketClients.GetChildrenKey(id);
+                        children = m_WebSocketClients.GetValues(childrenId);
 
                         try
                         {
@@ -409,50 +387,61 @@ namespace ScreenShare
 
                             if (lastId == id)
                             {
-                                m_webSocketClients.Remove(lastId);
+                                m_WebSocketClients.Remove(lastId);
                                 Debug.Log("Removed Last." + lastId);
                                 return;
                             }
-
-                            data = new MessageData { type = MessageData.Type.RemoveAnswer, };
-                            json = JsonConvert.SerializeObject(data);
-                            foreach (var child in children)
+                            else
                             {
-                                child.Send(json);
-                            }
-
-                            if (lastParentId != id)
-                            {
-                                data = new MessageData { type = MessageData.Type.RemoveOffer, id = lastId };
+                                data = new MessageData { type = MessageData.Type.RemoveAnswer, };
                                 json = JsonConvert.SerializeObject(data);
-                                lastParent.Send(json);
-                            }
+                                foreach (var child in children)
+                                {
+                                    child.Send(json);
+                                }
 
-                            data = new MessageData { type = MessageData.Type.RemoveAnswer, };
-                            json = JsonConvert.SerializeObject(data);
-                            last.Send(json);
+                                if (lastParentId != id)
+                                {
+                                    data = new MessageData { type = MessageData.Type.RemoveOffer, id = lastId };
+                                    json = JsonConvert.SerializeObject(data);
+                                    lastParent.Send(json);
+                                }
 
-                            m_webSocketClients[id] = m_webSocketClients[lastId];
-                            m_webSocketClients.Remove(lastId);
-
-                            updated = m_webSocketClients[id];
-
-                            data = new MessageData { type = MessageData.Type.UpdateID, id = id, };
-                            json = JsonConvert.SerializeObject(data);
-                            updated.Send(json);
-
-                            if (parent != null)
-                            {
-                                data = new MessageData { type = MessageData.Type.PeerConnection, targetId = id, };
+                                data = new MessageData { type = MessageData.Type.RemoveAnswer, };
                                 json = JsonConvert.SerializeObject(data);
-                                parent.Send(json);
-                            }
+                                last.Send(json);
 
-                            foreach (var cId in childrenId)
-                            {
-                                data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
+                                m_WebSocketClients[id] = m_WebSocketClients[lastId];
+
+                                foreach (var c in m_WebSocketClients)
+                                {
+                                    Debug.Log(c.Key + " : " + c.Value.ClientAddress);
+                                }
+                                m_WebSocketClients.Remove(lastId);
+                                foreach (var c in m_WebSocketClients)
+                                {
+                                    Debug.Log(c.Key + " : " + c.Value.ClientAddress);
+                                }
+
+                                updated = m_WebSocketClients[id];
+
+                                data = new MessageData { type = MessageData.Type.UpdateID, id = id, };
                                 json = JsonConvert.SerializeObject(data);
                                 updated.Send(json);
+
+                                if (parent != null)
+                                {
+                                    data = new MessageData { type = MessageData.Type.PeerConnection, targetId = id, };
+                                    json = JsonConvert.SerializeObject(data);
+                                    parent.Send(json);
+                                }
+
+                                foreach (var cId in childrenId)
+                                {
+                                    data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
+                                    json = JsonConvert.SerializeObject(data);
+                                    updated.Send(json);
+                                }
                             }
                         }
                         catch (Exception e)
@@ -462,34 +451,62 @@ namespace ScreenShare
 
                         Debug.Log("User Disonnected: id = " + id);
                     }
+
+                    Invoke(new FormDelegate(() => { this.label_ConnectionNum.Text = "" + m_WebSocketClients.Count; }));
                 },
                 OnReceive = (ctx) =>
                 {
-                    try
-                    {
-                        var json = ctx.DataFrame.ToString();
-                        var recv = JsonConvert.DeserializeObject<MessageData>(json);
-                        var dest = m_webSocketClients[recv.targetId];
+                    if (!m_ServerRunning) return;
 
-                        if (dest != null)
-                        {
-                            dest.Send(json);
-                            Debug.Log("Relay '" + recv.type + "' from id:" + recv.id + " to id: " + recv.targetId);
-                        }
-                        else
-                        {
-                            Debug.Log("Failed to Relay Message: id = " + recv.targetId);
-                        }
-                    }
-                    catch (Exception e)
+                    lock (m_WebSocketServer)
                     {
-                        Debug.Log("Receive Error : " + e.Message);
+                        try
+                        {
+                            var json = ctx.DataFrame.ToString();
+                            var recv = JsonConvert.DeserializeObject<MessageData>(json);
+                            try
+                            {
+                                var dest = m_WebSocketClients[recv.targetId];
+
+                                if (dest != null)
+                                {
+                                    dest.Send(json);
+                                    Debug.Log("Relay '" + recv.type + "' from id:" + recv.id + " to id: " + recv.targetId);
+                                }
+                                else
+                                {
+                                    Debug.Log("Failed to Relay Message: id = " + recv.targetId);
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.Log("Receive Error : " + e.Message);
+                                return;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.Log("Receive Error : " + e.Message);
+                        }
                     }
-                   
                 },
                 TimeOut = new TimeSpan(0, 5, 0),
             };
-            m_webSocketServer.Start();
+        }
+
+        /// <summary>
+        /// HTTPサーバとWebSocketサーバの立ち上げ
+        /// </summary>
+        private void Connect()
+        {
+            var connectionLocking = new Object();
+
+            m_HttpServer = new HttpServer("+", Settings.Default.Port_HTTP, Settings.Default.ScriptsPath);
+            m_HttpServer.Start();
+
+            m_WebSocketServer.Start();
+
+            m_ServerRunning = true;
         }
 
         /// <summary>
@@ -497,21 +514,26 @@ namespace ScreenShare
         /// </summary>
         private void Disconnect()
         {
-            StopCapture();
+            if (m_Capture.Capturing)
+                StopCapture();
 
-            if (m_webSocketServer != null)
+            if (m_ServerRunning)
             {
-                m_webSocketServer.Stop();
-                m_webSocketServer = null;
+                m_ServerRunning = false;
+
+                var data = new MessageData { type = MessageData.Type.Disconnect };
+                var json = JsonConvert.SerializeObject(data);
+                foreach (var pair in m_WebSocketClients) 
+                    pair.Value.Send(json);
+
+                m_WebSocketClients.Clear();
+                m_WebSocketServer.Stop();
+                this.label_ConnectionNum.Text = "0";
+
+                m_HttpServer.Close();
             }
 
-            if (m_httpServer != null)
-            {
-                m_httpServer.Close();
-                m_httpServer = null;
-            }
-
-            Invoke(new FormDelegate(() => m_formOverRay.Hide()));
+            Invoke(new FormDelegate(() => m_FormOverRay.Hide()));
         }
 
         /// <summary>
@@ -519,14 +541,14 @@ namespace ScreenShare
         /// </summary>
         private void ReloadRunningProcesses()
         {
-            m_runningProcesses = Process.GetProcesses().Where((p) => { return p.MainWindowHandle != IntPtr.Zero && p.MainWindowTitle.Length != 0; }).ToArray();
+            m_RunningProcesses = Process.GetProcesses().Where((p) => { return p.MainWindowHandle != IntPtr.Zero && p.MainWindowTitle.Length != 0; }).ToArray();
             
             comboBox_process.Items.Clear();
 
             var maxWidth = comboBox_process.DropDownWidth;
             using (var g = comboBox_process.CreateGraphics())
             {
-                foreach (var p in m_runningProcesses)
+                foreach (var p in m_RunningProcesses)
                 {
                     var str = p.MainWindowTitle;
 
@@ -544,14 +566,18 @@ namespace ScreenShare
         /// </summary>
         private void ReloadWaveInDevices()
         {
-            int waveInDevices = WaveIn.DeviceCount;
+            groupBox_audio.Enabled = WaveIn.DeviceCount > 0;
+            if (!groupBox_audio.Enabled)
+            {
+                return;
+            }
 
             comboBox_waveInDevices.Items.Clear();
 
             var maxWidth = comboBox_waveInDevices.DropDownWidth;
             using (var g = comboBox_waveInDevices.CreateGraphics())
             {
-                for (int waveInDevice = 0; waveInDevice < waveInDevices; waveInDevice++)
+                for (int waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
                 {
                     var deviceInfo = WaveIn.GetCapabilities(waveInDevice);
                     var str = deviceInfo.ProductName;
@@ -565,156 +591,143 @@ namespace ScreenShare
             comboBox_waveInDevices.SelectedIndex = 0;
         }
 
+        private bool PrepareCapturing()
+        {
+            float captureScale = 1.0f;
+            int captureDivisionNum = 0,
+                captureEncordingQuality = 0,
+                captureFps = 0,
+                audioSampleRate = 0,
+                audioBps = 0,
+                audioChannels = 0;
+
+
+            m_Capture.CaptureProcess = null;
+            if (radioButton_process.Checked)
+            {
+                var index = comboBox_process.SelectedIndex;
+
+                if (index < 0 || index >= m_RunningProcesses.Length || m_RunningProcesses[index].HasExited)
+                {
+                    MessageBox.Show(Resources.ProcessNotFound);
+                    comboBox_process.SelectedIndex = 0;
+                    return false;
+                }
+
+                m_Capture.CaptureProcess = m_RunningProcesses[index];
+            }
+
+            if (radioButton_area.Checked)
+            {
+                m_Capture.UseCaptureBounds = true;
+                m_Capture.CaptureBounds = m_CaptureBounds;
+            }
+            else
+            {
+                m_Capture.UseCaptureBounds = false;
+                m_Capture.CaptureBounds = Screen.PrimaryScreen.Bounds;
+            }
+
+            captureScale = (1.0f - (float)comboBox_captureScale.SelectedIndex / 10);
+            captureDivisionNum = comboBox_divisionNumber.SelectedIndex + 1;
+            captureEncordingQuality = Convert.ToInt32(textBox_captureQuality.Text);
+            captureFps = Convert.ToInt32(textBox_captureFps.Text);
+
+            audioSampleRate = Convert.ToInt32(comboBox_audioQuality.SelectedItem);
+            audioBps = 16;
+            audioChannels = checkBox_stereo.Enabled ? (checkBox_stereo.Checked ? 2 : 1) : 1;
+
+            m_Capture.Scale = captureScale;
+            m_Capture.CaptureDivisionNum = captureDivisionNum;
+            m_Capture.EncoderQuality = captureEncordingQuality;
+            m_Capture.FramesPerSecond = captureFps;
+
+            m_Recorder.WaveFormat = new WaveFormat(audioSampleRate, audioBps, audioChannels);
+            m_LatestIntraFrameBuffer = new byte[m_Capture.CaptureDivisionNum * m_Capture.CaptureDivisionNum][];
+
+            return true;
+        }
+
+        private bool PrepareRecording()
+        {
+            var dialog = new SaveFileDialog()
+            {
+                FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss.avi"),
+                Filter = Resources.AVIFilter,
+                InitialDirectory = Directory.GetCurrentDirectory(),
+                RestoreDirectory = true,
+            };
+
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                m_AviFilePath = dialog.FileName;
+            else
+                return false;
+
+            return true;
+        }
+
+        private bool StartRecording()
+        {
+            int captureWidth = (int)(m_Capture.CaptureBounds.Width * m_Capture.Scale),
+                captureHeight = (int)(m_Capture.CaptureBounds.Height * m_Capture.Scale),
+                codecSelectedIndex = comboBox_videoCodec.SelectedIndex,
+                codecQuality = Convert.ToInt32(textBox_recordQuality.Text);
+
+            try
+            {
+                m_AviWriter = new AviWriter(m_AviFilePath)
+                {
+                    FramesPerSecond = (int)m_Capture.FramesPerSecond,
+                    EmitIndex1 = true,
+                };
+
+                if (codecSelectedIndex == 0)
+                {
+                    m_AviVideoStream = m_AviWriter.AddVideoStream(captureWidth, captureHeight);
+                }
+                else if (codecSelectedIndex == 1)
+                {
+                    m_AviVideoStream = m_AviWriter.AddMotionJpegVideoStream(captureWidth, captureHeight, codecQuality);
+                }
+                else
+                {
+                    var codecs = Mpeg4VideoEncoderVcm.GetAvailableCodecs();
+                    var encoder = new Mpeg4VideoEncoderVcm(captureWidth, captureHeight, m_Capture.FramesPerSecond, 0, codecQuality, codecs[codecSelectedIndex - 2].Codec);
+                    m_AviVideoStream = m_AviWriter.AddEncodingVideoStream(encoder);
+                }
+
+
+                if (checkBox_recordAudio.Checked)
+                {
+                    m_AviAudioStream = m_AviWriter.AddAudioStream(m_Recorder.WaveFormat.Channels, m_Recorder.WaveFormat.SampleRate, m_Recorder.WaveFormat.BitsPerSample);
+                }
+            }
+            catch
+            {
+                Debug.Log("Failed to Start Recording.");
+                return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// キャプチャ開始
         /// </summary>
         /// <returns></returns>
-        private bool StartCapture()
+        private void StartCapturing()
         {
-            var path = "";
-            if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked)
-            {
-                var dialog = new SaveFileDialog()
-                {
-                    FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss.avi"),
-                    Filter = "AVIファイル(*.avi)|*.avi",
-                    InitialDirectory = Directory.GetCurrentDirectory(),
-                    RestoreDirectory = true,
-                };
-
-                Invoke(new FormDelegate(() =>
-                {
-                    if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        path = dialog.FileName;
-                    }
-                }));
-                
-                if (path == "")
-                {
-                    return false;
-                }
-            }
-            
-
-            float captureScale = 1.0f;
-            int captureDivisionNum = 0, 
-                captureEncordingQuality = 0, 
-                captureFps = 0, 
-                captureWidth = 0, 
-                captureHeight = 0,
-                audioSampleRate = 0,
-                audioBps = 0,
-                audioChannels = 0,
-                codecSelectedIndex = 0,
-                codecQuality = 0;
-
-            Invoke(new FormDelegate(() => 
-            {
-                if (radioButton_process.Checked)
-                {
-                    var index = comboBox_process.SelectedIndex;
-
-                    if (index < 0 || index >= m_runningProcesses.Length || m_runningProcesses[index].HasExited)
-                    {
-                        MessageBox.Show("プロセスが存在しません。");
-                        comboBox_process.SelectedIndex = 0;
-                        return;
-                    }
-
-                    m_capture.CaptureProcess = m_runningProcesses[index];
-                }
-                else
-                {
-                    m_capture.CaptureProcess = null;
-                }
-
-                if (radioButton_area.Checked)
-                {
-                    m_capture.UseCaptureBounds = true;
-                    m_capture.CaptureBounds = m_captureBounds;
-                }
-                else
-                {
-                    m_capture.UseCaptureBounds = false;
-                    m_capture.CaptureBounds = Screen.PrimaryScreen.Bounds;
-                }
-                
-
-                captureScale = (1.0f - (float)comboBox_captureScale.SelectedIndex / 10);
-                captureDivisionNum = comboBox_divisionNumber.SelectedIndex + 1;
-                captureEncordingQuality = Convert.ToInt32(textBox_captureQuality.Text);
-                captureFps = Convert.ToInt32(textBox_captureFps.Text);
-                captureWidth = (int)(m_capture.CaptureBounds.Width * captureScale);
-                captureHeight = (int)(m_capture.CaptureBounds.Height * captureScale);
-                
-                audioSampleRate = Convert.ToInt32(comboBox_audioQuality.SelectedItem);
-                audioBps = 16;
-                audioChannels = checkBox_stereo.Enabled ? (checkBox_stereo.Checked ? 2 : 1) : 1;
-
-                codecSelectedIndex = comboBox_videoCodec.SelectedIndex;
-                codecQuality = Convert.ToInt32(textBox_recordQuality.Text);
-            })); 
-
-            m_capture.Scale = captureScale;
-            m_capture.CaptureDivisionNum = captureDivisionNum;
-            m_capture.EncoderQuality = captureEncordingQuality;
-            m_capture.FramesPerSecond = captureFps;
-
-            m_recorder.WaveFormat = new WaveFormat(audioSampleRate, audioBps, audioChannels);
-            m_latestIntraFrameBuffer = new byte[m_capture.CaptureDivisionNum * m_capture.CaptureDivisionNum][];
-
-            foreach (var pair in m_webSocketClients)
+            foreach (var pair in m_WebSocketClients)
             {
                 SendCaptureStartMessage(pair.Value);
             }
 
-            if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked)
-            {
-                try
-                {
-                    m_aviWriter = new AviWriter(path)
-                    {
-                        FramesPerSecond = (int)m_capture.FramesPerSecond,
-                        EmitIndex1 = true,
-                    };
-
-                    if (codecSelectedIndex == 0)
-                    {
-                        m_aviVideoStream = m_aviWriter.AddVideoStream(captureWidth, captureHeight);
-                    }
-                    else if (codecSelectedIndex == 1)
-                    {
-                        m_aviVideoStream = m_aviWriter.AddMotionJpegVideoStream(captureWidth, captureHeight, codecQuality);
-                    }
-                    else
-                    {
-                        var codecs = Mpeg4VideoEncoderVcm.GetAvailableCodecs();
-                        var encoder = new Mpeg4VideoEncoderVcm(captureWidth, captureHeight, m_capture.FramesPerSecond, 0, codecQuality, codecs[codecSelectedIndex - 2].Codec);
-                        m_aviVideoStream = m_aviWriter.AddEncodingVideoStream(encoder);
-                    }
-                    
-
-                    if (checkBox_recordAudio.Checked)
-                    {
-                        m_aviAudioStream = m_aviWriter.AddAudioStream(audioChannels, audioSampleRate, audioBps);
-                    }
-                }
-                catch
-                {
-                    Debug.Log("Failed to Start Recording.");
-                    return false;
-                }
-            }
-
-            m_capture.Start();
+            m_Capture.Start();
 
             if (checkBox_sendAudio.Checked || checkBox_recordAudio.Checked)
             {
-                m_recorder.StartRecording();
+                m_Recorder.StartRecording();
             }
-
-            return true;
         }
 
         /// <summary>
@@ -722,7 +735,7 @@ namespace ScreenShare
         /// </summary>
         private void StopCapture()
         {
-            foreach (var pair in m_webSocketClients)
+            foreach (var pair in m_WebSocketClients)
             {
                 var data = new MessageData { type = MessageData.Type.StopCapture };
                 var json = JsonConvert.SerializeObject(data);
@@ -730,20 +743,20 @@ namespace ScreenShare
                 pair.Value.Send(json);
             }
 
-            m_capture.WaitStop();
+            m_Capture.StopAsync();
 
             if (checkBox_sendAudio.Checked || checkBox_recordAudio.Checked)
             {
-                m_recorder.StopRecording();
+                m_Recorder.StopRecording();
             }
 
-            if (m_aviWriter != null)
+            if (m_AviWriter != null)
             {
-                Debug.Log("" + m_aviVideoStream.FramesWritten);
-                m_aviWriter.Close();
-                m_aviWriter = null;
-                m_aviVideoStream = null;
-                m_aviAudioStream = null;
+                Debug.Log("" + m_AviVideoStream.FramesWritten);
+                m_AviWriter.Close();
+                m_AviWriter = null;
+                m_AviVideoStream = null;
+                m_AviAudioStream = null;
             }
         }
      
@@ -754,12 +767,12 @@ namespace ScreenShare
             {
                 audioSettingData = new SettingData.AudioSettingData
                 {
-                    sampleRate = m_recorder.WaveFormat.SampleRate,
-                    isStereo = m_recorder.WaveFormat.Channels == 2,
+                    sampleRate = m_Recorder.WaveFormat.SampleRate,
+                    isStereo = m_Recorder.WaveFormat.Channels == 2,
                 },
                 captureSettingData = new SettingData.CaptureSettingData
                 {
-                    divisionNum = m_capture.CaptureDivisionNum,
+                    divisionNum = m_Capture.CaptureDivisionNum,
                 },
             };
             var data = new MessageData { type = MessageData.Type.Settings, data = setting };
@@ -779,7 +792,7 @@ namespace ScreenShare
 
         private async void button_connect_Click(object sender, EventArgs e)
         {
-            label_message.Text = "サーバ設立中...";
+            label_message.Text = Resources.ServerStarting;
 
             textBox_ip.Enabled = false;
             button_connect.Enabled = false;
@@ -799,7 +812,7 @@ namespace ScreenShare
 
             if (res != null)
             {
-                label_message.Text = "サーバ設立失敗 : " + res.Message;
+                label_message.Text = Resources.ServerFailed + " : " + res.Message;
 
                 textBox_ip.Enabled = true;
                 button_connect.Enabled = true;
@@ -812,25 +825,24 @@ namespace ScreenShare
             button_startCapture.Enabled = true;
             checkBox_recordCapture.Enabled = true;
 
-            label_message.Text = "サーバ設立完了";
+            label_message.Text = Resources.ServerStarted;
         }
 
-        private async void button_disconnect_Click(object sender, EventArgs e)
+        private void button_disconnect_Click(object sender, EventArgs e)
         {
-            label_message.Text = "切断中...";
+            label_message.Text = Resources.ServerClosing;
 
             button_disconnect.Enabled = false;
             button_startCapture.Enabled = false;
             button_stopCapture.Enabled = false;
             panel_capture.Enabled = false;
 
-            m_capture.Stop();
-            await Task.Run(() => Disconnect());
+            Disconnect();
 
             textBox_ip.Enabled = true;
             button_connect.Enabled = true;
             
-            label_message.Text = "切断完了";
+            label_message.Text = Resources.ServerClosed;
         }
 
         private void button_reloadProcesses_Click(object sender, EventArgs e)
@@ -845,45 +857,58 @@ namespace ScreenShare
 
         private void button_area_Click(object sender, EventArgs e)
         {
-            m_formCapture.Show();
-            m_formOverRay.Hide();
+            m_FormCapture.Show();
+            m_FormOverRay.Hide();
         }
 
         private void button_areaReset_Click(object sender, EventArgs e)
         {
-            m_captureBounds = Screen.PrimaryScreen.Bounds;
-            m_formOverRay.ResetArea();
+            m_CaptureBounds = Screen.PrimaryScreen.Bounds;
+            m_FormOverRay.ResetArea();
         }
 
-        private async void button_startCapture_Click(object sender, EventArgs e)
+        private void button_startCapture_Click(object sender, EventArgs e)
         {
-            label_message.Text = "キャプチャ準備中...";
+            label_message.Text = Resources.CaptureStarting;
 
-            if (!(await Task.Run(() => StartCapture()))) 
+            if (!PrepareCapturing())
             {
-                label_message.Text = "キャプチャを開始できませんでした。";
+                label_message.Text = Resources.CaptureFailed;
                 return;
             }
+
+            if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked && !PrepareRecording())
+            {
+                label_message.Text = Resources.RecordCancelled;
+                return;
+            }
+
+            if (!StartRecording())
+            {
+                label_message.Text = Resources.RecordFailed;
+                return;
+            }
+
+            StartCapturing();
 
             panel_capture.Enabled = false;
             button_startCapture.Enabled = false;
             button_stopCapture.Enabled = true;
 
-            label_message.Text = "キャプチャ中...";
+            label_message.Text = Resources.CaptureStarted;
         }
 
         private async void button_stopCapture_Click(object sender, EventArgs e)
         {
-            label_message.Text = "キャプチャ終了中...";
+            label_message.Text = Resources.CaptureStopping;
             button_stopCapture.Enabled = false;
 
-            m_capture.Stop();
             await Task.Run(() => StopCapture());
 
             panel_capture.Enabled = true;
             button_startCapture.Enabled = true;
 
-            label_message.Text = "キャプチャ終了";
+            label_message.Text = Resources.CaptureStopped;
         }
 
         private void radioButton_process_CheckedChanged(object sender, EventArgs e)
@@ -905,11 +930,11 @@ namespace ScreenShare
 
             if (!chk)
             {
-                m_formOverRay.Hide();
+                m_FormOverRay.Hide();
             }
             else if (checkBox_showOverRayForm.Checked)
             {
-                m_formOverRay.Show();
+                m_FormOverRay.Show();
             }
         }
 
@@ -919,11 +944,11 @@ namespace ScreenShare
 
             if (chk)
             {
-                m_formOverRay.Show();
+                m_FormOverRay.Show();
             }
             else
             {
-                m_formOverRay.Hide();
+                m_FormOverRay.Hide();
             }
         }
 
@@ -1052,6 +1077,12 @@ namespace ScreenShare
             {
                 textBox.Text = "" + MaxFps / 2;
             }
+        }
+
+        private void Form_tcp_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Disconnect();
+            m_WebSocketServer.Dispose();
         }
     }
 }

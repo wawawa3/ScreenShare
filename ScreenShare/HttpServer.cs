@@ -57,59 +57,64 @@ namespace ScreenShare
         /// <summary>
         /// サーバを立ち上げ、応答可能な状態にします。
         /// </summary>
-        public async void Start()
+        public void Start()
         {
-            var prefixes = new string[] { "http://"+ this.IPAddress +":"+ this.Port +"/", };
-
-            HttpListener = new HttpListener();
-            foreach (var prefix in prefixes)
-                HttpListener.Prefixes.Add(prefix);
-            HttpListener.Start();
-            
-            while (true)
+            Task.Run(() =>
             {
-                HttpListenerContext listenerContext;
+                var prefixes = new string[] { "http://" + this.IPAddress + ":" + this.Port + "/", };
 
-                try
+                HttpListener = new HttpListener();
+                foreach (var prefix in prefixes)
+                    HttpListener.Prefixes.Add(prefix);
+                HttpListener.Start();
+
+                while (true)
                 {
-                    listenerContext = await HttpListener.GetContextAsync();
-                }
-                catch
-                {
-                    break;
-                }
+                    HttpListenerContext listenerContext;
 
-                var req = listenerContext.Request;
-                var res = listenerContext.Response;
-
-                var url = this.RootPath + (req.RawUrl == @"/" ? DefaultIndexPath : req.RawUrl);
-
-                try
-                {
-                    byte[] buf;
-                    using (var sr = new StreamReader(url))
+                    try
                     {
-                        buf = Encoding.UTF8.GetBytes(sr.ReadToEnd());
+                        listenerContext = HttpListener.GetContext();
                     }
-                    
-                    using (var ms = new MemoryStream(buf))
+                    catch
                     {
-                        res.AddHeader("Content-Encoding", "gzip"); 
+                        break;
+                    }
 
-                        using (var gs = new GZipStream(res.OutputStream, CompressionLevel.Optimal))
+                    var req = listenerContext.Request;
+                    var res = listenerContext.Response;
+
+                    var url = this.RootPath + (req.RawUrl == @"/" ? DefaultIndexPath : req.RawUrl);
+
+                    try
+                    {
+                        byte[] buf;
+                        using (var sr = new StreamReader(url))
                         {
-                            ms.CopyTo(gs);
-                            gs.Flush();
+                            buf = Encoding.UTF8.GetBytes(sr.ReadToEnd());
+                        }
+
+                        using (var ms = new MemoryStream(buf))
+                        {
+                            res.AddHeader("Content-Encoding", "gzip");
+
+                            using (var gs = new GZipStream(res.OutputStream, CompressionLevel.Optimal))
+                            {
+                                ms.CopyTo(gs);
+                                gs.Flush();
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Debug.Log(e.Message);
+                    }
+
+                    res.Close();
                 }
-                catch (Exception e)
-                {
-                    Debug.Log(e.Message);
-                }
-                    
-                res.Close();
-            }
+
+                Debug.Log("Exit");
+            });
         }
 
         /// <summary>
@@ -119,6 +124,8 @@ namespace ScreenShare
         {
             //HttpListener.Stop();
             HttpListener.Close();
+
+            Debug.Log("HttpServer Closed.");
         }
     }
 }

@@ -20,6 +20,13 @@ namespace ScreenShare
         public static readonly int STRETCH_HALFTONE = 0x04;
         public static readonly uint PM_NOREMOVE = 0x00;
 
+        public static readonly uint DIB_RGB_COLORS = 0; /* color table in RGBs */
+        public static readonly uint DIB_PAL_COLORS = 1; /* color table in palette indices */
+        public static readonly uint BI_RGB = 0;
+        public static readonly uint BI_RLE8 = 1;
+        public static readonly uint BI_RLE4 = 2;
+        public static readonly uint BI_BITFIELDS = 3;
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -29,11 +36,57 @@ namespace ScreenShare
             public int bottom;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct BITMAPINFOHEADER
+        {
+            public uint biSize;
+            public int biWidth;
+            public int biHeight;
+            public ushort biPlanes;
+            public ushort biBitCount;
+            public uint biCompression;
+            public uint biSizeImage;
+            public int biXPelsPerMeter;
+            public int biYPelsPerMeter;
+            public uint biClrUsed;
+            public uint biClrImportant;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RGBQUAD
+        {
+            public byte rgbBlue;
+            public byte rgbGreen;
+            public byte rgbRed;
+            public byte rgbReserved;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct BITMAPINFO
+        {
+            public BITMAPINFOHEADER bmiHeader;
+            public RGBQUAD bmiColors_1;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct BITMAP
+        {
+            public int bmType;
+            public int bmWidth;
+            public int bmHeight;
+            public int bmWidthBytes;
+            public byte bmPlanes;
+            public byte bmBitsPixel;
+            public IntPtr bmBits;
+        } 
+
         [DllImport("user32.dll")]
         public static extern int GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetDC(IntPtr hwnd);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr hwnd);
@@ -62,6 +115,20 @@ namespace ScreenShare
         [DllImport("user32")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BITMAPINFO pbmi, uint pila, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
+
+        [DllImport("gdi32.dll")] 
+        public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
+
+        [DllImport("gdi32.dll")]
+        public static extern int GetObject(IntPtr hgdiobj, int cbBuffer, ref BITMAP lpvObject);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        [DllImport("gdi32.dll")]
+        public static extern bool DeleteDC(IntPtr hdc);
+
     }
 }

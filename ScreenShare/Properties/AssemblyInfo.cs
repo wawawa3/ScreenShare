@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("ScreenCapture")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("画面配信Webサーバアプリ")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("MouseComputer PC")]
+[assembly: AssemblyCompany("Wawawa")]
 [assembly: AssemblyProduct("ScreenCapture")]
-[assembly: AssemblyCopyright("Copyright © MouseComputer PC 2015")]
+[assembly: AssemblyCopyright("Copyright © Wawawa 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

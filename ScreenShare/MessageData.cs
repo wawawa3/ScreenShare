@@ -27,6 +27,8 @@ namespace ScreenShare
             Settings,
             StartCapture,
             StopCapture,
+            ReceiveTimeout,
+            Disconnect,
         };
 
         /// <summary>

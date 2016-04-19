@@ -118,55 +118,51 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AVIFilter" xml:space="preserve">
-    <value>AVIファイル(*.avi)|*.avi</value>
+    <value>AVI file(*.avi)|*.avi</value>
   </data>
   <data name="CaptureError" xml:space="preserve">
-    <value>キャプチャエラー</value>
+    <value>Capture error occurred.</value>
   </data>
   <data name="CaptureFailed" xml:space="preserve">
-    <value>キャプチャ失敗</value>
+    <value>Failed to start capture.</value>
   </data>
   <data name="CaptureStarted" xml:space="preserve">
-    <value>キャプチャ開始</value>
+    <value>Capture started.</value>
   </data>
   <data name="CaptureStarting" xml:space="preserve">
-    <value>キャプチャ開始中...</value>
+    <value>Starting capture...</value>
   </data>
   <data name="CaptureStopped" xml:space="preserve">
-    <value>キャプチャ終了</value>
+    <value>Capture stopped.</value>
   </data>
   <data name="CaptureStopping" xml:space="preserve">
-    <value>キャプチャ終了中...</value>
+    <value>Stopping capture.</value>
   </data>
   <data name="ProcessNotFound" xml:space="preserve">
-    <value>プロセスが存在しません。</value>
+    <value>Process not found.</value>
   </data>
   <data name="RecordCancelled" xml:space="preserve">
-    <value>録画キャンセル</value>
+    <value>Record cancelled.</value>
   </data>
   <data name="RecordFailed" xml:space="preserve">
-    <value>録画失敗</value>
+    <value>Failed to start record.</value>
   </data>
   <data name="RecordStarting" xml:space="preserve">
-    <value>録画開始中...</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Starting record.</value>
   </data>
   <data name="ServerClosed" xml:space="preserve">
-    <value>サーバ切断完了</value>
+    <value>Server closed.</value>
   </data>
   <data name="ServerClosing" xml:space="preserve">
-    <value>サーバ切断中...</value>
+    <value>Closing server...</value>
   </data>
   <data name="ServerFailed" xml:space="preserve">
-    <value>サーバ設立失敗</value>
+    <value>Failed to start server.</value>
   </data>
   <data name="ServerStarted" xml:space="preserve">
-    <value>サーバ設立完了</value>
+    <value>Server started.</value>
   </data>
   <data name="ServerStarting" xml:space="preserve">
-    <value>サーバ設立中...</value>
+    <value>Starting server...</value>
   </data>
 </root>
