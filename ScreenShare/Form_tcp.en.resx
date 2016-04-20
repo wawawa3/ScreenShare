@@ -191,9 +191,6 @@
   <data name="radioButton_process.Text" xml:space="preserve">
     <value>Process</value>
   </data>
-  <data name="groupBox_record.Text" xml:space="preserve">
-    <value>Video Record</value>
-  </data>
   <data name="checkBox_recordCapture.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -202,9 +199,6 @@
   </data>
   <data name="checkBox_recordCapture.Text" xml:space="preserve">
     <value>Record Video</value>
-  </data>
-  <data name="panel_record.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 27</value>
   </data>
   <data name="label_videoCodec.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -222,13 +216,16 @@
     <value>NoControl</value>
   </data>
   <data name="label_recordQualty.Location" type="System.Drawing.Point, System.Drawing">
-    <value>248, 6</value>
+    <value>212, 6</value>
   </data>
   <data name="label_recordQualty.Size" type="System.Drawing.Size, System.Drawing">
-    <value>79, 12</value>
+    <value>115, 12</value>
   </data>
   <data name="label_recordQualty.Text" xml:space="preserve">
-    <value>Quality(0-100)</value>
+    <value>RecordQuality(0-100)</value>
+  </data>
+  <data name="panel_record.Size" type="System.Drawing.Size, System.Drawing">
+    <value>388, 27</value>
   </data>
   <data name="checkBox_recordAudio.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -239,8 +236,8 @@
   <data name="checkBox_recordAudio.Text" xml:space="preserve">
     <value>Include Voice</value>
   </data>
-  <data name="groupBox_audio.Text" xml:space="preserve">
-    <value>Voice Record</value>
+  <data name="groupBox_record.Text" xml:space="preserve">
+    <value>Video Record</value>
   </data>
   <data name="button_reloadWaveInDevices.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -302,8 +299,8 @@
   <data name="checkBox_sendAudio.Text" xml:space="preserve">
     <value>Record Voice</value>
   </data>
-  <data name="groupBox_sending.Text" xml:space="preserve">
-    <value>Send</value>
+  <data name="groupBox_audio.Text" xml:space="preserve">
+    <value>Voice Record</value>
   </data>
   <data name="label_captureScale.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -341,8 +338,8 @@
   <data name="label_imageCompressQuality.Text" xml:space="preserve">
     <value>ImageQuality(0-100)</value>
   </data>
-  <data name="groupBox_capture.Text" xml:space="preserve">
-    <value>Screen Capture</value>
+  <data name="groupBox_sending.Text" xml:space="preserve">
+    <value>Send</value>
   </data>
   <data name="checkBox_showOverRayForm.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -385,6 +382,9 @@
   </data>
   <data name="button_reloadProcesses.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="groupBox_capture.Text" xml:space="preserve">
+    <value>Screen Capture</value>
   </data>
   <data name="label_Client.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>

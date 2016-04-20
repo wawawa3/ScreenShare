@@ -122,9 +122,9 @@
             // 
             // label_message
             // 
+            resources.ApplyResources(this.label_message, "label_message");
             this.label_message.BackColor = System.Drawing.SystemColors.Control;
             this.label_message.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            resources.ApplyResources(this.label_message, "label_message");
             this.label_message.Name = "label_message";
             // 
             // label_interval
@@ -148,26 +148,26 @@
             // 
             // comboBox_process
             // 
-            this.comboBox_process.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             resources.ApplyResources(this.comboBox_process, "comboBox_process");
+            this.comboBox_process.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_process.FormattingEnabled = true;
             this.comboBox_process.Name = "comboBox_process";
             // 
             // panel_capture
             // 
+            resources.ApplyResources(this.panel_capture, "panel_capture");
             this.panel_capture.Controls.Add(this.groupBox_record);
             this.panel_capture.Controls.Add(this.groupBox_audio);
             this.panel_capture.Controls.Add(this.groupBox_sending);
             this.panel_capture.Controls.Add(this.groupBox_capture);
-            resources.ApplyResources(this.panel_capture, "panel_capture");
             this.panel_capture.Name = "panel_capture";
             // 
             // groupBox_record
             // 
+            resources.ApplyResources(this.groupBox_record, "groupBox_record");
             this.groupBox_record.Controls.Add(this.checkBox_recordCapture);
             this.groupBox_record.Controls.Add(this.panel_record);
             this.groupBox_record.Controls.Add(this.checkBox_recordAudio);
-            resources.ApplyResources(this.groupBox_record, "groupBox_record");
             this.groupBox_record.Name = "groupBox_record";
             this.groupBox_record.TabStop = false;
             // 
@@ -180,11 +180,11 @@
             // 
             // panel_record
             // 
+            resources.ApplyResources(this.panel_record, "panel_record");
             this.panel_record.Controls.Add(this.textBox_recordQuality);
             this.panel_record.Controls.Add(this.label_videoCodec);
             this.panel_record.Controls.Add(this.label_recordQualty);
             this.panel_record.Controls.Add(this.comboBox_videoCodec);
-            resources.ApplyResources(this.panel_record, "panel_record");
             this.panel_record.Name = "panel_record";
             // 
             // textBox_recordQuality
@@ -205,12 +205,12 @@
             // 
             // comboBox_videoCodec
             // 
+            resources.ApplyResources(this.comboBox_videoCodec, "comboBox_videoCodec");
             this.comboBox_videoCodec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_videoCodec.FormattingEnabled = true;
             this.comboBox_videoCodec.Items.AddRange(new object[] {
             resources.GetString("comboBox_videoCodec.Items"),
             resources.GetString("comboBox_videoCodec.Items1")});
-            resources.ApplyResources(this.comboBox_videoCodec, "comboBox_videoCodec");
             this.comboBox_videoCodec.Name = "comboBox_videoCodec";
             this.comboBox_videoCodec.TabStop = false;
             this.comboBox_videoCodec.SelectedIndexChanged += new System.EventHandler(this.comboBox_videoCodec_SelectedIndexChanged);
@@ -223,6 +223,7 @@
             // 
             // groupBox_audio
             // 
+            resources.ApplyResources(this.groupBox_audio, "groupBox_audio");
             this.groupBox_audio.Controls.Add(this.button_reloadWaveInDevices);
             this.groupBox_audio.Controls.Add(this.label_waveInDevices);
             this.groupBox_audio.Controls.Add(this.comboBox_waveInDevices);
@@ -230,7 +231,6 @@
             this.groupBox_audio.Controls.Add(this.comboBox_audioQuality);
             this.groupBox_audio.Controls.Add(this.label_audioQuality);
             this.groupBox_audio.Controls.Add(this.checkBox_sendAudio);
-            resources.ApplyResources(this.groupBox_audio, "groupBox_audio");
             this.groupBox_audio.Name = "groupBox_audio";
             this.groupBox_audio.TabStop = false;
             // 
@@ -248,8 +248,8 @@
             // 
             // comboBox_waveInDevices
             // 
-            this.comboBox_waveInDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             resources.ApplyResources(this.comboBox_waveInDevices, "comboBox_waveInDevices");
+            this.comboBox_waveInDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_waveInDevices.FormattingEnabled = true;
             this.comboBox_waveInDevices.Name = "comboBox_waveInDevices";
             this.comboBox_waveInDevices.TabStop = false;
@@ -263,8 +263,8 @@
             // 
             // comboBox_audioQuality
             // 
-            this.comboBox_audioQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             resources.ApplyResources(this.comboBox_audioQuality, "comboBox_audioQuality");
+            this.comboBox_audioQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_audioQuality.FormattingEnabled = true;
             this.comboBox_audioQuality.Items.AddRange(new object[] {
             resources.GetString("comboBox_audioQuality.Items"),
@@ -292,6 +292,7 @@
             // 
             // groupBox_sending
             // 
+            resources.ApplyResources(this.groupBox_sending, "groupBox_sending");
             this.groupBox_sending.Controls.Add(this.textBox_captureFps);
             this.groupBox_sending.Controls.Add(this.comboBox_captureScale);
             this.groupBox_sending.Controls.Add(this.label_captureScale);
@@ -300,7 +301,6 @@
             this.groupBox_sending.Controls.Add(this.label_imageCompressQuality);
             this.groupBox_sending.Controls.Add(this.label_interval);
             this.groupBox_sending.Controls.Add(this.comboBox_divisionNumber);
-            resources.ApplyResources(this.groupBox_sending, "groupBox_sending");
             this.groupBox_sending.Name = "groupBox_sending";
             this.groupBox_sending.TabStop = false;
             // 
@@ -312,6 +312,7 @@
             // 
             // comboBox_captureScale
             // 
+            resources.ApplyResources(this.comboBox_captureScale, "comboBox_captureScale");
             this.comboBox_captureScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_captureScale.FormattingEnabled = true;
             this.comboBox_captureScale.Items.AddRange(new object[] {
@@ -325,7 +326,6 @@
             resources.GetString("comboBox_captureScale.Items7"),
             resources.GetString("comboBox_captureScale.Items8"),
             resources.GetString("comboBox_captureScale.Items9")});
-            resources.ApplyResources(this.comboBox_captureScale, "comboBox_captureScale");
             this.comboBox_captureScale.Name = "comboBox_captureScale";
             this.comboBox_captureScale.TabStop = false;
             // 
@@ -353,6 +353,7 @@
             // 
             // comboBox_divisionNumber
             // 
+            resources.ApplyResources(this.comboBox_divisionNumber, "comboBox_divisionNumber");
             this.comboBox_divisionNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_divisionNumber.FormattingEnabled = true;
             this.comboBox_divisionNumber.Items.AddRange(new object[] {
@@ -364,12 +365,12 @@
             resources.GetString("comboBox_divisionNumber.Items5"),
             resources.GetString("comboBox_divisionNumber.Items6"),
             resources.GetString("comboBox_divisionNumber.Items7")});
-            resources.ApplyResources(this.comboBox_divisionNumber, "comboBox_divisionNumber");
             this.comboBox_divisionNumber.Name = "comboBox_divisionNumber";
             this.comboBox_divisionNumber.TabStop = false;
             // 
             // groupBox_capture
             // 
+            resources.ApplyResources(this.groupBox_capture, "groupBox_capture");
             this.groupBox_capture.Controls.Add(this.checkBox_showOverRayForm);
             this.groupBox_capture.Controls.Add(this.button_areaReset);
             this.groupBox_capture.Controls.Add(this.radioButton_process);
@@ -377,7 +378,6 @@
             this.groupBox_capture.Controls.Add(this.comboBox_process);
             this.groupBox_capture.Controls.Add(this.button_reloadProcesses);
             this.groupBox_capture.Controls.Add(this.button_area);
-            resources.ApplyResources(this.groupBox_capture, "groupBox_capture");
             this.groupBox_capture.Name = "groupBox_capture";
             this.groupBox_capture.TabStop = false;
             // 

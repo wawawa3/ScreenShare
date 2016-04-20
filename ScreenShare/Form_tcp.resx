@@ -117,1484 +117,230 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="button_startCapture.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="button_startCapture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>319, 415</value>
-  </data>
-  <data name="button_startCapture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>99, 23</value>
-  </data>
-  <data name="button_startCapture.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="button_startCapture.Text" xml:space="preserve">
-    <value>キャプチャ開始</value>
-  </data>
-  <data name="&gt;&gt;button_startCapture.Name" xml:space="preserve">
-    <value>button_startCapture</value>
-  </data>
-  <data name="&gt;&gt;button_startCapture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_startCapture.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;button_startCapture.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="button_stopCapture.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="button_stopCapture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>424, 415</value>
-  </data>
-  <data name="button_stopCapture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 23</value>
-  </data>
-  <data name="button_stopCapture.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="button_stopCapture.Text" xml:space="preserve">
-    <value>キャプチャ終了</value>
-  </data>
-  <data name="&gt;&gt;button_stopCapture.Name" xml:space="preserve">
-    <value>button_stopCapture</value>
-  </data>
-  <data name="&gt;&gt;button_stopCapture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_stopCapture.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;button_stopCapture.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="textBox_ip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>114, 14</value>
-  </data>
-  <data name="textBox_ip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>115, 19</value>
-  </data>
-  <data name="textBox_ip.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;textBox_ip.Name" xml:space="preserve">
-    <value>textBox_ip</value>
-  </data>
-  <data name="&gt;&gt;textBox_ip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_ip.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;textBox_ip.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="label_ip.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_ip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 17</value>
-  </data>
-  <data name="label_ip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>89, 12</value>
-  </data>
-  <data name="label_ip.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="label_ip.Text" xml:space="preserve">
-    <value>ローカルIPアドレス</value>
-  </data>
-  <data name="&gt;&gt;label_ip.Name" xml:space="preserve">
-    <value>label_ip</value>
-  </data>
-  <data name="&gt;&gt;label_ip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_ip.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label_ip.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="button_connect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>320, 12</value>
-  </data>
-  <data name="button_connect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>99, 23</value>
-  </data>
-  <data name="button_connect.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="button_connect.Text" xml:space="preserve">
-    <value>サーバ設立</value>
-  </data>
-  <data name="&gt;&gt;button_connect.Name" xml:space="preserve">
-    <value>button_connect</value>
-  </data>
-  <data name="&gt;&gt;button_connect.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_connect.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;button_connect.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="button_disconnect.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="button_disconnect.Location" type="System.Drawing.Point, System.Drawing">
-    <value>425, 12</value>
-  </data>
-  <data name="button_disconnect.Size" type="System.Drawing.Size, System.Drawing">
-    <value>99, 23</value>
-  </data>
-  <data name="button_disconnect.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="button_disconnect.Text" xml:space="preserve">
-    <value>切断</value>
-  </data>
-  <data name="&gt;&gt;button_disconnect.Name" xml:space="preserve">
-    <value>button_disconnect</value>
-  </data>
-  <data name="&gt;&gt;button_disconnect.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_disconnect.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;button_disconnect.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="label_message.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 441</value>
-  </data>
-  <data name="label_message.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 19</value>
-  </data>
-  <data name="label_message.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;label_message.Name" xml:space="preserve">
-    <value>label_message</value>
-  </data>
-  <data name="&gt;&gt;label_message.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_message.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label_message.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="label_interval.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_interval.Location" type="System.Drawing.Point, System.Drawing">
-    <value>347, 52</value>
-  </data>
-  <data name="label_interval.Size" type="System.Drawing.Size, System.Drawing">
-    <value>97, 12</value>
-  </data>
-  <data name="label_interval.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
-  <data name="label_interval.Text" xml:space="preserve">
-    <value>キャプチャ頻度(fps)</value>
-  </data>
-  <data name="&gt;&gt;label_interval.Name" xml:space="preserve">
-    <value>label_interval</value>
-  </data>
-  <data name="&gt;&gt;label_interval.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_interval.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_interval.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="button_area.Location" type="System.Drawing.Point, System.Drawing">
-    <value>283, 41</value>
-  </data>
-  <data name="button_area.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 23</value>
-  </data>
-  <data name="button_area.TabIndex" type="System.Int32, mscorlib">
-    <value>12</value>
-  </data>
-  <data name="button_area.Text" xml:space="preserve">
-    <value>キャプチャ領域選択</value>
-  </data>
-  <data name="&gt;&gt;button_area.Name" xml:space="preserve">
-    <value>button_area</value>
-  </data>
-  <data name="&gt;&gt;button_area.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_area.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;button_area.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="radioButton_process.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="radioButton_process.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 77</value>
-  </data>
-  <data name="radioButton_process.Size" type="System.Drawing.Size, System.Drawing">
-    <value>132, 16</value>
-  </data>
-  <data name="radioButton_process.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="radioButton_process.Text" xml:space="preserve">
-    <value>プロセスをキャプチャする</value>
-  </data>
-  <data name="&gt;&gt;radioButton_process.Name" xml:space="preserve">
-    <value>radioButton_process</value>
-  </data>
-  <data name="&gt;&gt;radioButton_process.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;radioButton_process.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;radioButton_process.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="comboBox_process.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="comboBox_process.Location" type="System.Drawing.Point, System.Drawing">
-    <value>199, 76</value>
-  </data>
-  <data name="comboBox_process.MaxDropDownItems" type="System.Int32, mscorlib">
-    <value>32</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="comboBox_process.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
-    <value>Yes</value>
-  </data>
-  <data name="comboBox_process.Size" type="System.Drawing.Size, System.Drawing">
-    <value>271, 20</value>
-  </data>
-  <data name="comboBox_process.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="&gt;&gt;comboBox_process.Name" xml:space="preserve">
-    <value>comboBox_process</value>
-  </data>
-  <data name="&gt;&gt;comboBox_process.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_process.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;comboBox_process.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Name" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Name" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Name" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Name" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="panel_capture.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="panel_capture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 41</value>
-  </data>
-  <data name="panel_capture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 368</value>
-  </data>
-  <data name="panel_capture.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;panel_capture.Name" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;panel_capture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel_capture.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;panel_capture.ZOrder" xml:space="preserve">
-    <value>9</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Name" xml:space="preserve">
-    <value>checkBox_recordCapture</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Name" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;panel_record.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Name" xml:space="preserve">
-    <value>checkBox_recordAudio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="groupBox_record.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 278</value>
-  </data>
-  <data name="groupBox_record.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 71</value>
-  </data>
-  <data name="groupBox_record.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="groupBox_record.Text" xml:space="preserve">
-    <value>録画設定</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Name" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_record.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="checkBox_recordCapture.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBox_recordCapture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 21</value>
-  </data>
-  <data name="checkBox_recordCapture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 16</value>
-  </data>
-  <data name="checkBox_recordCapture.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="checkBox_recordCapture.Text" xml:space="preserve">
-    <value>録画する</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Name" xml:space="preserve">
-    <value>checkBox_recordCapture</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordCapture.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Name" xml:space="preserve">
-    <value>textBox_recordQuality</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Name" xml:space="preserve">
-    <value>label_videoCodec</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Name" xml:space="preserve">
-    <value>label_recordQualty</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Name" xml:space="preserve">
-    <value>comboBox_videoCodec</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="panel_record.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="panel_record.Location" type="System.Drawing.Point, System.Drawing">
-    <value>118, 16</value>
-  </data>
-  <data name="panel_record.Size" type="System.Drawing.Size, System.Drawing">
-    <value>391, 27</value>
-  </data>
-  <data name="panel_record.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Name" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel_record.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;panel_record.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="textBox_recordQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>333, 3</value>
-  </data>
-  <data name="textBox_recordQuality.MaxLength" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
   <data name="textBox_recordQuality.Size" type="System.Drawing.Size, System.Drawing">
     <value>49, 19</value>
   </data>
-  <data name="textBox_recordQuality.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
-  </data>
-  <data name="textBox_recordQuality.Text" xml:space="preserve">
-    <value>95</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Name" xml:space="preserve">
-    <value>textBox_recordQuality</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;textBox_recordQuality.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label_videoCodec.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_videoCodec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 6</value>
-  </data>
-  <data name="label_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 12</value>
-  </data>
-  <data name="label_videoCodec.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="label_videoCodec.Text" xml:space="preserve">
-    <value>エンコード方式</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Name" xml:space="preserve">
-    <value>label_videoCodec</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;label_videoCodec.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="label_recordQualty.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_recordQualty.Location" type="System.Drawing.Point, System.Drawing">
-    <value>238, 6</value>
-  </data>
-  <data name="label_recordQualty.Size" type="System.Drawing.Size, System.Drawing">
-    <value>91, 12</value>
-  </data>
-  <data name="label_recordQualty.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
-  <data name="label_recordQualty.Text" xml:space="preserve">
-    <value>画面品質(0-100)</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Name" xml:space="preserve">
-    <value>label_recordQualty</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;label_recordQualty.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="comboBox_videoCodec.Items" xml:space="preserve">
-    <value>無圧縮</value>
-  </data>
-  <data name="comboBox_videoCodec.Items1" xml:space="preserve">
-    <value>MotionJpeg</value>
-  </data>
-  <data name="comboBox_videoCodec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 3</value>
-  </data>
-  <data name="comboBox_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 20</value>
-  </data>
-  <data name="comboBox_videoCodec.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Name" xml:space="preserve">
-    <value>comboBox_videoCodec</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.Parent" xml:space="preserve">
-    <value>panel_record</value>
-  </data>
-  <data name="&gt;&gt;comboBox_videoCodec.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="checkBox_recordAudio.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBox_recordAudio.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 43</value>
-  </data>
-  <data name="checkBox_recordAudio.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 16</value>
-  </data>
-  <data name="checkBox_recordAudio.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="checkBox_recordAudio.Text" xml:space="preserve">
-    <value>録音する</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Name" xml:space="preserve">
-    <value>checkBox_recordAudio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.Parent" xml:space="preserve">
-    <value>groupBox_record</value>
-  </data>
-  <data name="&gt;&gt;checkBox_recordAudio.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Name" xml:space="preserve">
-    <value>button_reloadWaveInDevices</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Name" xml:space="preserve">
-    <value>label_waveInDevices</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Name" xml:space="preserve">
-    <value>comboBox_waveInDevices</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Name" xml:space="preserve">
-    <value>checkBox_stereo</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Name" xml:space="preserve">
-    <value>comboBox_audioQuality</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Name" xml:space="preserve">
-    <value>label_audioQuality</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Name" xml:space="preserve">
-    <value>checkBox_sendAudio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="groupBox_audio.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 112</value>
-  </data>
-  <data name="groupBox_audio.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 72</value>
-  </data>
-  <data name="groupBox_audio.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="groupBox_audio.Text" xml:space="preserve">
-    <value>音声設定</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Name" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_audio.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="button_reloadWaveInDevices.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="button_reloadWaveInDevices.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAADJUExURf////z8/K2trUhISAgICAEBAQICAhUVFVFRUcbGxubm5j4+PgAAAGhoaPT09Ojo6B8f
-        HwMDAyIiIkNDQ/b29v7+/kxMTAwMDJiYmO7u7uLi4nh4eH9/f7KysszMzKqqqt3d3VNTU5GRkWJiYoGB
-        gQ0NDby8vBgYGO3t7ePj4xwcHN7e3vX19dTU1FhYWHFxcZOTkxISEr6+vm9vb2tra/v7+0dHR/Hx8To6
-        OgcHB2VlZQkJCZeXl9jY2CwsLBAQEDk5OYODg+Dg4Hjuka4AAACqSURBVChTLY5XEoJAEAWfymJ6Kijm
-        nBADCphzuP+h3F3or+muqamB4ll6vcPP9wcESp2boOb+CEIfOF+UXG3dVNiT4uAfN9EpDpGg6OtLQRy2
-        5C72UOFjRa512Pga2MxqVyw9z4PJRaIS1/UwpygkCteyXIzJSeKYkjP0SWMQ+5A0R6g3yGarDXS6JtmT
-        vWLJh+yqJZU1R20WinLUlMrKgVQ6Ywgzm8sDwB+JyBGawJE7yAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="button_reloadWaveInDevices.Location" type="System.Drawing.Point, System.Drawing">
-    <value>476, 13</value>
-  </data>
-  <data name="button_reloadWaveInDevices.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
-    <value>No</value>
-  </data>
-  <data name="button_reloadWaveInDevices.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
-  <data name="button_reloadWaveInDevices.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Name" xml:space="preserve">
-    <value>button_reloadWaveInDevices</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;button_reloadWaveInDevices.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="label_waveInDevices.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_waveInDevices.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="label_waveInDevices.Location" type="System.Drawing.Point, System.Drawing">
-    <value>202, 19</value>
-  </data>
-  <data name="label_waveInDevices.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 12</value>
-  </data>
-  <data name="label_waveInDevices.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
-  <data name="label_waveInDevices.Text" xml:space="preserve">
-    <value>録音デバイス</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Name" xml:space="preserve">
-    <value>label_waveInDevices</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;label_waveInDevices.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="comboBox_waveInDevices.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="comboBox_waveInDevices.Location" type="System.Drawing.Point, System.Drawing">
-    <value>275, 16</value>
-  </data>
-  <data name="comboBox_waveInDevices.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
-    <value>Yes</value>
-  </data>
-  <data name="comboBox_waveInDevices.Size" type="System.Drawing.Size, System.Drawing">
-    <value>195, 20</value>
-  </data>
-  <data name="comboBox_waveInDevices.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Name" xml:space="preserve">
-    <value>comboBox_waveInDevices</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;comboBox_waveInDevices.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="checkBox_stereo.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBox_stereo.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="checkBox_stereo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>275, 48</value>
-  </data>
-  <data name="checkBox_stereo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>60, 16</value>
-  </data>
-  <data name="checkBox_stereo.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
-  </data>
-  <data name="checkBox_stereo.Text" xml:space="preserve">
-    <value>ステレオ</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Name" xml:space="preserve">
-    <value>checkBox_stereo</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_stereo.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="comboBox_audioQuality.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="comboBox_audioQuality.Items" xml:space="preserve">
-    <value>4000</value>
-  </data>
-  <data name="comboBox_audioQuality.Items1" xml:space="preserve">
-    <value>8000</value>
-  </data>
-  <data name="comboBox_audioQuality.Items2" xml:space="preserve">
-    <value>11025</value>
-  </data>
-  <data name="comboBox_audioQuality.Items3" xml:space="preserve">
-    <value>16000</value>
-  </data>
-  <data name="comboBox_audioQuality.Items4" xml:space="preserve">
-    <value>22050</value>
-  </data>
-  <data name="comboBox_audioQuality.Items5" xml:space="preserve">
-    <value>32000</value>
-  </data>
-  <data name="comboBox_audioQuality.Items6" xml:space="preserve">
-    <value>44100</value>
-  </data>
-  <data name="comboBox_audioQuality.Items7" xml:space="preserve">
-    <value>48000</value>
-  </data>
-  <data name="comboBox_audioQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>410, 46</value>
-  </data>
-  <data name="comboBox_audioQuality.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 20</value>
-  </data>
-  <data name="comboBox_audioQuality.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Name" xml:space="preserve">
-    <value>comboBox_audioQuality</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;comboBox_audioQuality.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="label_audioQuality.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_audioQuality.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="label_audioQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>342, 49</value>
-  </data>
-  <data name="label_audioQuality.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 12</value>
-  </data>
-  <data name="label_audioQuality.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="label_audioQuality.Text" xml:space="preserve">
-    <value>周波数(Hz)</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Name" xml:space="preserve">
-    <value>label_audioQuality</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;label_audioQuality.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="checkBox_sendAudio.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBox_sendAudio.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 18</value>
-  </data>
-  <data name="checkBox_sendAudio.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 16</value>
-  </data>
-  <data name="checkBox_sendAudio.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="checkBox_sendAudio.Text" xml:space="preserve">
-    <value>音声を送信する</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Name" xml:space="preserve">
-    <value>checkBox_sendAudio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.Parent" xml:space="preserve">
-    <value>groupBox_audio</value>
-  </data>
-  <data name="&gt;&gt;checkBox_sendAudio.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Name" xml:space="preserve">
-    <value>textBox_captureFps</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Name" xml:space="preserve">
-    <value>comboBox_captureScale</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Name" xml:space="preserve">
-    <value>label_captureScale</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Name" xml:space="preserve">
-    <value>textBox_captureQuality</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.Name" xml:space="preserve">
-    <value>label_divisionNumber</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Name" xml:space="preserve">
-    <value>label_imageCompressQuality</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Name" xml:space="preserve">
-    <value>comboBox_divisionNumber</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="groupBox_sending.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 190</value>
-  </data>
-  <data name="groupBox_sending.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 82</value>
-  </data>
-  <data name="groupBox_sending.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="groupBox_sending.Text" xml:space="preserve">
-    <value>送信設定</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Name" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_sending.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="textBox_captureFps.Location" type="System.Drawing.Point, System.Drawing">
-    <value>451, 49</value>
-  </data>
-  <data name="textBox_captureFps.MaxLength" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="textBox_captureFps.Size" type="System.Drawing.Size, System.Drawing">
-    <value>49, 19</value>
-  </data>
-  <data name="textBox_captureFps.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
-  </data>
-  <data name="textBox_captureFps.Text" xml:space="preserve">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Name" xml:space="preserve">
-    <value>textBox_captureFps</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureFps.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="comboBox_captureScale.Items" xml:space="preserve">
-    <value>x1.0</value>
-  </data>
-  <data name="comboBox_captureScale.Items1" xml:space="preserve">
-    <value>x0.9</value>
-  </data>
-  <data name="comboBox_captureScale.Items2" xml:space="preserve">
-    <value>x0.8</value>
-  </data>
-  <data name="comboBox_captureScale.Items3" xml:space="preserve">
-    <value>x0.7</value>
-  </data>
-  <data name="comboBox_captureScale.Items4" xml:space="preserve">
-    <value>x0.6</value>
-  </data>
-  <data name="comboBox_captureScale.Items5" xml:space="preserve">
-    <value>x0.5</value>
-  </data>
-  <data name="comboBox_captureScale.Items6" xml:space="preserve">
-    <value>x0.4</value>
-  </data>
-  <data name="comboBox_captureScale.Items7" xml:space="preserve">
-    <value>x0.3</value>
-  </data>
-  <data name="comboBox_captureScale.Items8" xml:space="preserve">
-    <value>x0.2</value>
-  </data>
-  <data name="comboBox_captureScale.Items9" xml:space="preserve">
-    <value>x0.1</value>
-  </data>
-  <data name="comboBox_captureScale.Location" type="System.Drawing.Point, System.Drawing">
-    <value>201, 21</value>
-  </data>
-  <data name="comboBox_captureScale.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 20</value>
-  </data>
-  <data name="comboBox_captureScale.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Name" xml:space="preserve">
-    <value>comboBox_captureScale</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;comboBox_captureScale.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="label_captureScale.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_captureScale.Location" type="System.Drawing.Point, System.Drawing">
-    <value>84, 24</value>
-  </data>
-  <data name="label_captureScale.Size" type="System.Drawing.Size, System.Drawing">
-    <value>111, 12</value>
-  </data>
-  <data name="label_captureScale.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
-  </data>
-  <data name="label_captureScale.Text" xml:space="preserve">
-    <value>画面解像度(スケール)</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Name" xml:space="preserve">
-    <value>label_captureScale</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_captureScale.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="textBox_captureQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>451, 21</value>
-  </data>
-  <data name="textBox_captureQuality.MaxLength" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="textBox_captureQuality.Size" type="System.Drawing.Size, System.Drawing">
-    <value>49, 19</value>
-  </data>
-  <data name="textBox_captureQuality.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
-  <data name="textBox_captureQuality.Text" xml:space="preserve">
-    <value>50</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Name" xml:space="preserve">
-    <value>textBox_captureQuality</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;textBox_captureQuality.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="label_divisionNumber.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>130, 52</value>
-  </data>
-  <data name="label_divisionNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 12</value>
-  </data>
-  <data name="label_divisionNumber.TabIndex" type="System.Int32, mscorlib">
-    <value>24</value>
+  <data name="button_reloadProcesses.Location" type="System.Drawing.Point, System.Drawing">
+    <value>476, 73</value>
   </data>
   <data name="label_divisionNumber.Text" xml:space="preserve">
     <value>画面分割数</value>
   </data>
-  <data name="&gt;&gt;label_divisionNumber.Name" xml:space="preserve">
-    <value>label_divisionNumber</value>
+  <data name="groupBox_record.Size" type="System.Drawing.Size, System.Drawing">
+    <value>506, 71</value>
   </data>
-  <data name="&gt;&gt;label_divisionNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_divisionNumber.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="label_imageCompressQuality.AutoSize" type="System.Boolean, mscorlib">
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label_Client.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label_imageCompressQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>353, 24</value>
+  <data name="&gt;&gt;label_ip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="checkBox_sendAudio.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="comboBox_captureScale.Items6" xml:space="preserve">
+    <value>x0.4</value>
+  </data>
+  <data name="textBox_ip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>115, 19</value>
+  </data>
+  <data name="comboBox_captureScale.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="label_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
+    <value>130, 52</value>
   </data>
   <data name="label_imageCompressQuality.Size" type="System.Drawing.Size, System.Drawing">
     <value>91, 12</value>
   </data>
-  <data name="label_imageCompressQuality.TabIndex" type="System.Int32, mscorlib">
-    <value>19</value>
+  <data name="&gt;&gt;textBox_recordQuality.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="label_imageCompressQuality.Text" xml:space="preserve">
-    <value>画面品質(0-100)</value>
+  <data name="label_recordQualty.Location" type="System.Drawing.Point, System.Drawing">
+    <value>238, 6</value>
   </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Name" xml:space="preserve">
-    <value>label_imageCompressQuality</value>
+  <data name="comboBox_captureScale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>201, 21</value>
   </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;label_imageCompressQuality.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items" xml:space="preserve">
-    <value>1x1</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items1" xml:space="preserve">
-    <value>2x2</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items2" xml:space="preserve">
-    <value>3x3</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items3" xml:space="preserve">
-    <value>4x4</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items4" xml:space="preserve">
-    <value>5x5</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items5" xml:space="preserve">
-    <value>6x6</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items6" xml:space="preserve">
-    <value>7x7</value>
-  </data>
-  <data name="comboBox_divisionNumber.Items7" xml:space="preserve">
-    <value>8x8</value>
-  </data>
-  <data name="comboBox_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>201, 49</value>
-  </data>
-  <data name="comboBox_divisionNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 20</value>
-  </data>
-  <data name="comboBox_divisionNumber.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Name" xml:space="preserve">
-    <value>comboBox_divisionNumber</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.Parent" xml:space="preserve">
-    <value>groupBox_sending</value>
-  </data>
-  <data name="&gt;&gt;comboBox_divisionNumber.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;label_ip.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Name" xml:space="preserve">
-    <value>checkBox_showOverRayForm</value>
+  <data name="groupBox_sending.Text" xml:space="preserve">
+    <value>送信設定</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;label_waveInDevices.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;button_areaReset.Name" xml:space="preserve">
-    <value>button_areaReset</value>
-  </data>
-  <data name="&gt;&gt;button_areaReset.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_areaReset.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;button_areaReset.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Name" xml:space="preserve">
-    <value>radioButton_area</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Name" xml:space="preserve">
-    <value>button_reloadProcesses</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="groupBox_capture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="groupBox_capture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 103</value>
-  </data>
-  <data name="groupBox_capture.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="groupBox_capture.Text" xml:space="preserve">
-    <value>キャプチャ設定</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Name" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.Parent" xml:space="preserve">
-    <value>panel_capture</value>
-  </data>
-  <data name="&gt;&gt;groupBox_capture.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="checkBox_showOverRayForm.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="checkBox_recordAudio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 16</value>
   </data>
   <data name="checkBox_showOverRayForm.Location" type="System.Drawing.Point, System.Drawing">
     <value>356, 19</value>
   </data>
-  <data name="checkBox_showOverRayForm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>144, 16</value>
+  <data name="comboBox_videoCodec.Items1" xml:space="preserve">
+    <value>MotionJpeg</value>
   </data>
-  <data name="checkBox_showOverRayForm.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;label_waveInDevices.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label_audioQuality.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label_message.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button_area.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_captureScale.Items1" xml:space="preserve">
+    <value>x0.9</value>
+  </data>
+  <data name="&gt;&gt;panel_capture.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;checkBox_stereo.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;comboBox_waveInDevices.Name" xml:space="preserve">
+    <value>comboBox_waveInDevices</value>
+  </data>
+  <data name="&gt;&gt;button_stopCapture.Name" xml:space="preserve">
+    <value>button_stopCapture</value>
+  </data>
+  <data name="button_reloadProcesses.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="label_interval.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="button_disconnect.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label_recordQualty.Text" xml:space="preserve">
+    <value>画面品質(0-100)</value>
+  </data>
+  <data name="comboBox_process.MaxDropDownItems" type="System.Int32, mscorlib">
+    <value>32</value>
+  </data>
+  <data name="&gt;&gt;label_message.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;panel_capture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBox_sendAudio.Name" xml:space="preserve">
+    <value>checkBox_sendAudio</value>
+  </data>
+  <data name="comboBox_process.Size" type="System.Drawing.Size, System.Drawing">
+    <value>271, 20</value>
+  </data>
+  <data name="comboBox_audioQuality.Items3" xml:space="preserve">
+    <value>16000</value>
+  </data>
+  <data name="&gt;&gt;textBox_recordQuality.Name" xml:space="preserve">
+    <value>textBox_recordQuality</value>
+  </data>
+  <data name="&gt;&gt;textBox_recordQuality.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;comboBox_videoCodec.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="button_reloadWaveInDevices.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="&gt;&gt;label_videoCodec.Parent" xml:space="preserve">
+    <value>panel_record</value>
+  </data>
+  <data name="label_ConnectionNum.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="label_Client.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 420</value>
+  </data>
+  <data name="&gt;&gt;label_captureScale.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="comboBox_waveInDevices.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
+  </data>
+  <data name="&gt;&gt;button_connect.Name" xml:space="preserve">
+    <value>button_connect</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordCapture.Parent" xml:space="preserve">
+    <value>groupBox_record</value>
+  </data>
+  <data name="label_imageCompressQuality.Text" xml:space="preserve">
+    <value>画面品質(0-100)</value>
   </data>
   <data name="checkBox_showOverRayForm.Text" xml:space="preserve">
     <value>キャプチャ領域を表示する</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Name" xml:space="preserve">
-    <value>checkBox_showOverRayForm</value>
+  <data name="button_startCapture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>319, 415</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="comboBox_captureScale.Items3" xml:space="preserve">
+    <value>x0.7</value>
   </data>
-  <data name="&gt;&gt;checkBox_showOverRayForm.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
+  <data name="button_connect.Text" xml:space="preserve">
+    <value>サーバ設立</value>
+  </data>
+  <data name="label_interval.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;checkBox_showOverRayForm.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="button_areaReset.Location" type="System.Drawing.Point, System.Drawing">
-    <value>410, 41</value>
+  <data name="&gt;&gt;label_message.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="button_areaReset.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 23</value>
+  <data name="&gt;&gt;label_ip.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
-  <data name="button_areaReset.TabIndex" type="System.Int32, mscorlib">
-    <value>19</value>
+  <data name="&gt;&gt;checkBox_recordAudio.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
-  <data name="button_areaReset.Text" xml:space="preserve">
-    <value>領域リセット</value>
+  <data name="&gt;&gt;checkBox_stereo.Name" xml:space="preserve">
+    <value>checkBox_stereo</value>
   </data>
-  <data name="&gt;&gt;button_areaReset.Name" xml:space="preserve">
-    <value>button_areaReset</value>
+  <data name="comboBox_divisionNumber.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 20</value>
   </data>
-  <data name="&gt;&gt;button_areaReset.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="button_area.Text" xml:space="preserve">
+    <value>キャプチャ領域選択</value>
   </data>
-  <data name="&gt;&gt;button_areaReset.Parent" xml:space="preserve">
+  <data name="&gt;&gt;textBox_captureQuality.Name" xml:space="preserve">
+    <value>textBox_captureQuality</value>
+  </data>
+  <data name="comboBox_process.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;groupBox_capture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox_audio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>506, 72</value>
+  </data>
+  <data name="comboBox_process.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="button_startCapture.Text" xml:space="preserve">
+    <value>キャプチャ開始</value>
+  </data>
+  <data name="&gt;&gt;button_reloadProcesses.Parent" xml:space="preserve">
     <value>groupBox_capture</value>
   </data>
-  <data name="&gt;&gt;button_areaReset.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="comboBox_audioQuality.Items1" xml:space="preserve">
+    <value>8000</value>
   </data>
-  <data name="radioButton_area.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;label_divisionNumber.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="radioButton_area.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 18</value>
-  </data>
-  <data name="radioButton_area.Size" type="System.Drawing.Size, System.Drawing">
-    <value>146, 16</value>
-  </data>
-  <data name="radioButton_area.TabIndex" type="System.Int32, mscorlib">
-    <value>17</value>
-  </data>
-  <data name="radioButton_area.Text" xml:space="preserve">
-    <value>デスクトップをキャプチャする</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Name" xml:space="preserve">
-    <value>radioButton_area</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;radioButton_area.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>ScreenShare</value>
   </data>
   <data name="button_reloadProcesses.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1608,103 +354,1009 @@
         vWLJh+yqJZU1R20WinLUlMrKgVQ6Ywgzm8sDwB+JyBGawJE7yAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="button_reloadProcesses.Location" type="System.Drawing.Point, System.Drawing">
-    <value>476, 73</value>
-  </data>
-  <data name="button_reloadProcesses.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
-    <value>No</value>
-  </data>
-  <data name="button_reloadProcesses.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
-  <data name="button_reloadProcesses.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Name" xml:space="preserve">
-    <value>button_reloadProcesses</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.Parent" xml:space="preserve">
-    <value>groupBox_capture</value>
-  </data>
-  <data name="&gt;&gt;button_reloadProcesses.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="label_Client.AutoSize" type="System.Boolean, mscorlib">
+  <data name="checkBox_stereo.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="label_Client.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 420</value>
+  <data name="textBox_ip.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
-  <data name="label_Client.Size" type="System.Drawing.Size, System.Drawing">
-    <value>102, 12</value>
-  </data>
-  <data name="label_Client.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
-  <data name="label_Client.Text" xml:space="preserve">
-    <value>接続クライアント数 : </value>
-  </data>
-  <data name="&gt;&gt;label_Client.Name" xml:space="preserve">
-    <value>label_Client</value>
-  </data>
-  <data name="&gt;&gt;label_Client.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_Client.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;label_Client.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="label_ConnectionNum.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_ConnectionNum.Location" type="System.Drawing.Point, System.Drawing">
-    <value>117, 420</value>
-  </data>
-  <data name="label_ConnectionNum.Size" type="System.Drawing.Size, System.Drawing">
-    <value>11, 12</value>
-  </data>
-  <data name="label_ConnectionNum.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
-  </data>
-  <data name="label_ConnectionNum.Text" xml:space="preserve">
+  <data name="&gt;&gt;groupBox_record.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;label_ConnectionNum.Name" xml:space="preserve">
-    <value>label_ConnectionNum</value>
+  <data name="label_waveInDevices.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 12</value>
   </data>
-  <data name="&gt;&gt;label_ConnectionNum.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="checkBox_sendAudio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;button_reloadWaveInDevices.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="label_message.Size" type="System.Drawing.Size, System.Drawing">
+    <value>512, 19</value>
+  </data>
+  <data name="comboBox_audioQuality.Items6" xml:space="preserve">
+    <value>44100</value>
+  </data>
+  <data name="checkBox_stereo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>275, 48</value>
+  </data>
+  <data name="radioButton_process.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 77</value>
+  </data>
+  <data name="textBox_captureQuality.Text" xml:space="preserve">
+    <value>50</value>
+  </data>
+  <data name="checkBox_stereo.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label_videoCodec.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;label_ConnectionNum.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;label_ConnectionNum.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;groupBox_audio.Name" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="comboBox_audioQuality.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;label_videoCodec.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="button_reloadProcesses.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="&gt;&gt;comboBox_captureScale.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="&gt;&gt;comboBox_captureScale.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;comboBox_videoCodec.Name" xml:space="preserve">
+    <value>comboBox_videoCodec</value>
+  </data>
+  <data name="comboBox_audioQuality.Items7" xml:space="preserve">
+    <value>48000</value>
+  </data>
+  <data name="label_ConnectionNum.Text" xml:space="preserve">
     <value>0</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>en</value>
-  </metadata>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="button_disconnect.Text" xml:space="preserve">
+    <value>切断</value>
+  </data>
+  <data name="textBox_captureFps.Location" type="System.Drawing.Point, System.Drawing">
+    <value>451, 49</value>
+  </data>
+  <data name="checkBox_recordCapture.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </metadata>
+  </data>
+  <data name="&gt;&gt;panel_record.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;comboBox_waveInDevices.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="radioButton_area.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureQuality.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureFps.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;radioButton_area.Name" xml:space="preserve">
+    <value>radioButton_area</value>
+  </data>
+  <data name="panel_record.Location" type="System.Drawing.Point, System.Drawing">
+    <value>118, 16</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items5" xml:space="preserve">
+    <value>6x6</value>
+  </data>
+  <data name="&gt;&gt;panel_record.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 12</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>536, 469</value>
+  <data name="checkBox_stereo.Text" xml:space="preserve">
+    <value>ステレオ</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>ScreenShare</value>
+  <data name="&gt;&gt;textBox_ip.Name" xml:space="preserve">
+    <value>textBox_ip</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>Form_tcp</value>
+  <data name="comboBox_audioQuality.Items4" xml:space="preserve">
+    <value>22050</value>
+  </data>
+  <data name="&gt;&gt;label_recordQualty.Name" xml:space="preserve">
+    <value>label_recordQualty</value>
+  </data>
+  <data name="textBox_captureFps.Text" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="label_ConnectionNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>117, 420</value>
+  </data>
+  <data name="label_message.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="button_stopCapture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>97, 23</value>
+  </data>
+  <data name="label_ip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 17</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordAudio.Parent" xml:space="preserve">
+    <value>groupBox_record</value>
+  </data>
+  <data name="groupBox_audio.Text" xml:space="preserve">
+    <value>音声設定</value>
+  </data>
+  <data name="label_interval.Size" type="System.Drawing.Size, System.Drawing">
+    <value>97, 12</value>
+  </data>
+  <data name="label_recordQualty.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;comboBox_waveInDevices.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="button_connect.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 23</value>
+  </data>
+  <data name="&gt;&gt;button_areaReset.Name" xml:space="preserve">
+    <value>button_areaReset</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureFps.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="&gt;&gt;label_Client.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="textBox_ip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 14</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureFps.Name" xml:space="preserve">
+    <value>textBox_captureFps</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;label_divisionNumber.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;radioButton_area.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="button_reloadProcesses.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items2" xml:space="preserve">
+    <value>3x3</value>
+  </data>
+  <data name="&gt;&gt;groupBox_record.Parent" xml:space="preserve">
+    <value>panel_capture</value>
+  </data>
+  <data name="label_captureScale.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="label_recordQualty.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label_interval.Text" xml:space="preserve">
+    <value>キャプチャ頻度(fps)</value>
+  </data>
+  <data name="&gt;&gt;label_audioQuality.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="&gt;&gt;comboBox_waveInDevices.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_videoCodec.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="&gt;&gt;button_reloadProcesses.Name" xml:space="preserve">
+    <value>button_reloadProcesses</value>
+  </data>
+  <data name="&gt;&gt;textBox_ip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
+    <value>74, 12</value>
+  </data>
+  <data name="button_area.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;label_audioQuality.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="label_audioQuality.Text" xml:space="preserve">
+    <value>周波数(Hz)</value>
+  </data>
+  <data name="checkBox_stereo.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;comboBox_divisionNumber.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="comboBox_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 20</value>
+  </data>
+  <data name="checkBox_showOverRayForm.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureFps.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label_ip.Text" xml:space="preserve">
+    <value>ローカルIPアドレス</value>
+  </data>
+  <data name="&gt;&gt;button_startCapture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_audioQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>410, 46</value>
+  </data>
+  <data name="&gt;&gt;label_videoCodec.Name" xml:space="preserve">
+    <value>label_videoCodec</value>
+  </data>
+  <data name="&gt;&gt;label_ConnectionNum.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;radioButton_process.Name" xml:space="preserve">
+    <value>radioButton_process</value>
+  </data>
+  <data name="comboBox_audioQuality.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="checkBox_sendAudio.Text" xml:space="preserve">
+    <value>音声を送信する</value>
+  </data>
+  <data name="groupBox_sending.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 190</value>
+  </data>
+  <data name="comboBox_videoCodec.Items" xml:space="preserve">
+    <value>無圧縮</value>
+  </data>
+  <data name="label_videoCodec.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;textBox_recordQuality.Parent" xml:space="preserve">
+    <value>panel_record</value>
+  </data>
+  <data name="comboBox_waveInDevices.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
+  </data>
+  <data name="panel_capture.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;button_areaReset.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="button_disconnect.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 23</value>
+  </data>
+  <data name="textBox_recordQuality.Text" xml:space="preserve">
+    <value>95</value>
+  </data>
+  <data name="label_audioQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>342, 49</value>
+  </data>
+  <data name="&gt;&gt;textBox_ip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="comboBox_waveInDevices.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;groupBox_sending.Name" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="button_startCapture.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label_Client.Text" xml:space="preserve">
+    <value>接続クライアント数 : </value>
+  </data>
+  <data name="&gt;&gt;groupBox_audio.Parent" xml:space="preserve">
+    <value>panel_capture</value>
+  </data>
+  <data name="&gt;&gt;label_imageCompressQuality.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="comboBox_audioQuality.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 20</value>
+  </data>
+  <data name="&gt;&gt;panel_record.Name" xml:space="preserve">
+    <value>panel_record</value>
+  </data>
+  <data name="&gt;&gt;button_disconnect.Name" xml:space="preserve">
+    <value>button_disconnect</value>
+  </data>
+  <data name="&gt;&gt;groupBox_sending.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="textBox_recordQuality.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="label_videoCodec.Text" xml:space="preserve">
+    <value>エンコード方式</value>
+  </data>
+  <data name="textBox_captureQuality.MaxLength" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;checkBox_showOverRayForm.Name" xml:space="preserve">
+    <value>checkBox_showOverRayForm</value>
+  </data>
+  <data name="&gt;&gt;label_recordQualty.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordCapture.Name" xml:space="preserve">
+    <value>checkBox_recordCapture</value>
+  </data>
+  <data name="button_areaReset.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;button_disconnect.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox_audio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 112</value>
+  </data>
+  <data name="&gt;&gt;label_captureScale.Name" xml:space="preserve">
+    <value>label_captureScale</value>
+  </data>
+  <data name="&gt;&gt;label_ConnectionNum.Name" xml:space="preserve">
+    <value>label_ConnectionNum</value>
+  </data>
+  <data name="label_ConnectionNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>11, 12</value>
+  </data>
+  <data name="checkBox_showOverRayForm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="comboBox_waveInDevices.Location" type="System.Drawing.Point, System.Drawing">
+    <value>275, 16</value>
+  </data>
+  <data name="label_imageCompressQuality.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;radioButton_area.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="label_ip.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="checkBox_recordAudio.Text" xml:space="preserve">
+    <value>録音する</value>
+  </data>
+  <data name="label_ip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 12</value>
+  </data>
+  <data name="&gt;&gt;radioButton_area.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="label_waveInDevices.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;label_waveInDevices.Name" xml:space="preserve">
+    <value>label_waveInDevices</value>
+  </data>
+  <data name="comboBox_captureScale.Items2" xml:space="preserve">
+    <value>x0.8</value>
+  </data>
+  <data name="groupBox_capture.Text" xml:space="preserve">
+    <value>キャプチャ設定</value>
+  </data>
+  <data name="radioButton_area.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;groupBox_audio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panel_capture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>512, 368</value>
+  </data>
+  <data name="button_areaReset.Location" type="System.Drawing.Point, System.Drawing">
+    <value>410, 41</value>
+  </data>
+  <data name="&gt;&gt;button_areaReset.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="&gt;&gt;comboBox_videoCodec.Parent" xml:space="preserve">
+    <value>panel_record</value>
+  </data>
+  <data name="&gt;&gt;label_ConnectionNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox_capture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="panel_capture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 41</value>
+  </data>
+  <data name="label_videoCodec.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 6</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordAudio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel_capture.Name" xml:space="preserve">
+    <value>panel_capture</value>
+  </data>
+  <data name="&gt;&gt;checkBox_sendAudio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox_capture.Name" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="&gt;&gt;comboBox_process.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="&gt;&gt;button_startCapture.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="panel_capture.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="checkBox_recordAudio.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;label_imageCompressQuality.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="textBox_recordQuality.MaxLength" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;label_recordQualty.Parent" xml:space="preserve">
+    <value>panel_record</value>
+  </data>
+  <data name="button_reloadWaveInDevices.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="&gt;&gt;comboBox_captureScale.Name" xml:space="preserve">
+    <value>comboBox_captureScale</value>
+  </data>
+  <data name="button_disconnect.Location" type="System.Drawing.Point, System.Drawing">
+    <value>425, 12</value>
+  </data>
+  <data name="label_audioQuality.Size" type="System.Drawing.Size, System.Drawing">
+    <value>62, 12</value>
+  </data>
+  <data name="&gt;&gt;groupBox_sending.Parent" xml:space="preserve">
+    <value>panel_capture</value>
+  </data>
+  <data name="button_stopCapture.Text" xml:space="preserve">
+    <value>キャプチャ終了</value>
+  </data>
+  <data name="button_connect.Location" type="System.Drawing.Point, System.Drawing">
+    <value>320, 12</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items1" xml:space="preserve">
+    <value>2x2</value>
+  </data>
+  <data name="&gt;&gt;label_captureScale.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="checkBox_recordCapture.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="button_disconnect.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items6" xml:space="preserve">
+    <value>7x7</value>
+  </data>
+  <data name="&gt;&gt;comboBox_process.Name" xml:space="preserve">
+    <value>comboBox_process</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordCapture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label_imageCompressQuality.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;comboBox_divisionNumber.Name" xml:space="preserve">
+    <value>comboBox_divisionNumber</value>
+  </data>
+  <data name="label_divisionNumber.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;button_reloadWaveInDevices.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkBox_stereo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button_area.Name" xml:space="preserve">
+    <value>button_area</value>
+  </data>
+  <data name="&gt;&gt;comboBox_audioQuality.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="label_divisionNumber.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="&gt;&gt;label_interval.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="checkBox_recordCapture.Text" xml:space="preserve">
+    <value>録画する</value>
+  </data>
+  <data name="&gt;&gt;comboBox_audioQuality.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox_sending.Size" type="System.Drawing.Size, System.Drawing">
+    <value>506, 82</value>
+  </data>
+  <data name="&gt;&gt;button_stopCapture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label_interval.Location" type="System.Drawing.Point, System.Drawing">
+    <value>347, 52</value>
+  </data>
+  <data name="&gt;&gt;groupBox_record.Name" xml:space="preserve">
+    <value>groupBox_record</value>
+  </data>
+  <data name="label_audioQuality.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;comboBox_process.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureQuality.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="button_reloadWaveInDevices.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items3" xml:space="preserve">
+    <value>4x4</value>
+  </data>
+  <data name="groupBox_record.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;button_disconnect.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="comboBox_divisionNumber.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="&gt;&gt;checkBox_stereo.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="groupBox_audio.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;comboBox_audioQuality.Name" xml:space="preserve">
+    <value>comboBox_audioQuality</value>
+  </data>
+  <data name="&gt;&gt;label_Client.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;groupBox_audio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label_waveInDevices.Text" xml:space="preserve">
+    <value>録音デバイス</value>
+  </data>
+  <data name="button_reloadWaveInDevices.Location" type="System.Drawing.Point, System.Drawing">
+    <value>476, 13</value>
+  </data>
+  <data name="&gt;&gt;radioButton_process.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label_imageCompressQuality.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="checkBox_sendAudio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="radioButton_process.Text" xml:space="preserve">
+    <value>プロセスをキャプチャする</value>
+  </data>
+  <data name="label_ip.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="panel_record.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="groupBox_record.Text" xml:space="preserve">
+    <value>録画設定</value>
+  </data>
+  <data name="radioButton_process.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items" xml:space="preserve">
+    <value>1x1</value>
+  </data>
+  <data name="button_startCapture.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="label_captureScale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>84, 24</value>
+  </data>
+  <data name="&gt;&gt;button_stopCapture.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="button_areaReset.Text" xml:space="preserve">
+    <value>領域リセット</value>
+  </data>
+  <data name="radioButton_process.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;button_connect.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label_imageCompressQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>353, 24</value>
+  </data>
+  <data name="label_ConnectionNum.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label_imageCompressQuality.Name" xml:space="preserve">
+    <value>label_imageCompressQuality</value>
+  </data>
+  <data name="button_reloadWaveInDevices.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="radioButton_area.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;radioButton_process.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="radioButton_area.Text" xml:space="preserve">
+    <value>デスクトップをキャプチャする</value>
+  </data>
+  <data name="&gt;&gt;button_disconnect.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="button_area.Location" type="System.Drawing.Point, System.Drawing">
+    <value>283, 41</value>
+  </data>
+  <data name="textBox_captureQuality.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 19</value>
+  </data>
+  <data name="&gt;&gt;label_interval.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;button_startCapture.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;button_reloadWaveInDevices.Name" xml:space="preserve">
+    <value>button_reloadWaveInDevices</value>
+  </data>
+  <data name="button_reloadWaveInDevices.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAADJUExURf////z8/K2trUhISAgICAEBAQICAhUVFVFRUcbGxubm5j4+PgAAAGhoaPT09Ojo6B8f
+        HwMDAyIiIkNDQ/b29v7+/kxMTAwMDJiYmO7u7uLi4nh4eH9/f7KysszMzKqqqt3d3VNTU5GRkWJiYoGB
+        gQ0NDby8vBgYGO3t7ePj4xwcHN7e3vX19dTU1FhYWHFxcZOTkxISEr6+vm9vb2tra/v7+0dHR/Hx8To6
+        OgcHB2VlZQkJCZeXl9jY2CwsLBAQEDk5OYODg+Dg4Hjuka4AAACqSURBVChTLY5XEoJAEAWfymJ6Kijm
+        nBADCphzuP+h3F3or+muqamB4ll6vcPP9wcESp2boOb+CEIfOF+UXG3dVNiT4uAfN9EpDpGg6OtLQRy2
+        5C72UOFjRa512Pga2MxqVyw9z4PJRaIS1/UwpygkCteyXIzJSeKYkjP0SWMQ+5A0R6g3yGarDXS6JtmT
+        vWLJh+yqJZU1R20WinLUlMrKgVQ6Ywgzm8sDwB+JyBGawJE7yAAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="&gt;&gt;button_reloadProcesses.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button_connect.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;button_startCapture.Name" xml:space="preserve">
+    <value>button_startCapture</value>
+  </data>
+  <data name="button_stopCapture.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label_captureScale.Size" type="System.Drawing.Size, System.Drawing">
+    <value>111, 12</value>
+  </data>
+  <data name="&gt;&gt;comboBox_process.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;groupBox_sending.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="checkBox_recordCapture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 16</value>
+  </data>
+  <data name="&gt;&gt;checkBox_showOverRayForm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label_message.Name" xml:space="preserve">
+    <value>label_message</value>
+  </data>
+  <data name="&gt;&gt;groupBox_capture.Parent" xml:space="preserve">
+    <value>panel_capture</value>
+  </data>
+  <data name="&gt;&gt;label_audioQuality.Name" xml:space="preserve">
+    <value>label_audioQuality</value>
+  </data>
+  <data name="&gt;&gt;comboBox_audioQuality.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="&gt;&gt;checkBox_sendAudio.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;label_videoCodec.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="textBox_captureFps.MaxLength" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="textBox_captureFps.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="&gt;&gt;label_captureScale.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label_Client.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="comboBox_captureScale.Items" xml:space="preserve">
+    <value>x1.0</value>
+  </data>
+  <data name="&gt;&gt;label_interval.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;radioButton_process.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="textBox_recordQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>333, 3</value>
+  </data>
+  <data name="comboBox_captureScale.Items9" xml:space="preserve">
+    <value>x0.1</value>
+  </data>
+  <data name="button_area.Size" type="System.Drawing.Size, System.Drawing">
+    <value>123, 23</value>
+  </data>
+  <data name="&gt;&gt;button_stopCapture.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="button_areaReset.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 23</value>
+  </data>
+  <data name="button_stopCapture.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="checkBox_recordAudio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="groupBox_capture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>506, 103</value>
+  </data>
+  <data name="checkBox_stereo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 16</value>
+  </data>
+  <data name="comboBox_videoCodec.Location" type="System.Drawing.Point, System.Drawing">
+    <value>83, 3</value>
+  </data>
+  <data name="textBox_captureFps.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 19</value>
+  </data>
+  <data name="groupBox_record.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 278</value>
+  </data>
+  <data name="textBox_captureQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>451, 21</value>
+  </data>
+  <data name="label_audioQuality.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;checkBox_sendAudio.Parent" xml:space="preserve">
+    <value>groupBox_audio</value>
+  </data>
+  <data name="&gt;&gt;comboBox_divisionNumber.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="&gt;&gt;comboBox_videoCodec.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_process.Location" type="System.Drawing.Point, System.Drawing">
+    <value>199, 76</value>
+  </data>
+  <data name="&gt;&gt;checkBox_showOverRayForm.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="comboBox_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
+    <value>201, 49</value>
+  </data>
+  <data name="label_audioQuality.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="comboBox_audioQuality.Items5" xml:space="preserve">
+    <value>32000</value>
+  </data>
+  <data name="button_connect.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;groupBox_record.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;textBox_captureQuality.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_captureScale.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 20</value>
+  </data>
+  <data name="label_waveInDevices.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;comboBox_captureScale.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="button_stopCapture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>424, 415</value>
+  </data>
+  <data name="&gt;&gt;textBox_ip.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="groupBox_sending.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="&gt;&gt;groupBox_capture.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;button_connect.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="checkBox_sendAudio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 16</value>
+  </data>
+  <data name="label_Client.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 12</value>
+  </data>
+  <data name="&gt;&gt;button_reloadWaveInDevices.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="checkBox_recordAudio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 43</value>
+  </data>
+  <data name="&gt;&gt;label_waveInDevices.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_waveInDevices.Size" type="System.Drawing.Size, System.Drawing">
+    <value>195, 20</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>536, 469</value>
+  </data>
+  <data name="textBox_captureQuality.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;label_ip.Name" xml:space="preserve">
+    <value>label_ip</value>
+  </data>
+  <data name="comboBox_captureScale.Items8" xml:space="preserve">
+    <value>x0.2</value>
+  </data>
+  <data name="radioButton_process.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="&gt;&gt;panel_record.Parent" xml:space="preserve">
+    <value>groupBox_record</value>
+  </data>
+  <data name="label_waveInDevices.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label_divisionNumber.Name" xml:space="preserve">
+    <value>label_divisionNumber</value>
+  </data>
+  <data name="&gt;&gt;label_Client.Name" xml:space="preserve">
+    <value>label_Client</value>
+  </data>
+  <data name="checkBox_showOverRayForm.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label_message.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 441</value>
+  </data>
+  <data name="groupBox_capture.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="label_recordQualty.Size" type="System.Drawing.Size, System.Drawing">
+    <value>91, 12</value>
+  </data>
+  <data name="comboBox_captureScale.Items5" xml:space="preserve">
+    <value>x0.5</value>
+  </data>
+  <data name="&gt;&gt;button_reloadProcesses.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="label_divisionNumber.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items4" xml:space="preserve">
+    <value>5x5</value>
+  </data>
+  <data name="panel_record.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordAudio.Name" xml:space="preserve">
+    <value>checkBox_recordAudio</value>
+  </data>
+  <data name="&gt;&gt;label_Client.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="comboBox_audioQuality.Items" xml:space="preserve">
+    <value>4000</value>
+  </data>
+  <data name="&gt;&gt;label_interval.Name" xml:space="preserve">
+    <value>label_interval</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Form_tcp</value>
+  </data>
+  <data name="&gt;&gt;panel_capture.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label_recordQualty.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="comboBox_captureScale.Items4" xml:space="preserve">
+    <value>x0.6</value>
+  </data>
+  <data name="&gt;&gt;label_divisionNumber.Parent" xml:space="preserve">
+    <value>groupBox_sending</value>
+  </data>
+  <data name="comboBox_process.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
+  </data>
+  <data name="checkBox_recordCapture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 21</value>
+  </data>
+  <data name="label_waveInDevices.Location" type="System.Drawing.Point, System.Drawing">
+    <value>202, 19</value>
+  </data>
+  <data name="comboBox_divisionNumber.Items7" xml:space="preserve">
+    <value>8x8</value>
+  </data>
+  <data name="&gt;&gt;comboBox_divisionNumber.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;button_areaReset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panel_record.Size" type="System.Drawing.Size, System.Drawing">
+    <value>391, 27</value>
+  </data>
+  <data name="comboBox_captureScale.Items7" xml:space="preserve">
+    <value>x0.3</value>
+  </data>
+  <data name="button_startCapture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 23</value>
+  </data>
+  <data name="&gt;&gt;button_area.Parent" xml:space="preserve">
+    <value>groupBox_capture</value>
+  </data>
+  <data name="radioButton_area.Size" type="System.Drawing.Size, System.Drawing">
+    <value>146, 16</value>
+  </data>
+  <data name="&gt;&gt;checkBox_recordCapture.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="comboBox_audioQuality.Items2" xml:space="preserve">
+    <value>11025</value>
+  </data>
+  <data name="&gt;&gt;button_area.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="label_captureScale.Text" xml:space="preserve">
+    <value>画面解像度(スケール)</value>
+  </data>
+  <data name="label_captureScale.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>en</value>
+  </metadata>
 </root>

@@ -20,8 +20,8 @@ namespace ScreenShare
     {
         private const string DefaultIPAddress = "+";
         private const int DefaultPort = 8080;
-        private const string DefaultIndexPath = @"/index.html";
-        private const string DefaultRootPath = "";
+        private const string DefaultTopPage = @"/index.html";
+        private const string DefaultDocumentRootPath = "";
 
         /// <summary>
         /// サーバのIPアドレスを取得、設定します。
@@ -36,7 +36,12 @@ namespace ScreenShare
         /// <summary>
         /// クライアントのリクエストURLに対するレスポンスのパスを取得、設定します。
         /// </summary>
-        public string RootPath { get; set; }
+        public string DocumentRootPath { get; set; }
+
+        /// <summary>
+        /// トップページを示します。
+        /// </summary>
+        public string TopPage { get; set; }
 
         private HttpListener HttpListener;
         private List<WebSocket> Clients = new List<WebSocket>();
@@ -46,12 +51,14 @@ namespace ScreenShare
         /// </summary>
         /// <param name="ip">IPアドレス</param>
         /// <param name="port">ポート番号</param>
-        /// <param name="root"></param>
-        public HttpServer(string ip = DefaultIPAddress, int port = DefaultPort, string root = DefaultRootPath)
+        /// <param name="root">ドキュメントルートパス</param>
+        /// <param name="top">トップページファイル</param>
+        public HttpServer()
         {
-            this.IPAddress = ip;
-            this.Port = port;
-            this.RootPath = root;
+            IPAddress = DefaultIPAddress;
+            Port = DefaultPort;
+            DocumentRootPath = DefaultDocumentRootPath;
+            TopPage = DefaultTopPage;
         }
 
         /// <summary>
@@ -61,7 +68,7 @@ namespace ScreenShare
         {
             Task.Run(() =>
             {
-                var prefixes = new string[] { "http://" + this.IPAddress + ":" + this.Port + "/", };
+                var prefixes = new string[] { "http://" + IPAddress + ":" + Port + "/", };
 
                 HttpListener = new HttpListener();
                 foreach (var prefix in prefixes)
@@ -84,7 +91,7 @@ namespace ScreenShare
                     var req = listenerContext.Request;
                     var res = listenerContext.Response;
 
-                    var url = this.RootPath + (req.RawUrl == @"/" ? DefaultIndexPath : req.RawUrl);
+                    var url = DocumentRootPath + (req.RawUrl == @"/" ? TopPage : req.RawUrl);
 
                     try
                     {
