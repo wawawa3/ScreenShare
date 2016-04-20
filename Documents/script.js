@@ -2,29 +2,24 @@ function onLoad()
 {
 	var __DEBUG__ = true;
 
-	// utility ------------------------------------------------------------
-	if (!ArrayBuffer.prototype.slice)
-	{
-		ArrayBuffer.prototype.slice = function (start, end) {
-			var that = new Uint8Array(this);
-			if (end == undefined) end = that.length;
-			var result = new ArrayBuffer(end - start);
-			var resultArray = new Uint8Array(result);
-			for (var i = 0; i < resultArray.length; i++)
-			   resultArray[i] = that[i + start];
-			return result;
-		}
-	}
-
-	if (!AudioBufferSourceNode.prototype.start)
-		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
-
 	// DOM ------------------------------------------------------------
 	var supportLabel =  document.getElementById("_support");
 	var audioCheckBox = document.getElementById("_audio");
 	var block = document.getElementById("_block");
 
-	// AppDef ------------------------------------------------------------
+	// Application ------------------------------------------------------------
+	var webRTCPeerConnection = (window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection);
+	var webRTCSessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription ||　window.webkitRTCSessionDescription || window.msRTCSessionDescription);
+	var webRTCIceCandidate = (window.RTCIceCandidate || window.mozRTCIceCandidate ||　window.webkitRTCIceCandidate || window.msRTCIceCandidate);
+	var audioContext = (window.AudioContext || window.webkitAudioContext);
+
+	if (!webRTCPeerConnection　|| !webRTCSessionDescription || !webRTCIceCandidate || !audioContext)
+	{
+		supportLabel.style.visibility = "visible";
+		return;
+	}
+
+	// Def ------------------------------------------------------------
 	var ChankSize = 1024 * 32;
 	var FrameHeaderLength = 0x02;
 	var AudioHeaderLength = 0x04;
@@ -56,63 +51,58 @@ function onLoad()
 	};
 
 	// WebRTC ------------------------------------------------------------
-	var webRTCPeerConnection = (window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection);
-	var webRTCSessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription ||　window.webkitRTCSessionDescription || window.msRTCSessionDescription);
-	var webRTCIceCandidate = (window.RTCIceCandidate || window.mozRTCIceCandidate ||　window.webkitRTCIceCandidate || window.msRTCIceCandidate);
+	var pc_config = null;//{"iceServers":[]};
 
-	if (webRTCPeerConnection　&& webRTCSessionDescription && webRTCIceCandidate)
+	var peer_offer = [];
+	var peer_answer = null;
+
+	var dataChannel_offer = [];
+	var dataChannel_answer = null;
+
+	var peerID = null;
+	var peerConnectionCount = 0;
+	var directReceive = false;
+
+	var settings = null;
+
+	// FrameBuffer -------------------------------------------------------
+	var urlCreator = (window.URL || window.webkitURL);
+
+	var frameBuffer = new Uint8Array();
+	var intraImageData = [];
+
+	var canvasLocking = false;
+	var isCapturing = false;
+	
+	var divisionNum;
+	var loadingQueue;
+
+	var latestSegmentData = [];
+
+	var RTCReceiveTimeout = 1000;
+
+	// AudioBuffer -------------------------------------------------------
+	var audioCtx = new audioContext();
+	var audioSamplerate = 4000;
+	var audioIsStereo = false;
+	var audioTime = 0;
+
+	// utility ------------------------------------------------------------
+	if (!ArrayBuffer.prototype.slice)
 	{
-		var pc_config = null;//{"iceServers":[]};
-
-		var peer_offer = [];
-		var peer_answer = null;
-
-		var dataChannel_offer = [];
-		var dataChannel_answer = null;
-
-		var peerID = null;
-		var peerConnectionCount = 0;
-		var directReceive = false;
-
-		var settings = null;
-
-		// FrameBuffer -------------------------------------------------------
-		var urlCreator = (window.URL || window.webkitURL);
-
-		var frameBuffer = new Uint8Array();
-		var intraImageData = [];
-
-		var canvasLocking = false;
-		var isCapturing = false;
-		
-		var divisionNum;
-		var loadingQueue;
-
-		var latestSegmentData = [];
-
-		var RTCReceiveTimeout = 1000;
-
-		// AudioBuffer -------------------------------------------------------
-		var audioContext = (window.AudioContext || window.webkitAudioContext);
-
-		if (audioContext)
-		{
-			var audioCtx = new audioContext();
-			var audioSamplerate = 4000;
-			var audioIsStereo = false;
-			var audioTime = 0;
-		}
-		else
-		{
-			supportLabel.style.visibility = "visible";
-			return;
+		ArrayBuffer.prototype.slice = function (start, end) {
+			var that = new Uint8Array(this);
+			if (end == undefined) end = that.length;
+			var result = new ArrayBuffer(end - start);
+			var resultArray = new Uint8Array(result);
+			for (var i = 0; i < resultArray.length; i++)
+			   resultArray[i] = that[i + start];
+			return result;
 		}
 	}
-	else
-	{
-		supportLabel.style.visibility = "visible";
-		return;
-	}
+
+	if (!AudioBufferSourceNode.prototype.start)
+		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
 	
 
 	// WebSocket ------------------------------------------------------------
@@ -401,7 +391,7 @@ function onLoad()
 				case DataType.FrameBuffer:
 				var segIdx = arr[1];
 
-				if (loadingQueue[segIdx] > 1)
+				if (loadingQueue[segIdx] >= 1)
 					break;
 
 				var dataArr = new Uint8Array(data, FrameHeaderLength);
