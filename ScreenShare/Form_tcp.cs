@@ -129,11 +129,15 @@ namespace ScreenShare
         /// </summary>
         private byte[][] m_LatestIntraFrameBuffer;
 
-
+        /// <summary>
+        /// フォームスレッドの言語
+        /// </summary>
+        private CultureInfo FormThreadCultureInfo;
 
         public Form_tcp()
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en");
+            FormThreadCultureInfo = Thread.CurrentThread.CurrentUICulture;
 
             InitializeComponent();
 
@@ -505,7 +509,7 @@ namespace ScreenShare
             {
                 Port = Settings.Default.Port_HTTP,
                 DocumentRootPath = Settings.Default.DocumentPath,
-                TopPage = "index_"+ Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName + ".html",
+                TopPage = "/index_"+ FormThreadCultureInfo.TwoLetterISOLanguageName + ".html",
             };
             Debug.Log(m_HttpServer.TopPage);
             m_HttpServer.Start();

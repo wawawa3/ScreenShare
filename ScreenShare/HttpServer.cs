@@ -20,7 +20,7 @@ namespace ScreenShare
     {
         private const string DefaultIPAddress = "+";
         private const int DefaultPort = 8080;
-        private const string DefaultTopPage = @"/index.html";
+        private const string DefaultTopPage = "/index.html";
         private const string DefaultDocumentRootPath = "";
 
         /// <summary>
