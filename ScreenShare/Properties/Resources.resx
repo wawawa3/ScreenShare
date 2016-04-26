@@ -169,4 +169,10 @@
   <data name="ServerStarting" xml:space="preserve">
     <value>サーバ設立中...</value>
   </data>
+  <data name="BatchNotFound" xml:space="preserve">
+    <value>バッチファイルが見つかりませんでした。</value>
+  </data>
+  <data name="CaptionError" xml:space="preserve">
+    <value>エラー</value>
+  </data>
 </root>

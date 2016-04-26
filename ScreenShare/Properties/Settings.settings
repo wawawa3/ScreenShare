@@ -9,7 +9,7 @@
       <Value Profile="(Default)">8081</Value>
     </Setting>
     <Setting Name="DocumentPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Documents</Value>
+      <Value Profile="(Default)">documents</Value>
     </Setting>
   </Settings>
 </SettingsFile>

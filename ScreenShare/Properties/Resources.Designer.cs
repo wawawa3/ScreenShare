@@ -70,6 +70,24 @@ namespace ScreenShare.Properties {
         }
         
         /// <summary>
+        ///   バッチファイルが見つかりませんでした。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string BatchNotFound {
+            get {
+                return ResourceManager.GetString("BatchNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   エラー に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string CaptionError {
+            get {
+                return ResourceManager.GetString("CaptionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   キャプチャエラー に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string CaptureError {

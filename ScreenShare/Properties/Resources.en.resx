@@ -120,6 +120,12 @@
   <data name="AVIFilter" xml:space="preserve">
     <value>AVI file(*.avi)|*.avi</value>
   </data>
+  <data name="BatchNotFound" xml:space="preserve">
+    <value>Batch file not found.</value>
+  </data>
+  <data name="CaptionError" xml:space="preserve">
+    <value>Error</value>
+  </data>
   <data name="CaptureError" xml:space="preserve">
     <value>Capture error occurred.</value>
   </data>

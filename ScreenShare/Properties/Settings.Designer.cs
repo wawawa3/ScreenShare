@@ -49,7 +49,7 @@ namespace ScreenShare.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Documents")]
+        [global::System.Configuration.DefaultSettingValueAttribute("documents")]
         public string DocumentPath {
             get {
                 return ((string)(this["DocumentPath"]));

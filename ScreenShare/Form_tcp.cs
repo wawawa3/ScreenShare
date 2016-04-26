@@ -49,6 +49,12 @@ namespace ScreenShare
         private const int MinFps = 1;
 
         /// <summary>
+        /// バッチファイル名
+        /// </summary>
+        private const string Batch_FirewallAdd = "batch\\firewall_add.bat";
+        private const string Batch_FirewallDelete = "batch\\firewall_delete.bat";
+
+        /// <summary>
         /// フォームスレッドで実行するためのデリゲート
         /// </summary>
         public delegate void FormDelegate();
@@ -140,6 +146,34 @@ namespace ScreenShare
             FormThreadCultureInfo = Thread.CurrentThread.CurrentUICulture;
 
             InitializeComponent();
+
+            try
+            {
+                var p = Process.Start(Batch_FirewallAdd);
+                p.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(Resources.BatchNotFound + "\n\"" + Batch_FirewallAdd + "\"", Resources.CaptionError);
+                Debug.Log(ex.Message + Batch_FirewallAdd);
+            }
+
+            Application.ApplicationExit += (s, e) =>
+            {
+                try
+                {
+                    var p = Process.Start(Batch_FirewallDelete);
+                    p.WaitForExit();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(Resources.BatchNotFound + "\n\"" + Batch_FirewallDelete + "\"", Resources.CaptionError);
+                    Debug.Log(ex.Message);
+                }
+
+                Debug.Log("Application Exit");
+            };
+
 
             ReloadRunningProcesses();
             ReloadWaveInDevices();
@@ -668,7 +702,7 @@ namespace ScreenShare
                 RestoreDirectory = true,
             };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
                 m_AviFilePath = dialog.FileName;
             else
                 return false;
