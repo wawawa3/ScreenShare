@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("ScreenCapture")]
+[assembly: AssemblyTitle("ScreenShare")]
 [assembly: AssemblyDescription("画面配信Webサーバアプリ")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Wawawa")]
