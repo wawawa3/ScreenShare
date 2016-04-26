@@ -16,5 +16,5 @@ LANで利用できる画面共有ツールです。
 * .Net Framework 4.5 以降
 
 ####閲覧側PC
-*WebRTCに対応したブラウザ(Google Chrome, Firefox, Operaなど)
+* WebRTCに対応したブラウザ(Google Chrome, Firefox, Operaなど)
 
