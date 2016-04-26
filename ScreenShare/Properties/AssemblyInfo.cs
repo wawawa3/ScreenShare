@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("画面配信Webサーバアプリ")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Wawawa")]
-[assembly: AssemblyProduct("ScreenCapture")]
+[assembly: AssemblyProduct("ScreenShare")]
 [assembly: AssemblyCopyright("Copyright © Wawawa 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
