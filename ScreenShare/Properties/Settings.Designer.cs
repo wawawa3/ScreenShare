@@ -58,5 +58,17 @@ namespace ScreenShare.Properties {
                 this["DocumentPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        public string SpecificCulture {
+            get {
+                return ((string)(this["SpecificCulture"]));
+            }
+            set {
+                this["SpecificCulture"] = value;
+            }
+        }
     }
 }

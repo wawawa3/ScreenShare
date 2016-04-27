@@ -11,5 +11,8 @@
     <Setting Name="DocumentPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">documents</Value>
     </Setting>
+    <Setting Name="SpecificCulture" Type="System.String" Scope="User">
+      <Value Profile="(Default)">en</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
