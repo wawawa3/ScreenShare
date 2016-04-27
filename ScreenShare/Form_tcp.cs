@@ -149,26 +149,42 @@ namespace ScreenShare
 
             try
             {
-                var p = Process.Start(Batch_FirewallAdd);
+                ProcessStartInfo info = new ProcessStartInfo(Batch_FirewallAdd);
+                info.UseShellExecute = true;
+                info.Verb = "runas";
+
+                var p = Process.Start(info);
                 p.WaitForExit();
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
             {
                 MessageBox.Show(Resources.BatchNotFound + "\n\"" + Batch_FirewallAdd + "\"", Resources.CaptionError);
                 Debug.Log(ex.Message + Batch_FirewallAdd);
+            }
+            catch
+            {
+                MessageBox.Show(Resources.BatchFailed + "\n\"" + Batch_FirewallAdd + "\"", Resources.CaptionError);
             }
 
             Application.ApplicationExit += (s, e) =>
             {
                 try
                 {
-                    var p = Process.Start(Batch_FirewallDelete);
+                    ProcessStartInfo info = new ProcessStartInfo(Batch_FirewallDelete);
+                    info.UseShellExecute = true;
+                    info.Verb = "runas";
+
+                    var p = Process.Start(info);
                     p.WaitForExit();
                 }
-                catch (Exception ex)
+                catch (FileNotFoundException ex)
                 {
                     MessageBox.Show(Resources.BatchNotFound + "\n\"" + Batch_FirewallDelete + "\"", Resources.CaptionError);
                     Debug.Log(ex.Message);
+                }
+                catch
+                {
+                    MessageBox.Show(Resources.BatchFailed + "\n\"" + Batch_FirewallDelete + "\"", Resources.CaptionError);
                 }
 
                 Debug.Log("Application Exit");

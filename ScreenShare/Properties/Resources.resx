@@ -175,4 +175,7 @@
   <data name="CaptionError" xml:space="preserve">
     <value>エラー</value>
   </data>
+  <data name="BatchFailed" xml:space="preserve">
+    <value>バッチファイルを実行できませんでした。</value>
+  </data>
 </root>

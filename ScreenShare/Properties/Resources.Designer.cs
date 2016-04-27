@@ -70,6 +70,15 @@ namespace ScreenShare.Properties {
         }
         
         /// <summary>
+        ///   バッチファイルを実行できませんでした。 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string BatchFailed {
+            get {
+                return ResourceManager.GetString("BatchFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   バッチファイルが見つかりませんでした。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string BatchNotFound {

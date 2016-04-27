@@ -120,6 +120,9 @@
   <data name="AVIFilter" xml:space="preserve">
     <value>AVI file(*.avi)|*.avi</value>
   </data>
+  <data name="BatchFailed" xml:space="preserve">
+    <value>Failed to execute batch file.</value>
+  </data>
   <data name="BatchNotFound" xml:space="preserve">
     <value>Batch file not found.</value>
   </data>
