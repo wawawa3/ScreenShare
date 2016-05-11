@@ -20,6 +20,7 @@ namespace ScreenShare
         private const int DefaultPort = 8080;
         private const string DefaultTopPage = "/index.html";
         private const string DefaultDocumentRootPath = "";
+        private const string DefaultSpecificCulture = "ja";
 
         /// <summary>
         /// サーバのIPアドレスを取得、設定します。
@@ -41,6 +42,11 @@ namespace ScreenShare
         /// </summary>
         public string TopPage { get; set; }
 
+        /// <summary>
+        /// 言語を示します。
+        /// </summary>
+        public string SpecificCulture { get; set; }
+
         private HttpListener HttpListener;
         private List<WebSocket> Clients = new List<WebSocket>();
 
@@ -57,6 +63,7 @@ namespace ScreenShare
             Port = DefaultPort;
             DocumentRootPath = DefaultDocumentRootPath;
             TopPage = DefaultTopPage;
+            SpecificCulture = DefaultSpecificCulture;
         }
 
         /// <summary>
@@ -89,7 +96,8 @@ namespace ScreenShare
                     var req = listenerContext.Request;
                     var res = listenerContext.Response;
 
-                    var url = DocumentRootPath + (req.RawUrl == @"/" ? TopPage : req.RawUrl);
+                    var path = req.Url.LocalPath;
+                    var url = DocumentRootPath + (path == @"/" ? TopPage : path);
 
                     try
                     {

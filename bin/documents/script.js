@@ -2,12 +2,21 @@ function onLoad()
 {
 	var __DEBUG__ = true;
 
-	// DOM ------------------------------------------------------------
-	var supportLabel =  document.getElementById("_support");
-	var audioCheckBox = document.getElementById("_audio");
-	var block = document.getElementById("_block");
+	if (__DEBUG__)
+	{
+		var dLabelID = document.createElement("p");
+		var dLabelOffer = [];
+		var dLabelAns = [];
+		var dBody = document.getElementById("_body");
+		var dLabelLog = document.createElement("p");
+		dBody.appendChild(dLabelLog);
+		dBody.appendChild(dLabelID);
+	}
 
 	// Application ------------------------------------------------------------
+	var audioCheckBox = document.getElementById("_audio");
+	var block = document.getElementById("_block");
+	
 	var webRTCPeerConnection = (window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection);
 	var webRTCSessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription ||　window.webkitRTCSessionDescription || window.msRTCSessionDescription);
 	var webRTCIceCandidate = (window.RTCIceCandidate || window.mozRTCIceCandidate ||　window.webkitRTCIceCandidate || window.msRTCIceCandidate);
@@ -15,7 +24,11 @@ function onLoad()
 
 	if (!webRTCPeerConnection　|| !webRTCSessionDescription || !webRTCIceCandidate || !audioContext)
 	{
-		supportLabel.style.visibility = "visible";
+		var language = (navigator.browserLanguage || navigator.language || navigator.userLanguage);
+		var language2L = language ? language.substr(0,2) : "ja";
+
+		var supportLabel = document.getElementById("_support_" + language2L);
+		supportLabel.style.display = "block";
 		return;
 	}
 
@@ -54,10 +67,10 @@ function onLoad()
 	var pc_config = null;//{"iceServers":[]};
 
 	var peer_offer = [];
-	var peer_answer = null;
+	var peer_answer = [];
 
 	var dataChannel_offer = [];
-	var dataChannel_answer = null;
+	var dataChannel_answer = [];
 
 	var peerID = null;
 	var peerConnectionCount = 0;
@@ -87,6 +100,9 @@ function onLoad()
 	var audioIsStereo = false;
 	var audioTime = 0;
 
+	if (!AudioBufferSourceNode.prototype.start)
+		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
+
 	// utility ------------------------------------------------------------
 	if (!ArrayBuffer.prototype.slice)
 	{
@@ -101,17 +117,13 @@ function onLoad()
 		}
 	}
 
-	if (!AudioBufferSourceNode.prototype.start)
-		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
-	
-
 	// WebSocket ------------------------------------------------------------
 	socket = new Alchemy(
 	{ 
 		Server: location.hostname,
 		Port: "8081",
 		BinaryType: "arraybuffer",
-		DebugMode: true
+		DebugMode: false
 	});
 
 	socket.Disconnected = function()
@@ -131,12 +143,14 @@ function onLoad()
 				debugLog("connected. my id: " + message.id);
 				peerID = message.id;
 				directReceive = (message.id == 0);
+				if (__DEBUG__) dLabelID.innerHTML = "ID : " + peerID;
 				break;
 
 				case MessageType.UpdateID:
 				debugLog("update id. my id: " + message.id);
 				peerID = message.id;
 				directReceive = (message.id == 0);
+				if (__DEBUG__) dLabelID.innerHTML = "ID : " + peerID;
 				break;
 
 				case MessageType.PeerConnection: // new peer connected
@@ -146,6 +160,7 @@ function onLoad()
 				dataChannel_offer[message.targetId].onopen = function(evt)
 				{
 					dataChannel_offer[message.targetId].binaryType = "arraybuffer";
+					debugLog("connection to offer(child) is opened. id : " + message.targetId);
 
 					if (latestSegmentData.length > 0)
 					{
@@ -155,6 +170,14 @@ function onLoad()
 							var chank = segmentation(latestSegmentData[i], ChankSize);
 							sendData(dataChannel_offer[message.targetId], chank);
 						}
+					}
+
+					if (__DEBUG__) 
+					{
+						dLabelOffer[message.targetId] = dLabelID.cloneNode(true);
+						dLabelOffer[message.targetId].innerHTML = "child ID : " + message.targetId;
+						dBody.appendChild(dLabelOffer[message.targetId]);
+						debugLog("childID: "+message.targetId);
 					}
 				};
 
@@ -172,16 +195,18 @@ function onLoad()
 						var json = JSON.stringify(data);
 						socket.Send(json);
 
-						debugLog("send ICECandidateOffer to id: " + message.targetId);
+						//debugLog("send ICECandidateOffer to id: " + message.targetId);
 					}
 					else
-						debugLog("icecandidate phase: " + evt.eventPhase);
+					{
+						//debugLog("icecandidate phase: " + evt.eventPhase);
+					}
 				};
 
 				peer_offer[message.targetId].createOffer(
 					function(sdp)
 					{
-						debugLog("createOffer succeeded.");
+						//debugLog("createOffer succeeded.");
 
 						peer_offer[message.targetId].setLocalDescription(
 							sdp,
@@ -197,26 +222,26 @@ function onLoad()
 								var json = JSON.stringify(data);
 								socket.Send(json);
 
-								debugLog("send SDPOffer to id: " + message.targetId);
+								//debugLog("send SDPOffer to id: " + message.targetId);
 							},
 							function() { debugLog("setLocalDescription failed."); });
 					},
 					function() { debugLog("createOffer failed."); });
 
 				peerConnectionCount++;
-				debugLog("webRTC peer count: " + peerConnectionCount);
+				//debugLog("webRTC peer count: " + peerConnectionCount);
 				break;
 
 				case MessageType.SDPOffer: // SDP Offer Received
-				debugLog("received SDPOffer from id: " + message.id);
-				peer_answer = new webRTCPeerConnection(pc_config);
-				peer_answer.setRemoteDescription(
+				//debugLog("received SDPOffer from id: " + message.id);
+				peer_answer[message.id] = new webRTCPeerConnection(pc_config);
+				peer_answer[message.id].setRemoteDescription(
 					new webRTCSessionDescription(message.data),
 					function()
 					{
-						peer_answer.onicecandidate = function (evt)
+						peer_answer[message.id].onicecandidate = function (evt)
 						{
-							debugLog("onicecandidate");
+							//debugLog("onicecandidate");
 
 							if (evt.candidate)
 							{
@@ -230,29 +255,31 @@ function onLoad()
 								var json = JSON.stringify(data);
 								socket.Send(json);
 
-								debugLog("send ICECandidateAnswer to id: " + message.id);
+								//debugLog("send ICECandidateAnswer to id: " + message.id);
 							}
 							else
-								debugLog("icecandidate phase: " + evt.eventPhase);
+							{
+								//debugLog("icecandidate phase: " + evt.eventPhase);
+							}
 						};
-						peer_answer.createAnswer(
+						peer_answer[message.id].createAnswer(
 							function(sdp)
 							{
-								debugLog("createAnswer succeeded.");
+								//debugLog("createAnswer succeeded.");
 
-								peer_answer.setLocalDescription(
+								peer_answer[message.id].setLocalDescription(
 									sdp, 
 									function()
 									{
-										debugLog("setLocalDescription succeeded.");
+										//debugLog("setLocalDescription succeeded.");
 
-										peer_answer.ondatachannel = function(evt)
+										peer_answer[message.id].ondatachannel = function(evt)
 										{
 											var chank = [];
 
-											dataChannel_answer = evt.channel;
-											dataChannel_answer.binaryType = "arraybuffer";
-											dataChannel_answer.onmessage = function (event)
+											dataChannel_answer[message.id] = evt.channel;
+											dataChannel_answer[message.id].binaryType = "arraybuffer";
+											dataChannel_answer[message.id].onmessage = function (event)
 											{
 												if (event.data != "\0")
 													chank.push(event.data);
@@ -271,6 +298,14 @@ function onLoad()
 													chank = [];
 												}
 											};
+
+											if (__DEBUG__) 
+											{
+												dLabelAns[message.id] = dLabelID.cloneNode(true);
+												dLabelAns[message.id].innerHTML = "parent ID : " + message.id;
+												dBody.appendChild(dLabelAns[message.id]);
+												debugLog("parentID: "+message.id);
+											}
 										};
 
 										var data = 
@@ -283,7 +318,7 @@ function onLoad()
 										var json = JSON.stringify(data);
 										socket.Send(json);
 
-										debugLog("send SDPAnswer to id: " + message.id);
+										//debugLog("send SDPAnswer to id: " + message.id);
 									},
 									function() { debugLog("setLocalDescription failed."); });
 							},
@@ -293,7 +328,7 @@ function onLoad()
 				break;
 
 				case MessageType.SDPAnswer: // SDP Answer Received
-				debugLog("received answer from id: " + message.id);
+				//debugLog("received answer from id: " + message.id);
 				peer_offer[message.id].setRemoteDescription(
 					new webRTCSessionDescription(message.data),
 					function() { debugLog("setRemoteDescription succeeded."); },
@@ -301,12 +336,12 @@ function onLoad()
 				break;
 
 				case MessageType.ICECandidateOffer: // ICECandidate Received from Offer
-				debugLog("received ICECandidate from offer id: " + message.id);
-				peer_answer.addIceCandidate(new webRTCIceCandidate(message.data));
+				//debugLog("received ICECandidate from offer id: " + message.id);
+				peer_answer[message.id].addIceCandidate(new webRTCIceCandidate(message.data));
 				break;
 
 				case MessageType.ICECandidateAnswer: // ICECandidate Received from Answer
-				debugLog("received ICECandidate from answer id: " + message.id);
+				//debugLog("received ICECandidate from answer id: " + message.id);
 				peer_offer[message.id].addIceCandidate(new webRTCIceCandidate(message.data));
 				break;
 
@@ -314,12 +349,14 @@ function onLoad()
 				debugLog("remove offer id: " + message.id);
 				peer_offer[message.id].close();
 				peer_offer[message.id] = null;
+				if (__DEBUG__) {dBody.removeChild(dLabelOffer[message.id])}
 				break;
 
 				case MessageType.RemoveAnswer: // Remove Answer
-				debugLog("remove answer.");
-				peer_answer.close();
-				peer_answer = null;
+				debugLog("remove answer. id: " + message.id);
+				peer_answer[message.id].close();
+				peer_answer[message.id] = null;
+				if (__DEBUG__) {dBody.removeChild(dLabelAns[message.id])}
 				break;
 
 				case MessageType.Settings:
@@ -507,7 +544,10 @@ function onLoad()
 	function debugLog(log)
 	{
 		if (__DEBUG__)
-			console.log(log);
+		{
+			dLabelLog.innerHTML += "<br>"+log;
+			//console.log(log);
+		}
 	}
 }
 

@@ -377,18 +377,20 @@ namespace ScreenShare
 
                     lock (m_WebSocketServer)
                     {
-                        int id, parentId, lastId, lastParentId;
-                        int[] childrenId;
+                        int rmId, updatedId, rmParentId, lastId, lastParentId;
+                        int[] rmChildrenId;
 
-                        UserContext updated, parent, last, lastParent;
-                        UserContext[] children;
+                        UserContext rm, updated, rmParent, last, lastParent;
+                        UserContext[] rmChildren;
 
                         MessageData data;
                         string json;
 
+                        rm = ctx;
+
                         try
                         {
-                            id = m_WebSocketClients.TryGetKey(ctx);
+                            rmId = m_WebSocketClients.TryGetKey(rm);
                         }
                         catch
                         {
@@ -398,13 +400,13 @@ namespace ScreenShare
 
                         try
                         {
-                            parentId = m_WebSocketClients.GetParentKey(id);
-                            parent = m_WebSocketClients[parentId];
+                            rmParentId = m_WebSocketClients.GetParentKey(rmId);
+                            rmParent = m_WebSocketClients[rmParentId];
                         }
                         catch
                         {
-                            parentId = -1;
-                            parent = null;
+                            rmParentId = -1;
+                            rmParent = null;
                         }
 
                         lastId = m_WebSocketClients.GetLastKey();
@@ -421,86 +423,77 @@ namespace ScreenShare
                             lastParent = null;
                         }
 
-                        childrenId = m_WebSocketClients.GetChildrenKey(id);
-                        children = m_WebSocketClients.GetValues(childrenId);
+                        rmChildrenId = m_WebSocketClients.GetChildrenKey(rmId);
+                        rmChildren = m_WebSocketClients.GetValues(rmChildrenId);
 
                         try
                         {
-                            if (parent != null)
+                            if (rmParent != null)
                             {
-                                data = new MessageData { type = MessageData.Type.RemoveOffer, id = id, };
+                                data = new MessageData { type = MessageData.Type.RemoveOffer, id = rmId, };
                                 json = JsonConvert.SerializeObject(data);
-                                parent.Send(json);
+                                rmParent.Send(json);
                             }
 
-                            if (lastId == id)
+                            if (lastId == rmId)
                             {
                                 m_WebSocketClients.Remove(lastId);
-                                Debug.Log("Removed Last." + lastId);
+                                Debug.Log("RemoveID = LastID");
                                 return;
                             }
-                            else
+                           
+                            data = new MessageData { type = MessageData.Type.RemoveAnswer, id = rmId, };
+                            json = JsonConvert.SerializeObject(data);
+                            foreach (var child in rmChildren)
                             {
-                                data = new MessageData { type = MessageData.Type.RemoveAnswer, };
+                                child.Send(json);
+                            }
+
+                            if (lastParentId != rmId)
+                            {
+                                data = new MessageData { type = MessageData.Type.RemoveOffer, id = lastId };
                                 json = JsonConvert.SerializeObject(data);
-                                foreach (var child in children)
-                                {
-                                    child.Send(json);
-                                }
+                                lastParent.Send(json);
+                            }
 
-                                if (lastParentId != id)
-                                {
-                                    data = new MessageData { type = MessageData.Type.RemoveOffer, id = lastId };
-                                    json = JsonConvert.SerializeObject(data);
-                                    lastParent.Send(json);
-                                }
+                            data = new MessageData { type = MessageData.Type.RemoveAnswer, id = lastParentId, };
+                            json = JsonConvert.SerializeObject(data);
+                            last.Send(json);
 
-                                data = new MessageData { type = MessageData.Type.RemoveAnswer, };
+                            m_WebSocketClients[rmId] = m_WebSocketClients[lastId];
+                            m_WebSocketClients.Remove(lastId);
+
+                            updatedId = rmId;
+                            updated = m_WebSocketClients[rmId];
+
+                            data = new MessageData { type = MessageData.Type.UpdateID, id = rmId, };
+                            json = JsonConvert.SerializeObject(data);
+                            updated.Send(json);
+
+                            if (rmParent != null)
+                            {
+                                data = new MessageData { type = MessageData.Type.PeerConnection, targetId = updatedId, };
                                 json = JsonConvert.SerializeObject(data);
-                                last.Send(json);
+                                rmParent.Send(json);
+                            }
 
-                                m_WebSocketClients[id] = m_WebSocketClients[lastId];
-
-                                foreach (var c in m_WebSocketClients)
-                                {
-                                    Debug.Log(c.Key + " : " + c.Value.ClientAddress);
-                                }
-                                m_WebSocketClients.Remove(lastId);
-                                foreach (var c in m_WebSocketClients)
-                                {
-                                    Debug.Log(c.Key + " : " + c.Value.ClientAddress);
-                                }
-
-                                updated = m_WebSocketClients[id];
-
-                                data = new MessageData { type = MessageData.Type.UpdateID, id = id, };
+                            foreach (var cId in rmChildrenId)
+                            {
+                                data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
                                 json = JsonConvert.SerializeObject(data);
                                 updated.Send(json);
-
-                                if (parent != null)
-                                {
-                                    data = new MessageData { type = MessageData.Type.PeerConnection, targetId = id, };
-                                    json = JsonConvert.SerializeObject(data);
-                                    parent.Send(json);
-                                }
-
-                                foreach (var cId in childrenId)
-                                {
-                                    data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
-                                    json = JsonConvert.SerializeObject(data);
-                                    updated.Send(json);
-                                }
                             }
                         }
                         catch (Exception e)
                         {
-                            Debug.Log("Connected Error : " + e.Message);
+                            Debug.Log("Disconnected Error : " + e.Message);
                         }
-
-                        Debug.Log("User Disonnected: id = " + id);
+                        finally
+                        {
+                            Debug.Log("User Disconnected: id = " + rmId);
+                            Invoke(new FormDelegate(() => { this.label_ConnectionNum.Text = "" + m_WebSocketClients.Count; }));
+                        }
                     }
-
-                    Invoke(new FormDelegate(() => { this.label_ConnectionNum.Text = "" + m_WebSocketClients.Count; }));
                 },
                 OnReceive = (ctx) =>
                 {
@@ -553,7 +546,7 @@ namespace ScreenShare
             {
                 Port = Settings.Default.Port_HTTP,
                 DocumentRootPath = Settings.Default.DocumentPath,
-                TopPage = "/index_"+ Settings.Default.SpecificCulture + ".html",
+                //TopPage = "/index_"+ Settings.Default.SpecificCulture + ".html",
             };
 
             Debug.Log(m_HttpServer.TopPage);

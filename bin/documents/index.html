@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>ScreenShare</title>
@@ -8,7 +8,7 @@
 	<script src="./libs/modernizr.js"></script>
 	<script src="./libs/alchemy-client.js"></script>
 	<script src="./script.js"></script>
-	<body onLoad="onLoad()">
+	<body id="_body" onLoad="onLoad()">
 		<div class="drag">
 			<input type="checkbox" id="_audio"/>
 			<div class="audioOnIcon"><span class="audioOn1"><span class="audioOn2"></span></span></div>
@@ -16,10 +16,14 @@
 		</div>
 		<div id="_block" class="block" width="0" height="0"></div>
 		<center>
-			<label id="_support" style="visibility:hidden">
+			<p id="_support_ja" style="display:none">
+				お使いのWebブラウザでは対応していません。</br>
+				WebSocket及びWebRTCに対応したWebブラウザで接続してください。
+			</p>
+			<p id="_support_en" style="display:none">
 				Your browser is not supported.</br>
 				Please use a browser which supports WebSocket and WebRTC.
-			</label>
+			</p>
 		</center>
 	</body>
 </html>
