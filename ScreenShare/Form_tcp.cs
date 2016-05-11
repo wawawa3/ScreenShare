@@ -228,8 +228,8 @@ namespace ScreenShare
                     type = BufferType.FrameBuffer,
                     segmentIndex = (byte)data.segmentIdx,
                 };
-                var headerBuffer = Utils.GetBytesFromStructure(frameHeader);
-                var buffer = Utils.Concatenation(headerBuffer, data.encodedFrameBuffer);
+                var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
+                var buffer = ByteUtils.Concatenation(headerBuffer, data.encodedFrameBuffer);
 
                 if (m_WebSocketClients.ContainsKey(0))
                 {
@@ -244,7 +244,7 @@ namespace ScreenShare
             {
                 if (m_AviVideoStream == null) return;
 
-                var buf = Utils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 4);
+                var buf = ByteUtils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 4);
 
                 try
                 {
@@ -282,8 +282,8 @@ namespace ScreenShare
                 {
                     type = BufferType.AudioBuffer,
                 };
-                var headerBuffer = Utils.GetBytesFromStructure(frameHeader);
-                var buffer = Utils.Concatenation(headerBuffer, normalizedSampleBuffer);
+                var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
+                var buffer = ByteUtils.Concatenation(headerBuffer, normalizedSampleBuffer);
 
                 if (checkBox_sendAudio.Checked)
                 {
@@ -555,10 +555,13 @@ namespace ScreenShare
                 DocumentRootPath = Settings.Default.DocumentPath,
                 TopPage = "/index_"+ Settings.Default.SpecificCulture + ".html",
             };
+
             Debug.Log(m_HttpServer.TopPage);
+
             m_HttpServer.Start();
 
             m_WebSocketServer.Start();
+
 
             m_ServerRunning = true;
         }
