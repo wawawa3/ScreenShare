@@ -282,7 +282,9 @@ function onLoad()
 											dataChannel_answer[message.id].onmessage = function (event)
 											{
 												if (event.data != "\0")
+												{
 													chank.push(event.data);
+												}
 												else
 												{
 													if (isCapturing)
