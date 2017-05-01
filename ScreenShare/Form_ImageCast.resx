@@ -420,114 +420,6 @@
   <data name="groupBox_recording.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="panel1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="panel1.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
-    <value>GrowAndShrink</value>
-  </data>
-  <data name="label_saveFileTo.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="label_saveFileTo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label_saveFileTo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 8</value>
-  </data>
-  <data name="label_saveFileTo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 12</value>
-  </data>
-  <data name="label_saveFileTo.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
-  </data>
-  <data name="label_saveFileTo.Text" xml:space="preserve">
-    <value>Save File to</value>
-  </data>
-  <data name="&gt;&gt;label_saveFileTo.Name" xml:space="preserve">
-    <value>label_saveFileTo</value>
-  </data>
-  <data name="&gt;&gt;label_saveFileTo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label_saveFileTo.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;label_saveFileTo.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="button_saveFileTo.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="button_saveFileTo.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
-    <value>GrowAndShrink</value>
-  </data>
-  <data name="button_saveFileTo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>331, 3</value>
-  </data>
-  <data name="button_saveFileTo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>21, 22</value>
-  </data>
-  <data name="button_saveFileTo.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
-  </data>
-  <data name="button_saveFileTo.Text" xml:space="preserve">
-    <value>...</value>
-  </data>
-  <data name="&gt;&gt;button_saveFileTo.Name" xml:space="preserve">
-    <value>button_saveFileTo</value>
-  </data>
-  <data name="&gt;&gt;button_saveFileTo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;button_saveFileTo.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;button_saveFileTo.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="textBox_saveFileTo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>76, 5</value>
-  </data>
-  <data name="textBox_saveFileTo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>249, 19</value>
-  </data>
-  <data name="textBox_saveFileTo.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
-  </data>
-  <data name="&gt;&gt;textBox_saveFileTo.Name" xml:space="preserve">
-    <value>textBox_saveFileTo</value>
-  </data>
-  <data name="&gt;&gt;textBox_saveFileTo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBox_saveFileTo.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;textBox_saveFileTo.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>144, 18</value>
-  </data>
-  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>355, 28</value>
-  </data>
-  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
-  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
-    <value>groupBox_recording</value>
-  </data>
-  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="checkBox_recordVideo.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 18</value>
   </data>
@@ -550,10 +442,13 @@
     <value>groupBox_recording</value>
   </data>
   <data name="&gt;&gt;checkBox_recordVideo.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="checkBox_recordAudio.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="checkBox_recordAudio.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="checkBox_recordAudio.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 48</value>
@@ -577,7 +472,7 @@
     <value>groupBox_recording</value>
   </data>
   <data name="&gt;&gt;checkBox_recordAudio.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="groupBox_recording.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 354</value>

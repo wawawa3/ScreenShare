@@ -21,6 +21,7 @@ using System.Reflection;
 using Alchemy;
 using Alchemy.Classes;
 
+
 using NAudio.Wave;
 
 using SharpAvi.Codecs;
@@ -159,6 +160,10 @@ namespace ScreenShare
         /// </summary>
         private int m_InitializedNetworkTime;
 
+
+        private Process ffconv = null;
+        private NamedPipeServerStream ffpipein_video = null, ffpipein_audio = null;
+
         #endregion
 
         /// <summary>
@@ -294,76 +299,6 @@ namespace ScreenShare
 
             #endregion
 
-            #region Video Recoder
-
-            Process ffconv = null;
-            NamedPipeServerStream ffpipein_video = null, ffpipein_audio = null;
-            m_Capture.OnCaptured += (s, data) =>
-            {
-                if (ffconv == null || ffpipein_video == null || !ffpipein_video.IsConnected) return;
-
-                var buf = ByteUtils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 3);
-                ffpipein_video.Write(buf, 0, buf.Length);
-            };
-
-
-
-            m_Capture.OnStarted += (s, e) =>
-            {
-                ffpipein_video = new NamedPipeServerStream("ffpipein_video", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                ffpipein_audio = new NamedPipeServerStream("ffpipein_audio", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
-                ffpipein_video.BeginWaitForConnection((result) => { ffpipein_video.EndWaitForConnection(result); }, null);
-                ffpipein_audio.BeginWaitForConnection((result) => { ffpipein_audio.EndWaitForConnection(result); }, null);
-
-                var srcEnc = Encoding.UTF8;
-                var dstEnc = Encoding.ASCII;
-                var devName = ((WaveInCapabilities)comboBox_waveInDevices.SelectedItem).ProductName;
-
-                var devNameEncoded = dstEnc.GetString(Encoding.Convert(srcEnc, dstEnc, srcEnc.GetBytes(devName)));
-
-                var psInfo = new ProcessStartInfo();
-                psInfo.FileName = "ffmpeg.exe";
-                psInfo.Arguments = String.Format("-y -pix_fmt bgr24 -s {0}x{1} -r {4} -f rawvideo -vcodec rawvideo -i {7} -i {8} -vf scale={2}:{3} " +
-                    //@"-movflags empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof+faststart " +
-                    //@"-maxrate {5} -minrate {5} -b:v {5} -bufsize {6} -keyint_min {7} -g {7} -sc_threshold 0 -threads 0 " +
-                    @"-vcodec libx264 -preset ultrafast -qp 0 -ar {5} -ac {6} -acodec libfaac {9}",
-                    m_Capture.DestinationSize.Width, m_Capture.DestinationSize.Height, 
-                    m_Capture.CaptureBounds.Width, m_Capture.CaptureBounds.Height,
-                    m_Capture.FramesPerSecond,
-                    m_Recorder.WaveFormat.SampleRate, m_Recorder.WaveFormat.Channels,
-                    @"\\.\pipe\ffpipein_video", @"\\.\pipe\ffpipein_audio", 
-                    textBox_saveFileTo.Text);
-
-                Debug.Log("ff",psInfo.Arguments);
-
-                psInfo.CreateNoWindow = false;
-                psInfo.UseShellExecute = false;
-                psInfo.RedirectStandardInput = true;
-
-                ffconv = Process.Start(psInfo);
-                ffconv.StandardInput.AutoFlush = true;
-            };
-
-            m_Capture.OnStopped += (s, e) =>
-            {
-                try
-                {
-                    ffconv.StandardInput.WriteLine("q");
-
-                    ffconv.Close();
-                    ffpipein_video.Close();
-                    ffpipein_video.Dispose();
-                    ffpipein_audio.Close();
-                    ffpipein_audio.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Debug.Log("Record", ex.Message);
-                }
-            };
-
-            #endregion
-
             #region Voice Recorder
 
             //m_Recorder.BufferMilliseconds = 100;
@@ -456,14 +391,14 @@ namespace ScreenShare
                         Debug.Log("WebSocket", "parent : " + parentId);
                     }
 
-                    foreach (var childId in childrenId)
+                    Parallel.ForEach(childrenId, cId =>
                     {
-                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = childId, };
+                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
                         json = JsonConvert.SerializeObject(data);
                         ctx.Send(json);
 
-                        Debug.Log("WebSocket", "child : " + childId);
-                    }
+                        Debug.Log("WebSocket", "child : " + cId);
+                    });
 
                     m_WebSocketClients[id] = ctx;
                 }
@@ -560,9 +495,7 @@ namespace ScreenShare
 
                     data = new MessageData { type = MessageData.Type.RemoveAnswer, id = rmId, };
                     json = JsonConvert.SerializeObject(data);
-                    foreach (var child in rmChildren)
-                        child.Send(json);
-                    
+                    Parallel.ForEach(rmChildren, child => child.Send(json));
 
                     if (lastId == rmId)
                     {
@@ -605,12 +538,12 @@ namespace ScreenShare
                     rmChildrenId = m_WebSocketClients.GetChildrenKey(rmId);
                     rmChildren = m_WebSocketClients.GetValues(rmChildrenId);
 
-                    foreach (var cId in rmChildrenId)
+                    Parallel.ForEach(rmChildrenId, cId =>
                     {
                         data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
                         json = JsonConvert.SerializeObject(data);
                         updated.Send(json);
-                    }
+                    });
 
                     Debug.Log("WebSocket", "-----------------------------------------------");
                 }
@@ -620,7 +553,7 @@ namespace ScreenShare
                 }
             };
 
-            m_WebSocketServer = new Alchemy.WebSocketServer(Settings.Default.Port_WebSocket)
+            m_WebSocketServer = new WebSocketServer(Settings.Default.Port_WebSocket)
             {
                 OnConnected = (ctx) =>
                 {
@@ -816,7 +749,6 @@ namespace ScreenShare
             comboBox_divisionNumber.SelectedIndex = Settings.Default.Division;
 
             textBox_captureQuality.Text = "" + Settings.Default.ImageQuality;
-            textBox_saveFileTo.Text = DateTime.Now.ToString("yyyyMMdd_HHmmss") + @".mp4";
         }
 
         /// <summary>
@@ -986,21 +918,27 @@ namespace ScreenShare
             return true;
         }
 
-
-        private bool StartRecording()
+        private bool PrepareRecording()
         {
-            int captureWidth = (int)(m_Capture.CaptureBounds.Width * m_Capture.Scale),
-                captureHeight = (int)(m_Capture.CaptureBounds.Height * m_Capture.Scale);
-
-            try
+            var dialog = new SaveFileDialog()
             {
+                FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss.mp4"),
+                Filter = Resources.MP4Filter,
+                InitialDirectory = Directory.GetCurrentDirectory(),
+                RestoreDirectory = true,
+            };
 
-            }
-            catch
+            if (dialog.ShowDialog() == DialogResult.OK)
+                m_VideoFilePath = dialog.FileName;
+            else
             {
                 Debug.Log("Recoder", "Failed to Start Recording.");
                 return false;
             }
+
+            m_Capture.OnStarted += StartRecoder;
+            m_Capture.OnCaptured += PushCapturedBuffer;
+            m_Capture.OnStopped += TerminateRecoder;
 
             return true;
         }
@@ -1008,7 +946,6 @@ namespace ScreenShare
         /// <summary>
         /// キャプチャ開始
         /// </summary>
-        /// <returns></returns>
         private void StartCapturing()
         {
             //m_CastingStartMilliseconds = TimeUtils.Milliseconds;
@@ -1031,18 +968,26 @@ namespace ScreenShare
         {
             await Task.Run(() => m_Capture.Stop());
 
-            foreach (var pair in m_WebSocketClients)
+            Parallel.ForEach(m_WebSocketClients, pair =>
             {
                 var data = new MessageData { type = MessageData.Type.StopCasting };
                 var json = JsonConvert.SerializeObject(data);
 
                 pair.Value.Send(json);
-            }
+            });
 
-            if (checkBox_captureVoice.Checked || checkBox_recordAudio.Checked)
+            if (checkBox_recordVideo.Enabled && checkBox_recordVideo.Checked)
             {
-                m_Recorder.StopRecording();
+                if (checkBox_captureVoice.Checked || checkBox_recordAudio.Checked)
+                {
+                    m_Recorder.StopRecording();
+                }
+
+                m_Capture.OnStarted -= StartRecoder;
+                m_Capture.OnCaptured -= PushCapturedBuffer;
+                m_Capture.OnStopped -= TerminateRecoder;
             }
+            
 
             Debug.Log("App", "casting stopped.");
         }
@@ -1072,8 +1017,7 @@ namespace ScreenShare
                 ctx.Send(json);
             else
             {
-                foreach (var pair in m_WebSocketClients)
-                    pair.Value.Send(json);
+                Parallel.ForEach(m_WebSocketClients, pair => pair.Value.Send(json));
             }
 
             data = new MessageData { type = MessageData.Type.StartCasting };//, data = TimeUtils.Milliseconds - m_CastingStartMilliseconds };
@@ -1083,8 +1027,7 @@ namespace ScreenShare
                 ctx.Send(json);
             else
             {
-                foreach (var pair in m_WebSocketClients)
-                    pair.Value.Send(json);
+                Parallel.ForEach(m_WebSocketClients, pair => pair.Value.Send(json));
             }
 
             if (!sendLastFrame) return;
@@ -1103,13 +1046,100 @@ namespace ScreenShare
                 {
                     if (bytes != null)
                     {
-                        foreach (var pair in m_WebSocketClients)
-                            pair.Value.Send(bytes);
+                        Parallel.ForEach(m_WebSocketClients, pair => pair.Value.Send(bytes));
                     }
                 }
                 
             }
             
+        }
+
+        private void StartRecoder(object sender, EventArgs e)
+        {
+            ffpipein_video = new NamedPipeServerStream("ffpipein_video", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+
+            var psInfo = new ProcessStartInfo();
+            if (checkBox_recordAudio.Enabled && checkBox_recordAudio.Checked)
+            {
+                ffpipein_audio = new NamedPipeServerStream("ffpipein_audio", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                psInfo.Arguments = String.Format("-y " +
+                    @"-f rawvideo -pix_fmt bgr24 -s {0}x{1} -r {4} -vcodec rawvideo -i {8} " +
+                    @"-f s16le -sample_rate {5} -channels {6} -channel_layout {7} -acodec pcm_s16le -i {9} " +
+                    @"-movflags empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof+faststart " +
+                    @"-f mp4 -vcodec libx264 -pix_fmt yuv420p -vf scale={2}:{3} -preset fast " +
+                    @"-acodec libmp3lame -strict unofficial " +
+                    "-map 0:v:0 -map 1:a:0 -threads 0 \"{10}\"",
+                    m_Capture.DestinationSize.Width, m_Capture.DestinationSize.Height,
+                    m_Capture.CaptureBounds.Width, m_Capture.CaptureBounds.Height,
+                    m_Capture.FramesPerSecond,
+                    m_Recorder.WaveFormat.SampleRate,
+                    m_Recorder.WaveFormat.Channels,
+                    (m_Recorder.WaveFormat.Channels == 1 ? "mono" : "stereo"),
+                    @"\\.\pipe\ffpipein_video", @"\\.\pipe\ffpipein_audio",
+                    m_VideoFilePath);
+            }
+            else
+            {
+                psInfo.Arguments = String.Format("-y " +
+                     @"-f rawvideo -pix_fmt bgra -s {0}x{1} -r {4} -vcodec rawvideo -i {5} " +
+                     @"-movflags empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof+faststart " +
+                     @"-f mp4 -vcodec libx264 -pix_fmt yuv420p -vf scale={2}:{3} -preset fast " +
+                     "-map 0:v:0 -threads 0 \"{6}\"",
+                     m_Capture.DestinationSize.Width, m_Capture.DestinationSize.Height,
+                     m_Capture.CaptureBounds.Width, m_Capture.CaptureBounds.Height,
+                     m_Capture.FramesPerSecond,
+                     @"\\.\pipe\ffpipein_video", m_VideoFilePath);
+            }
+
+            Debug.Log("ff", psInfo.Arguments);
+            psInfo.FileName = "ffmpeg.exe";
+            psInfo.CreateNoWindow = false;
+            psInfo.UseShellExecute = false;
+            psInfo.RedirectStandardInput = true;
+
+            ffconv = Process.Start(psInfo);
+            ffpipein_video.WaitForConnection();
+            if (checkBox_recordAudio.Enabled && checkBox_recordAudio.Checked)
+                ffpipein_audio.WaitForConnection();
+
+            ffconv.StandardInput.AutoFlush = true;
+        }
+
+        private void PushCapturedBuffer(object sender, CaptureData data)
+        {
+            var buf = ByteUtils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * (data.bitCount / 8));
+            ffpipein_video.Write(buf, 0, buf.Length);
+        }
+
+        private void TerminateRecoder(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ffconv != null)
+                {
+                    ffconv.StandardInput.WriteLine("q");
+                    ffconv.Close();
+                }
+
+                if (ffpipein_video != null)
+                {
+                    ffpipein_video.Close();
+                    ffpipein_video.Dispose();
+                }
+
+                if (ffpipein_audio != null)
+                {
+                    ffpipein_audio.Close();
+                    ffpipein_audio.Dispose();
+                }
+
+                ffconv = null;
+                ffpipein_video = ffpipein_audio = null;
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("Record", ex.Message);
+            }
         }
 
         #region Form Components Callback
@@ -1212,7 +1242,7 @@ namespace ScreenShare
 
             if (checkBox_recordVideo.Enabled && checkBox_recordVideo.Checked)
             {
-                if (!StartRecording())
+                if (!PrepareRecording())
                 {
                     label_message.Text = Resources.RecordFailed;
                     return;
@@ -1285,6 +1315,7 @@ namespace ScreenShare
             var deviceInfo = WaveIn.GetCapabilities(comboBox_waveInDevices.SelectedIndex);
 
             panel_voice.Enabled = chk;
+            checkBox_recordAudio.Enabled = chk;
         }
 
         private void checkBox_recordCapture_CheckedChanged(object sender, EventArgs e)
@@ -1392,20 +1423,6 @@ namespace ScreenShare
             var device = (WaveInCapabilities)comboBox_waveInDevices.SelectedItem;
             checkBox_stereo.Enabled = device.Channels == 2;
             checkBox_stereo.Checked &= checkBox_stereo.Enabled;
-        }
-
-        private void button_saveFileTo_Click(object sender, EventArgs e)
-        {
-            var dialog = new SaveFileDialog()
-            {
-                FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss.mp4"),
-                Filter = Resources.AVIFilter,
-                InitialDirectory = Directory.GetCurrentDirectory(),
-                RestoreDirectory = true,
-            };
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-                textBox_saveFileTo.Text = dialog.FileName;
         }
     }
 

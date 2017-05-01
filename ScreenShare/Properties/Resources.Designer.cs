@@ -151,6 +151,15 @@ namespace ScreenShare.Properties {
         }
         
         /// <summary>
+        ///   MP4ファイル(*.mp4)|*.mp4 に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string MP4Filter {
+            get {
+                return ResourceManager.GetString("MP4Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   プロセスが存在しません。 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string ProcessNotFound {

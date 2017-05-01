@@ -178,4 +178,7 @@
   <data name="BatchFailed" xml:space="preserve">
     <value>バッチファイルを実行できませんでした。</value>
   </data>
+  <data name="MP4Filter" xml:space="preserve">
+    <value>MP4ファイル(*.mp4)|*.mp4</value>
+  </data>
 </root>

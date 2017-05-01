@@ -42,10 +42,6 @@
             this.comboBox_process = new System.Windows.Forms.ComboBox();
             this.panel_capture = new System.Windows.Forms.Panel();
             this.groupBox_recording = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label_saveFileTo = new System.Windows.Forms.Label();
-            this.button_saveFileTo = new System.Windows.Forms.Button();
-            this.textBox_saveFileTo = new System.Windows.Forms.TextBox();
             this.checkBox_recordVideo = new System.Windows.Forms.CheckBox();
             this.checkBox_recordAudio = new System.Windows.Forms.CheckBox();
             this.groupBox_voice = new System.Windows.Forms.GroupBox();
@@ -76,7 +72,6 @@
             this.label_ConnectionNum = new System.Windows.Forms.Label();
             this.panel_capture.SuspendLayout();
             this.groupBox_recording.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.groupBox_voice.SuspendLayout();
             this.panel_voice.SuspendLayout();
             this.groupBox_casting.SuspendLayout();
@@ -171,36 +166,10 @@
             // groupBox_recording
             // 
             resources.ApplyResources(this.groupBox_recording, "groupBox_recording");
-            this.groupBox_recording.Controls.Add(this.panel1);
             this.groupBox_recording.Controls.Add(this.checkBox_recordVideo);
             this.groupBox_recording.Controls.Add(this.checkBox_recordAudio);
             this.groupBox_recording.Name = "groupBox_recording";
             this.groupBox_recording.TabStop = false;
-            // 
-            // panel1
-            // 
-            resources.ApplyResources(this.panel1, "panel1");
-            this.panel1.Controls.Add(this.label_saveFileTo);
-            this.panel1.Controls.Add(this.button_saveFileTo);
-            this.panel1.Controls.Add(this.textBox_saveFileTo);
-            this.panel1.Name = "panel1";
-            // 
-            // label_saveFileTo
-            // 
-            resources.ApplyResources(this.label_saveFileTo, "label_saveFileTo");
-            this.label_saveFileTo.Name = "label_saveFileTo";
-            // 
-            // button_saveFileTo
-            // 
-            resources.ApplyResources(this.button_saveFileTo, "button_saveFileTo");
-            this.button_saveFileTo.Name = "button_saveFileTo";
-            this.button_saveFileTo.UseVisualStyleBackColor = true;
-            this.button_saveFileTo.Click += new System.EventHandler(this.button_saveFileTo_Click);
-            // 
-            // textBox_saveFileTo
-            // 
-            resources.ApplyResources(this.textBox_saveFileTo, "textBox_saveFileTo");
-            this.textBox_saveFileTo.Name = "textBox_saveFileTo";
             // 
             // checkBox_recordVideo
             // 
@@ -456,8 +425,6 @@
             this.panel_capture.PerformLayout();
             this.groupBox_recording.ResumeLayout(false);
             this.groupBox_recording.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.groupBox_voice.ResumeLayout(false);
             this.groupBox_voice.PerformLayout();
             this.panel_voice.ResumeLayout(false);
@@ -518,10 +485,6 @@
         private System.Windows.Forms.Panel panel_captureDesktop;
         private System.Windows.Forms.Panel panel_voice;
         private System.Windows.Forms.Panel panel_manualCasting;
-        private System.Windows.Forms.Label label_saveFileTo;
-        private System.Windows.Forms.Button button_saveFileTo;
-        private System.Windows.Forms.TextBox textBox_saveFileTo;
-        private System.Windows.Forms.Panel panel1;
     }
 }
 

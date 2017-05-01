@@ -30,9 +30,9 @@ namespace ScreenShare
         public Size captureSize;
 
         /// <summary>
-        /// Iフレームかどうか
+        /// 1ピクセルあたりのビット数
         /// </summary>
-        public bool isIntraFrame;
+        public int bitCount;
     }
 
     /// <summary>
@@ -371,7 +371,7 @@ namespace ScreenShare
                 {
                     captureData = m_Bits,
                     captureSize = m_DstSize,
-                    isIntraFrame = true,
+                    bitCount = 8 * 4,
                 };
 
                 m_IntraFrameMat = new Mat(m_DstSize.Height, m_DstSize.Width, MatType.CV_8UC4);
@@ -383,6 +383,7 @@ namespace ScreenShare
                     var srcHdc = CaptureTarget == CaptureTarget.Desktop ? m_Hdc : m_ProcessHdc;
                     Win32.StretchBlt(m_HdcMem, 0, m_DstSize.Height, m_DstSize.Width, -m_DstSize.Height, srcHdc, 
                         m_SrcRect.X, m_SrcRect.Y, m_SrcRect.Width, m_SrcRect.Height, Win32.SRCCOPY);
+
                     OnCaptured(this, cData);
 
 #if BROADCAST_IMAGE
@@ -482,8 +483,8 @@ namespace ScreenShare
             var w = (int)(m_SrcRect.Width * Scale);
             var h = (int)(m_SrcRect.Height * Scale);
 
-            //m_DstSize = new Size(w + (w & 1), h + (h & 1));
-            m_DstSize = new Size(w, h);
+            m_DstSize = new Size(w + (w & 1), h + (h & 1));
+            //m_DstSize = new Size(w, h);
 
             //m_DstSize = new Size(927, 692);
 
