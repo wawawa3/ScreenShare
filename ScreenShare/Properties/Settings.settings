@@ -12,7 +12,25 @@
       <Value Profile="(Default)">documents</Value>
     </Setting>
     <Setting Name="SpecificCulture" Type="System.String" Scope="User">
-      <Value Profile="(Default)">en</Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ImageQuality" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">40</Value>
+    </Setting>
+    <Setting Name="NtpServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ntp.ibaraki.ac.jp</Value>
+    </Setting>
+    <Setting Name="NtpHttpUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://calc.cis.ibaraki.ac.jp/time.php</Value>
+    </Setting>
+    <Setting Name="Scaling" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="Division" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="FramePerSecond" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -33,12 +33,15 @@ namespace ScreenShare
         /// <returns>キーに対応するノードの親のキー</returns>
         public int GetParentKey(int key)
         {
-            var k = (key - 1) / BranchCount;
-
-            if (!this.ContainsKey(k))
+            if (key <= 0)
                 throw new ArgumentOutOfRangeException();
 
-            return k;
+            var pk = (key - 1) / BranchCount;
+
+            if (!this.ContainsKey(pk))
+                throw new ArgumentOutOfRangeException();
+
+            return pk;
         }
 
 
@@ -50,7 +53,20 @@ namespace ScreenShare
         {
             return this.Last().Key;
         }
-    
+
+        /// <summary>
+        /// コレクションの指定した番号の要素のキーを取得します。
+        /// </summary>
+        /// <param name="index">指定する番号(0以下で最後から)</param>
+        /// <returns></returns>
+        public int ElementAt(int index)
+        {
+            if (index > 0)
+                return this.OrderBy(c => c.Key).ElementAt(index).Key;
+            else
+                return this.OrderByDescending(c => c.Key).ElementAt(index).Key;
+        }
+
         /// <summary>
         /// キーに対応するノードの子のキーを取得します。
         /// </summary>

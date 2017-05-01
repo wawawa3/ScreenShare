@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -14,56 +15,66 @@ namespace ScreenShare
     using Size = System.Drawing.Size;
 
     /// <summary>
+    /// キャプチャ時のデータを格納します
+    /// </summary>
+    public struct CaptureData
+    {
+        /// <summary>
+        /// キャプチャされた画像
+        /// </summary>
+        public IntPtr captureData;
+
+        /// <summary>
+        /// キャプチャサイズ
+        /// </summary>
+        public Size captureSize;
+
+        /// <summary>
+        /// Iフレームかどうか
+        /// </summary>
+        public bool isIntraFrame;
+    }
+
+    /// <summary>
+    /// 分割画面のキャプチャ時のデータを格納します
+    /// </summary>
+    public struct SegmentCaptureData
+    {
+        /// <summary>
+        /// キャプチャされた領域の識別子
+        /// </summary>
+        public int segmentIdx;
+
+        /// <summary>
+        /// キャプチャされた領域
+        /// </summary>
+        public Rectangle rect;
+
+        /// <summary>
+        /// キャプチャされた領域のエンコード済みバッファ
+        /// </summary>
+        public byte[] encodedFrameBuffer;
+    }
+
+    /// <summary>
+    /// キャプチャする対象を表します
+    /// </summary>
+    public enum CaptureTarget
+    {
+        Desktop,
+        Process,
+    }
+
+    /// <summary>
     /// プロセス及びデスクトップ画面のキャプチャを行います。
     /// </summary>
     class Capture
     {
-        /// <summary>
-        /// キャプチャ時のデータを格納します
-        /// </summary>
-        public struct CaptureData
-        {
-            /// <summary>
-            /// キャプチャされた画像
-            /// </summary>
-            public IntPtr captureData;
-
-            /// <summary>
-            /// キャプチャサイズ
-            /// </summary>
-            public Size captureSize;
-
-            /// <summary>
-            /// Iフレームかどうか
-            /// </summary>
-            public bool isIntraFrame;
-        }
 
         /// <summary>
-        /// 分割画面のキャプチャ時のデータを格納します
+        /// キャプチャする対象を設定、取得します。
         /// </summary>
-        public struct SegmentCaptureData
-        {
-            /// <summary>
-            /// キャプチャされた領域の識別子
-            /// </summary>
-            public int segmentIdx;
-
-            /// <summary>
-            /// キャプチャされた領域
-            /// </summary>
-            public Rectangle rect;
-
-            /// <summary>
-            /// キャプチャされた領域のエンコード済みバッファ
-            /// </summary>
-            public byte[] encodedFrameBuffer;
-        }
-
-        /// <summary>
-        /// キャプチャするプロセスを設定、取得します。
-        /// </summary>
-        public Process CaptureProcess { get; set; }
+        public CaptureTarget CaptureTarget { get; set; }
 
         /// <summary>
         /// キャプチャするデスクトップの領域を設定、取得します。
@@ -71,9 +82,39 @@ namespace ScreenShare
         public Rectangle CaptureBounds { get; set; }
 
         /// <summary>
-        /// キャプチャに領域を使用するかどうかを設定、取得します。
+        /// デスクトップをキャプチャするディスプレイを設定、取得します。
         /// </summary>
-        public bool UseCaptureBounds { get; set; }
+        public Screen CaptureDisplay { get; set; }
+
+        /// <summary>
+        /// キャプチャするプロセスを設定、取得します。
+        /// </summary>
+        public Process CaptureProcess
+        {
+            get
+            {
+                return m_CaptureProcess;
+            }
+            set
+            {
+                m_CaptureProcess = value;
+                if (value != null)
+                {
+                    CaptureBounds = GetCaptureRect(value.MainWindowHandle);
+                }
+            }
+        }
+
+        /// <summary>
+        /// キャプチャする領域のアスペクト比を返します。
+        /// </summary>
+        public float AspectRatio
+        {
+            get
+            {
+                return (float)CaptureBounds.Width / CaptureBounds.Height;
+            }
+        }
 
         /// <summary>
         /// キャプチャした画面のスケーリング値を設定、取得します。
@@ -122,11 +163,10 @@ namespace ScreenShare
         { 
             get
             {
-                return m_EncodeQuality;
+                return m_EncodingParam.Value;
             }
             set
             {
-                m_EncodeQuality = value;
                 m_EncodingParam.Value = value;
             }
         }
@@ -155,34 +195,45 @@ namespace ScreenShare
         public int CaptureDivisionNum { get; set; }
 
         /// <summary>
-        /// キャプチャする全体のサイズを取得します。
-        /// </summary>
-        public Size CaptureSize { get; private set; }
-
-        /// <summary>
         /// キャプチャ後のスケールされたサイズを取得します。
         /// </summary>
-        public Size ScaledCaptureSize { get; private set; }
+        public Size DestinationSize { get { return m_DstSize; } }
 
         /// <summary>
         /// 画面がキャプチャされた時に発生します。
         /// </summary>
-        public event EventHandler<CaptureData> Captured;
+        public event EventHandler<CaptureData> OnCaptured = delegate {};
+        public event EventHandler<Bitmap> OnCapturedBitmap = delegate { };
 
         /// <summary>
         /// 分割画面がキャプチャされた時に発生します。
         /// </summary>
-        public event EventHandler<SegmentCaptureData> SegmentCaptured;
+        public event EventHandler<SegmentCaptureData> OnSegmentCaptured = delegate { };
+
+        /// <summary>
+        /// キャプチャが開始されたときに発生します。
+        /// </summary>
+        public event EventHandler OnStarted = delegate { };
+
+        /// <summary>
+        /// キャプチャが停止したときに発生します。
+        /// </summary>
+        public event EventHandler OnStopped = delegate { };
 
         /// <summary>
         /// 例外が発生した際に発生します。
         /// </summary>
-        public event EventHandler<Exception> Error;
+        public event EventHandler<Exception> OnError = delegate { };
 
         /// <summary>
         /// 現在送信しているかどうかを返します。
         /// </summary>
         public bool Capturing { get; private set; }
+
+        /// <summary>
+        /// キャプチャスクリーン
+        /// </summary>
+        private Screen m_CaptureScreen = Screen.PrimaryScreen;
 
         /// <summary>
         /// エンコードパラメータ
@@ -193,11 +244,6 @@ namespace ScreenShare
         /// エンコードフォーマット
         /// </summary>
         private string m_EncodeFormatExtension = ".jpg";
-
-        /// <summary>
-        /// エンコード品質
-        /// </summary>
-        private int m_EncodeQuality = 95;
 
         /// <summary>
         /// 差分割合
@@ -215,22 +261,27 @@ namespace ScreenShare
         private Timer m_Timer = new Timer();
 
         /// <summary>
-        /// キャプチャプロセスハンドル
+        /// キャプチャデバイスコンテキスト
         /// </summary>
-        private IntPtr m_Handle = IntPtr.Zero;
+        private IntPtr m_Hdc = IntPtr.Zero;
 
         /// <summary>
         /// キャプチャプロセスデバイスコンテキスト
         /// </summary>
-        private IntPtr m_ProcessDC = IntPtr.Zero;
+        private IntPtr m_ProcessHdc = IntPtr.Zero;
         private IntPtr m_Hbmp;
-        private IntPtr m_Hdc;
+        private IntPtr m_HdcMem;
         private IntPtr m_Bits;
 
         /// <summary>
         /// キャプチャする短形
         /// </summary>
         private Rectangle m_SrcRect;
+
+        /// <summary>
+        /// キャプチャするプロセス
+        /// </summary>
+        private Process m_CaptureProcess;
 
         /// <summary>
         /// キャプチャイメージサイズ
@@ -252,6 +303,7 @@ namespace ScreenShare
         /// </summary>
         public Capture()
         {
+            CaptureTarget = CaptureTarget.Desktop;
             CaptureBounds = Screen.PrimaryScreen.Bounds;
         }
 
@@ -261,35 +313,39 @@ namespace ScreenShare
         public void Start()
         {
             if (CaptureProcess != null && CaptureProcess.HasExited)
-                Error(this, new ObjectDisposedException(CaptureProcess.ProcessName, "プロセス オブジェクトは既に破棄されています。"));
+            {
+                OnError(this, new ObjectDisposedException(CaptureProcess.ProcessName, "プロセス オブジェクトは既に破棄されています。"));
+            }
+              
 
             Capturing = true;
 
             m_IsCapturing = true;
-            PrepareCapturing();
+            Initialize();
 
-            Debug.Log("Start Capturing");
-            
             StartCaptureLoop(1000.0 / FramesPerSecond);
+
+            OnStarted(this, EventArgs.Empty);
         }
 
         /// <summary>
         /// キャプチャの停止を待ちます。
         /// </summary>
-        public async void StopAsync(int timeoutms = 1000)
+        public void Stop(int timeoutms = 1000)
         {
             m_IsCapturing = false;
 
             if (m_Task == null) return;
 
-            await Task.Run(() => m_Task.Wait());
-
+            m_Task.Wait();
+            
             CleanUp();
 
             m_IntraFrameMat = null;
 
             Capturing = false;
-            Debug.Log("Stop Capturing");
+            
+            OnStopped(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -298,6 +354,7 @@ namespace ScreenShare
         /// <param name="ms">キャプチャ間隔</param>
         private void StartCaptureLoop(double ms = 50)
         {
+
             //Parallel.Invoke(() =>
             m_Task = Task.Run(() =>
             {
@@ -318,22 +375,33 @@ namespace ScreenShare
                 };
 
                 m_IntraFrameMat = new Mat(m_DstSize.Height, m_DstSize.Width, MatType.CV_8UC4);
-
                 sw.Start();
-
+                
                 while (m_IsCapturing)
                 {
                     //Win32.BitBlt(hdc, 0, 0, dstSize.Height, dstSize.Width, m_ProcessDC, 0, 0, Win32.SRCCOPY);
-
-                    Win32.StretchBlt(m_Hdc, 0, m_DstSize.Height, m_DstSize.Width, -m_DstSize.Height, m_ProcessDC, 
+                    var srcHdc = CaptureTarget == CaptureTarget.Desktop ? m_Hdc : m_ProcessHdc;
+                    Win32.StretchBlt(m_HdcMem, 0, m_DstSize.Height, m_DstSize.Width, -m_DstSize.Height, srcHdc, 
                         m_SrcRect.X, m_SrcRect.Y, m_SrcRect.Width, m_SrcRect.Height, Win32.SRCCOPY);
+                    OnCaptured(this, cData);
 
-                    Captured(this, cData);
-
+#if BROADCAST_IMAGE
+                    try
+                    {
+                        //OpenCvSharp.Extensions.BitmapConverter.ToBitmap(mat, bmp);
+                        //bmp?.Save("test.jpeg", ImageFormat.Jpeg);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                    
+                    //OnCapturedBitmap(this, bmp);
+                    
                     try
                     {
                         Cv2.BitwiseXor(mat, m_IntraFrameMat, mat_xor);
-                        Cv2.CvtColor(mat_xor, mat_diff, ColorConversionCodes.RGBA2GRAY);
+                        Cv2.CvtColor(mat_xor, mat_diff, ColorConversionCodes.RGB2GRAY);
                     }
                     catch
                     {
@@ -365,13 +433,14 @@ namespace ScreenShare
                                     encodedFrameBuffer = img_buffer,
                                 };
 
-                                SegmentCaptured(this, sData);
+                                OnSegmentCaptured(this, sData);
 
                                 var segIntra = m_IntraFrameMat.SubMat(sRect);
                                 segCapture.CopyTo(segIntra);
                             }
                         }
                     }
+#endif
 
                     var sleepMs = (ms * capCnt) - sw.Elapsed.TotalMilliseconds;
                     if (sleepMs > 0) Thread.Sleep((int)sleepMs);
@@ -392,13 +461,31 @@ namespace ScreenShare
         /// <summary>
         /// キャプチャの準備
         /// </summary>
-        private void PrepareCapturing()
+        private void Initialize()
         {
-            m_Handle = CaptureProcess != null ? CaptureProcess.MainWindowHandle : IntPtr.Zero;
-            m_ProcessDC = Win32.GetWindowDC(m_Handle);
+            switch (CaptureTarget)
+            {
+                case CaptureTarget.Desktop:
+                    m_Hdc = Win32.CreateDC(CaptureDisplay.DeviceName, "", "", IntPtr.Zero);
+                    m_SrcRect = CaptureBounds;
+                    break;
 
-            m_SrcRect = GetCaptureRect();
-            m_DstSize = new Size((int)(m_SrcRect.Width * Scale), (int)(m_SrcRect.Height * Scale));
+                case CaptureTarget.Process:
+                    m_Hdc = CaptureProcess != null ? CaptureProcess.MainWindowHandle : IntPtr.Zero;
+                    m_SrcRect = GetCaptureRect(m_Hdc);
+                    m_ProcessHdc = Win32.GetWindowDC(m_Hdc);
+                    break;
+            }
+
+            //m_SrcRect.Width += m_SrcRect.Width & 1;
+            //m_SrcRect.Height += m_SrcRect.Height & 1;
+            var w = (int)(m_SrcRect.Width * Scale);
+            var h = (int)(m_SrcRect.Height * Scale);
+
+            //m_DstSize = new Size(w + (w & 1), h + (h & 1));
+            m_DstSize = new Size(w, h);
+
+            //m_DstSize = new Size(927, 692);
 
             var bmi = new Win32.BITMAPINFO();
             var bmiHeader = new Win32.BITMAPINFOHEADER();
@@ -408,16 +495,23 @@ namespace ScreenShare
             bmiHeader.biHeight = m_DstSize.Height;
             bmiHeader.biPlanes = 1;
             bmiHeader.biBitCount = 32;
-            bmiHeader.biSizeImage = (uint)(m_DstSize.Width * m_DstSize.Height * 4);
+            bmiHeader.biSizeImage = 0;// (uint)(m_DstSize.Width * m_DstSize.Height * 4);
+            bmiHeader.biCompression = Win32.BI_RGB;
+            bmiHeader.biXPelsPerMeter = 0;
+            bmiHeader.biYPelsPerMeter = 0;
+            bmiHeader.biClrUsed = 0;
+            bmiHeader.biClrImportant = 0;
 
             bmi.bmiHeader = bmiHeader;
 
-            m_Hbmp = Win32.CreateDIBSection(IntPtr.Zero, ref bmi, Win32.DIB_RGB_COLORS, out m_Bits, IntPtr.Zero, 0);
-            m_Hdc = Win32.CreateCompatibleDC(IntPtr.Zero);
+            m_Hbmp = Win32.CreateDIBSection(m_Hdc, ref bmi, Win32.DIB_RGB_COLORS, out m_Bits, IntPtr.Zero, 0);
+            m_HdcMem = Win32.CreateCompatibleDC(IntPtr.Zero);
+            //m_Hbmp = Win32.CreateDIBitmap(m_ProcessDC, ref bmiHeader, 0, null, ref bmi, 0);
 
-            var hbmpPrev = Win32.SelectObject(m_Hdc, m_Hbmp);
+            var hbmpPrev = Win32.SelectObject(m_HdcMem, m_Hbmp);
+
             Win32.DeleteObject(hbmpPrev);
-            Win32.SetStretchBltMode(m_Hdc, Win32.STRETCH_HALFTONE);
+            Win32.SetStretchBltMode(m_HdcMem, Win32.STRETCH_HALFTONE);
         }
 
         /// <summary>
@@ -425,8 +519,9 @@ namespace ScreenShare
         /// </summary>
         private void CleanUp()
         {
-            Win32.ReleaseDC(IntPtr.Zero, m_ProcessDC);
+            Win32.ReleaseDC(m_Hdc, m_ProcessHdc);
             Win32.DeleteObject(m_Hbmp);
+            Win32.DeleteDC(m_HdcMem);
             Win32.DeleteDC(m_Hdc);
         }
 
@@ -434,32 +529,21 @@ namespace ScreenShare
         /// キャプチャ範囲取得
         /// </summary>
         /// <returns></returns>
-        private Rectangle GetCaptureRect()
+        private Rectangle GetCaptureRect(IntPtr handle)
         {
             var rect = new Rectangle();
 
-            if (UseCaptureBounds)
-            {
-                rect = CaptureBounds;
-            }
-            else if (m_Handle != IntPtr.Zero)
-            {
-                Win32.RECT w32rect;
-                Win32.GetWindowRect(m_Handle, out w32rect);
+            Win32.RECT w32rect;
+            Win32.GetWindowRect(handle, out w32rect);
 
-                rect.X = 0;
-                rect.Y = 0;
-                rect.Width = w32rect.right - w32rect.left;
-                rect.Height = w32rect.bottom - w32rect.top;
+            rect.X = 0;
+            rect.Y = 0;
+            rect.Width = w32rect.right - w32rect.left;
+            rect.Height = w32rect.bottom - w32rect.top;
 
-                if (rect.Width == 0 || rect.Height == 0)
-                {
-                    Error(this, new ArgumentException(CaptureProcess.ProcessName, "無効なプロセスです。"));
-                }
-            }
-            else
+            if (rect.Width == 0 || rect.Height == 0)
             {
-                rect = Screen.PrimaryScreen.Bounds;
+                OnError(this, new ArgumentException(CaptureProcess.ProcessName, "無効なプロセスです。"));
             }
 
             return rect;

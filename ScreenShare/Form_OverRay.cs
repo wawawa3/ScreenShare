@@ -15,6 +15,8 @@ namespace ScreenShare
     /// </summary>
     public partial class Form_OverRay : Form
     {
+        public Screen Display { get; set; }
+
         Pen Pen = new Pen(Color.Red, 3f);
 
         protected override CreateParams CreateParams
@@ -54,5 +56,12 @@ namespace ScreenShare
             e.Graphics.DrawRectangle(Pen, captureBounds);
         }
 
+        private void Form_OverRay_Activated(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            if (Display != null)
+                this.Location = Display.Bounds.Location;
+            this.WindowState = FormWindowState.Maximized;
+        }
     }
 }

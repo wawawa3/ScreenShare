@@ -56,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   }
 
   Alchemy.prototype = {
-    _socket: {},
+    _socket: null,
     _lastReceive: (new Date()).getTime(),
     _options: {},
 
@@ -77,11 +77,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Start: function() {
       var server = 'ws://' + this._options.Server + ':' + this._options.Port + '/' + this._options.Action + '/' + this._options.SocketType;
       var ACInstance = this;
+      if (this._socket != null) this._socket.close();
       this._socket = new WebSocket(server);
 
       this._socket.onopen = function() { ACInstance._OnOpen(); };
       this._socket.onmessage = function(data) { ACInstance._OnMessage(data); };
       this._socket.onclose = function() { ACInstance._OnClose(); };
+      this._socket.onerror = function(event) { ACInstance._OnError(); }
 
       if (this._options.BinaryType != undefined)
         this._socket.binaryType = this._options.BinaryType;
@@ -107,7 +109,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     Stop: function() {
       this._socket.close();
-
+      this._socket = null;
       if (this._options.DebugMode) {
         console.log('Closed connection.');
       }
@@ -116,6 +118,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     Connected: function() { },
     Disconnected: function() { },
     MessageReceived: function() { },
+    Error: function(event) { },
 
     _OnOpen: function() {
       var instance = this;
@@ -149,6 +152,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       this.SocketState = Alchemy.prototype.SocketStates.Closed;
 
       this.Disconnected();
+    },
+
+    _OnError: function(event) {
+      var instance = this;
+      if (this._options.DebugMode) {
+        console.log('Error: ' + event);
+      }
+
+      this.SocketState = Alchemy.prototype.SocketStates.Closed;
+
+      this.Error(event);
     }
   };
 

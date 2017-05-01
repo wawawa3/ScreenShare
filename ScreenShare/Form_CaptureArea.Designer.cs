@@ -45,6 +45,7 @@
             this.Opacity = 0.5D;
             this.ShowInTaskbar = false;
             this.Text = "Form_CaptureArea";
+            this.Activated += new System.EventHandler(this.Form_CaptureArea_Activated);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form_CaptureArea_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_CaptureArea_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_CaptureArea_MouseMove);

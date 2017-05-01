@@ -1,6 +1,6 @@
 ﻿namespace ScreenShare
 {
-    partial class Form_tcp
+    partial class Form_VideoCast
     {
         /// <summary>
         /// 必要なデザイナー変数です。
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_tcp));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_VideoCast));
             this.button_startCapture = new System.Windows.Forms.Button();
             this.button_stopCapture = new System.Windows.Forms.Button();
             this.textBox_ip = new System.Windows.Forms.TextBox();
@@ -43,11 +43,6 @@
             this.panel_capture = new System.Windows.Forms.Panel();
             this.groupBox_record = new System.Windows.Forms.GroupBox();
             this.checkBox_recordCapture = new System.Windows.Forms.CheckBox();
-            this.panel_record = new System.Windows.Forms.Panel();
-            this.textBox_recordQuality = new System.Windows.Forms.TextBox();
-            this.label_videoCodec = new System.Windows.Forms.Label();
-            this.label_recordQualty = new System.Windows.Forms.Label();
-            this.comboBox_videoCodec = new System.Windows.Forms.ComboBox();
             this.checkBox_recordAudio = new System.Windows.Forms.CheckBox();
             this.groupBox_audio = new System.Windows.Forms.GroupBox();
             this.button_reloadWaveInDevices = new System.Windows.Forms.Button();
@@ -61,9 +56,9 @@
             this.textBox_captureFps = new System.Windows.Forms.TextBox();
             this.comboBox_captureScale = new System.Windows.Forms.ComboBox();
             this.label_captureScale = new System.Windows.Forms.Label();
-            this.textBox_captureQuality = new System.Windows.Forms.TextBox();
+            this.textBox_videoBitRate = new System.Windows.Forms.TextBox();
             this.label_divisionNumber = new System.Windows.Forms.Label();
-            this.label_imageCompressQuality = new System.Windows.Forms.Label();
+            this.label_videoBitRate = new System.Windows.Forms.Label();
             this.comboBox_divisionNumber = new System.Windows.Forms.ComboBox();
             this.groupBox_capture = new System.Windows.Forms.GroupBox();
             this.checkBox_showOverRayForm = new System.Windows.Forms.CheckBox();
@@ -74,7 +69,6 @@
             this.label_ConnectionNum = new System.Windows.Forms.Label();
             this.panel_capture.SuspendLayout();
             this.groupBox_record.SuspendLayout();
-            this.panel_record.SuspendLayout();
             this.groupBox_audio.SuspendLayout();
             this.groupBox_sending.SuspendLayout();
             this.groupBox_capture.SuspendLayout();
@@ -166,7 +160,6 @@
             // 
             resources.ApplyResources(this.groupBox_record, "groupBox_record");
             this.groupBox_record.Controls.Add(this.checkBox_recordCapture);
-            this.groupBox_record.Controls.Add(this.panel_record);
             this.groupBox_record.Controls.Add(this.checkBox_recordAudio);
             this.groupBox_record.Name = "groupBox_record";
             this.groupBox_record.TabStop = false;
@@ -177,43 +170,6 @@
             this.checkBox_recordCapture.Name = "checkBox_recordCapture";
             this.checkBox_recordCapture.UseVisualStyleBackColor = true;
             this.checkBox_recordCapture.CheckedChanged += new System.EventHandler(this.checkBox_recordCapture_CheckedChanged);
-            // 
-            // panel_record
-            // 
-            resources.ApplyResources(this.panel_record, "panel_record");
-            this.panel_record.Controls.Add(this.textBox_recordQuality);
-            this.panel_record.Controls.Add(this.label_videoCodec);
-            this.panel_record.Controls.Add(this.label_recordQualty);
-            this.panel_record.Controls.Add(this.comboBox_videoCodec);
-            this.panel_record.Name = "panel_record";
-            // 
-            // textBox_recordQuality
-            // 
-            resources.ApplyResources(this.textBox_recordQuality, "textBox_recordQuality");
-            this.textBox_recordQuality.Name = "textBox_recordQuality";
-            this.textBox_recordQuality.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_captureQuality_Validating);
-            // 
-            // label_videoCodec
-            // 
-            resources.ApplyResources(this.label_videoCodec, "label_videoCodec");
-            this.label_videoCodec.Name = "label_videoCodec";
-            // 
-            // label_recordQualty
-            // 
-            resources.ApplyResources(this.label_recordQualty, "label_recordQualty");
-            this.label_recordQualty.Name = "label_recordQualty";
-            // 
-            // comboBox_videoCodec
-            // 
-            resources.ApplyResources(this.comboBox_videoCodec, "comboBox_videoCodec");
-            this.comboBox_videoCodec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_videoCodec.FormattingEnabled = true;
-            this.comboBox_videoCodec.Items.AddRange(new object[] {
-            resources.GetString("comboBox_videoCodec.Items"),
-            resources.GetString("comboBox_videoCodec.Items1")});
-            this.comboBox_videoCodec.Name = "comboBox_videoCodec";
-            this.comboBox_videoCodec.TabStop = false;
-            this.comboBox_videoCodec.SelectedIndexChanged += new System.EventHandler(this.comboBox_videoCodec_SelectedIndexChanged);
             // 
             // checkBox_recordAudio
             // 
@@ -296,9 +252,9 @@
             this.groupBox_sending.Controls.Add(this.textBox_captureFps);
             this.groupBox_sending.Controls.Add(this.comboBox_captureScale);
             this.groupBox_sending.Controls.Add(this.label_captureScale);
-            this.groupBox_sending.Controls.Add(this.textBox_captureQuality);
+            this.groupBox_sending.Controls.Add(this.textBox_videoBitRate);
             this.groupBox_sending.Controls.Add(this.label_divisionNumber);
-            this.groupBox_sending.Controls.Add(this.label_imageCompressQuality);
+            this.groupBox_sending.Controls.Add(this.label_videoBitRate);
             this.groupBox_sending.Controls.Add(this.label_interval);
             this.groupBox_sending.Controls.Add(this.comboBox_divisionNumber);
             this.groupBox_sending.Name = "groupBox_sending";
@@ -334,22 +290,22 @@
             resources.ApplyResources(this.label_captureScale, "label_captureScale");
             this.label_captureScale.Name = "label_captureScale";
             // 
-            // textBox_captureQuality
+            // textBox_videoBitRate
             // 
-            resources.ApplyResources(this.textBox_captureQuality, "textBox_captureQuality");
-            this.textBox_captureQuality.Name = "textBox_captureQuality";
-            this.textBox_captureQuality.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_captureQuality_KeyPress);
-            this.textBox_captureQuality.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_captureQuality_Validating);
+            resources.ApplyResources(this.textBox_videoBitRate, "textBox_videoBitRate");
+            this.textBox_videoBitRate.Name = "textBox_videoBitRate";
+            this.textBox_videoBitRate.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_videoBitRate_KeyPress);
+            this.textBox_videoBitRate.Validating += new System.ComponentModel.CancelEventHandler(this.textBox_videoBitRate_Validating);
             // 
             // label_divisionNumber
             // 
             resources.ApplyResources(this.label_divisionNumber, "label_divisionNumber");
             this.label_divisionNumber.Name = "label_divisionNumber";
             // 
-            // label_imageCompressQuality
+            // label_videoBitRate
             // 
-            resources.ApplyResources(this.label_imageCompressQuality, "label_imageCompressQuality");
-            this.label_imageCompressQuality.Name = "label_imageCompressQuality";
+            resources.ApplyResources(this.label_videoBitRate, "label_videoBitRate");
+            this.label_videoBitRate.Name = "label_videoBitRate";
             // 
             // comboBox_divisionNumber
             // 
@@ -441,8 +397,6 @@
             this.panel_capture.ResumeLayout(false);
             this.groupBox_record.ResumeLayout(false);
             this.groupBox_record.PerformLayout();
-            this.panel_record.ResumeLayout(false);
-            this.panel_record.PerformLayout();
             this.groupBox_audio.ResumeLayout(false);
             this.groupBox_audio.PerformLayout();
             this.groupBox_sending.ResumeLayout(false);
@@ -470,7 +424,7 @@
         private System.Windows.Forms.Panel panel_capture;
         private System.Windows.Forms.Button button_reloadProcesses;
         private System.Windows.Forms.RadioButton radioButton_area;
-        private System.Windows.Forms.Label label_imageCompressQuality;
+        private System.Windows.Forms.Label label_videoBitRate;
         private System.Windows.Forms.GroupBox groupBox_capture;
         private System.Windows.Forms.GroupBox groupBox_sending;
         private System.Windows.Forms.Button button_areaReset;
@@ -481,7 +435,7 @@
         private System.Windows.Forms.CheckBox checkBox_stereo;
         private System.Windows.Forms.ComboBox comboBox_divisionNumber;
         private System.Windows.Forms.Label label_divisionNumber;
-        private System.Windows.Forms.TextBox textBox_captureQuality;
+        private System.Windows.Forms.TextBox textBox_videoBitRate;
         private System.Windows.Forms.ComboBox comboBox_captureScale;
         private System.Windows.Forms.Label label_captureScale;
         private System.Windows.Forms.CheckBox checkBox_showOverRayForm;
@@ -489,14 +443,9 @@
         private System.Windows.Forms.TextBox textBox_captureFps;
         private System.Windows.Forms.GroupBox groupBox_record;
         private System.Windows.Forms.CheckBox checkBox_recordAudio;
-        private System.Windows.Forms.TextBox textBox_recordQuality;
-        private System.Windows.Forms.Label label_recordQualty;
-        private System.Windows.Forms.ComboBox comboBox_videoCodec;
-        private System.Windows.Forms.Label label_videoCodec;
         private System.Windows.Forms.Button button_reloadWaveInDevices;
         private System.Windows.Forms.Label label_waveInDevices;
         private System.Windows.Forms.ComboBox comboBox_waveInDevices;
-        private System.Windows.Forms.Panel panel_record;
         private System.Windows.Forms.Label label_Client;
         private System.Windows.Forms.Label label_ConnectionNum;
     }

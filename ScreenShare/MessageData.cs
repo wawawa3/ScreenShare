@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,9 @@ namespace ScreenShare
             RemoveOffer,
             RemoveAnswer,
             Settings,
-            StartCapture,
-            StopCapture,
-            ReceiveTimeout,
+            StartCasting,
+            StopCasting,
+            RequestReconnect,
             Disconnect,
         };
 
@@ -82,6 +83,20 @@ namespace ScreenShare
             /// 分割数
             /// </summary>
             public int divisionNum { get; set; }
+
+            /// <summary>
+            /// 画面アスペクト比
+            /// </summary>
+            public float aspectRatio { get; set; }
+
+            /// <summary>
+            /// キャプチャFPS
+            /// </summary>
+            public int framePerSecond { get; set; }
+
+            public int width { get; set; }
+
+            public int height { get; set; }
         }
 
         /// <summary>
@@ -104,21 +119,58 @@ namespace ScreenShare
     }
 
     /// <summary>
-    /// WebRTCのDataChannelで送信されるキャプチャデータのヘッダ
+    /// WebRTCのDataChannelで送信されるデータの主ヘッダ
+    /// 9 byte
     /// </summary>
-    struct FrameHeader
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct BufferHeader
     {
-        public BufferType type;
-        public byte segmentIndex;
+        public BufferType type { get; private set; }
+        public int totalms { get; private set; }
+        public int currentms { get; private set; }
+
+        public BufferHeader(BufferType t, int ms)
+        {
+            type = t;
+            //ticks = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
+
+            totalms = ms;
+            currentms = ms;
+        }
+    }
+
+    /// <summary>
+    /// WebRTCのDataChannelで送信されるキャプチャデータのヘッダ
+    /// 10 byte
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct FrameHeader
+    {
+        public BufferHeader bufferheader { get; private set; }
+        public byte segmentIndex { get; private set; }
+
+        public FrameHeader(byte segIdx, int ms)
+        {
+            bufferheader = new BufferHeader(BufferType.FrameBuffer, ms);
+            segmentIndex = segIdx;
+        }
     }
 
     /// <summary>
     /// WebRTCのDataChannelで送信される音声データのヘッダ
+    /// 12 byte
     /// </summary>
-    struct AudioHeader
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct AudioHeader
     {
-        public BufferType type;
-        private byte dum1, dum2, dum3;
+        public BufferHeader bufferheader { get; private set; }
+        public byte dum1, dum2, dum3;
+
+        public AudioHeader(int ms)
+        {
+            bufferheader = new BufferHeader(BufferType.AudioBuffer, ms);
+            dum1 = dum2 = dum3 = 0;
+        }
     }
 
     /// <summary>
@@ -133,5 +185,10 @@ namespace ScreenShare
             this.x = (ushort)x;
             this.y = (ushort)y;
         }
+    }
+
+    public class Commons
+    {
+        public const string CheckPacketIdentifier = "cp";
     }
 }

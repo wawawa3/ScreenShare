@@ -7,14 +7,54 @@
 	</head>
 	<script src="./libs/modernizr.js"></script>
 	<script src="./libs/alchemy-client.js"></script>
+	<script src="./ntp.js"></script>
 	<script src="./script.js"></script>
 	<body id="_body" onLoad="onLoad()">
-		<div class="drag">
-			<input type="checkbox" id="_audio"/>
-			<div class="audioOnIcon"><span class="audioOn1"><span class="audioOn2"></span></span></div>
-			<div class="audioOffIcon"><span class="audioOff1"><span class="audioOff2"></span></span></div>
+
+		<div id="_frame" class="frame">
+			<!--div id="_block" class="block"></div-->
+			<canvas id="_canvas" class="canvas"></canvas>
+			<div class="drag">
+				<input type="checkbox" id="_audio"/>
+				<div class="audioOnIcon"><span class="audioOn1"><span class="audioOn2"></span></span></div>
+				<div class="audioOffIcon"><span class="audioOff1"><span class="audioOff2"></span></span></div>
+			</div>
+			<div id="_idview" class="idview">-</div>
+			<div class="middle"><div id="_phase"></div></div>
+			<div id="_loader" class="loader" style="display:none"></div>
 		</div>
-		<div id="_block" class="block" width="0" height="0"></div>
+		<div id="_info">
+			<table id="_sv" border=1>
+				<tr><td rowspan=6>Server</td><td>My ID</td><td></td></tr>
+				<tr><td>Status</td><td></td></tr>
+				<tr><td>Casting</td><td></td></tr>
+				<tr><td>Latest communication</td><td></td></tr>
+				<tr><td>Delay ave.(ms)</td><td></td></tr>
+				<tr><td>Initial delay(ms)</td><td></td></tr>
+			</table></br>
+			<table id="_pt" border=1>
+				<tr><td rowspan=6>Parent</td><td>ID</td><td></td></tr>
+				<tr><td>Status</td><td></td></tr>
+				<tr><td>SDP</td><td></td></tr>
+				<tr><td>ICE candidate</td><td></td></tr>
+				<tr><td>Latest communication</td><td></td></tr>
+				<tr><td>Delay ave.(ms)</td><td></td></tr>
+			</table></br>
+			<table id="_ch0" border=1>
+				<tr><td rowspan=5>Child 1</td><td>ID</td><td></td></tr>
+				<tr><td>Status</td><td></td></tr>
+				<tr><td>SDP</td><td></td></tr>
+				<tr><td>ICE candidate</td><td></td></tr>
+				<tr><td>Latest communication</td><td></td></tr>
+			</table></br>
+			<table id="_ch1" border=1>
+				<tr><td rowspan=5>Child 2</td><td>ID</td><td></td></tr>
+				<tr><td>Status</td><td></td></tr>
+				<tr><td>SDP</td><td></td></tr>
+				<tr><td>ICE candidate</td><td></td></tr>
+				<tr><td>Latest communication</td><td></td></tr>
+			</table>
+		</div>
 		<center>
 			<p id="_support_ja" style="display:none">
 				お使いのWebブラウザでは対応していません。</br>

@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Windows.Forms;
 using System.IO;
+using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 using Alchemy;
 using Alchemy.Classes;
@@ -19,6 +21,7 @@ using NAudio.Wave;
 
 using SharpAvi.Codecs;
 using SharpAvi.Output;
+using Accord.Video;
 
 using Newtonsoft.Json;
 
@@ -26,7 +29,7 @@ using ScreenShare.Properties;
 
 namespace ScreenShare
 {
-    public partial class Form_tcp : Form
+    public partial class Form_VideoCast : Form
     {
         /// <summary>
         /// 最大画質
@@ -135,7 +138,7 @@ namespace ScreenShare
         /// </summary>
         private byte[][] m_LatestIntraFrameBuffer;
 
-        public Form_tcp()
+        public Form_VideoCast()
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(Settings.Default.SpecificCulture);
 
@@ -160,6 +163,8 @@ namespace ScreenShare
                 MessageBox.Show(Resources.BatchFailed + "\n\"" + Batch_FirewallAdd + "\"", Resources.CaptionError);
             }
 
+            Debug.Writer = Console.Out;
+            
             Application.ApplicationExit += (s, e) =>
             {
                 try
@@ -182,13 +187,14 @@ namespace ScreenShare
                 }
 
                 Debug.Log("Application Exit");
+                Debug.Terminate();
             };
 
 
             ReloadRunningProcesses();
             ReloadWaveInDevices();
 
-            IPHostEntry ipentry = Dns.GetHostEntry(Dns.GetHostName());
+            var ipentry = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in ipentry.AddressList)
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
@@ -198,19 +204,12 @@ namespace ScreenShare
                 }
             }
 
-            var codecs = Mpeg4VideoEncoderVcm.GetAvailableCodecs();
-            foreach (var codec in codecs)
-            {
-                comboBox_videoCodec.Items.Add(codec.Name);
-            }
-
             comboBox_audioQuality.SelectedIndex = 1;
             comboBox_captureScale.SelectedIndex = 0;
             comboBox_divisionNumber.SelectedIndex = 2;
-            comboBox_videoCodec.SelectedIndex = 0;
 
-            m_FormCapture.Selected += (rect) => 
-            { 
+            m_FormCapture.Selected += (rect) =>
+            {
                 m_CaptureBounds = rect;
 
                 m_FormCapture.Hide();
@@ -221,27 +220,13 @@ namespace ScreenShare
                     m_FormOverRay.Show();
             };
 
-            m_Capture.SegmentCaptured += (s, data) =>
+
+            var lockObj = new object();
+            NamedPipeServerStream ffpipein = null, ffpipeout = null;
+            Process ffmpeg = null;
+            m_Capture.OnCaptured += (s, data) =>
             {
-                var frameHeader = new FrameHeader
-                {
-                    type = BufferType.FrameBuffer,
-                    segmentIndex = (byte)data.segmentIdx,
-                };
-                var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
-                var buffer = ByteUtils.Concatenation(headerBuffer, data.encodedFrameBuffer);
-
-                if (m_WebSocketClients.ContainsKey(0))
-                {
-                    //Debug.Log("send");
-                    m_WebSocketClients[0].Send(buffer);
-                }
-
-                m_LatestIntraFrameBuffer[data.segmentIdx] = (byte[])buffer.Clone();
-            };
-
-            m_Capture.Captured += (s, data) =>
-            {
+                /*
                 if (m_AviVideoStream == null) return;
 
                 var buf = ByteUtils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 4);
@@ -253,13 +238,202 @@ namespace ScreenShare
                 catch (Exception e)
                 {
                     Debug.Log("Captured Exception: " + e.Message);
-                }
+                }*/
+                if (ffmpeg == null || ffpipein == null || !ffpipein.IsConnected) return;
+
+
+                var buf = ByteUtils.GetBytesFromPtr(data.captureData, data.captureSize.Width * data.captureSize.Height * 3);
+                //ffmpeg.StandardInput.Write(buf);
+
+
+                ffpipein.Write(buf, 0, buf.Length);
+                //ffpipein.Flush();
+
+                //Console.WriteLine("write:"+ buf.Length);
+                //await ffpipe.WriteAsync(buf, 0, buf.Length);
+
+                //Console.WriteLine(data.captureSize.Width + "," + data.captureSize.Height+":"+buf.Length);
+
             };
 
-            m_Capture.Error += (s, ex) =>
+            m_Capture.OnError += (s, ex) =>
             {
                 label_message.Text = Resources.CaptureError + " : " + ex.Message;
             };
+
+#if !BROADCAST_IMAGE
+            //var scs = new ScreenCaptureStream(Screen.PrimaryScreen.Bounds, 1000 / 30);
+
+            /*
+            var writer = new Accord.Video.FFMPEG.VideoFileWriter();
+            var st = DateTime.Now;
+            var cnt = 0;
+            var lockObj = new object();
+            writer.Open("test.mp4", m_Capture.CaptureBounds.Width, m_Capture.CaptureBounds.Height, 10);
+            */
+            Task task = null;
+            m_Capture.OnStarted += (s, e) =>
+            {
+                ffpipein = new NamedPipeServerStream("ffpipein", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
+                //ffpipeout = new NamedPipeServerStream("ffpipeout", PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 1024 * 1024, 1024 * 1024);
+                ffpipeout = new NamedPipeServerStream("ffpipeout", PipeDirection.In, 1, PipeTransmissionMode.Message, PipeOptions.Asynchronous);
+
+                ffpipein.BeginWaitForConnection((result) =>
+                {
+                    ffpipein.EndWaitForConnection(result);
+                    Console.WriteLine("IN Conn");
+                }, null);
+
+
+                ffpipeout.BeginWaitForConnection((result) =>
+                {
+
+                    ffpipeout.EndWaitForConnection(result);
+                    Console.WriteLine("OUT Conn");
+                }, null);
+
+                var psInfo = new ProcessStartInfo();
+                psInfo.FileName = "ffmpeg.exe";
+                //psInfo.Arguments = String.Format("-y -vcodec mjpeg -f image2pipe -r {0} -i pipe:0 -movflags faststart -vcodec libx264 out.mp4", 30); 
+                //mp4:-f mpegts -vcodec libx264 -pix_fmt yuv420p
+                //var clusterLength = 0.5f;
+                psInfo.Arguments = String.Format(@"-y -pix_fmt bgr24 -s {0}x{1} -r {4} -f rawvideo -vcodec rawvideo -i {8} -vf scale={2}:{3} " +
+                    //@"-minrate {3} -maxrate {3} -b:v {3} -crf 10 -keyint_min {4} -g {4} -bufsize {5} " +
+                    //@"-reset_timestamps 1 -movflags empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof " +//-movflags +frag_keyframe+empty_moov " +// -movflags +faststart " +
+                    @"-movflags empty_moov+omit_tfhd_offset+frag_keyframe+default_base_moof+faststart " +
+                    //@"-tune zerolatency " +
+                    @"-maxrate {5} -minrate {5} -b:v {5} -bufsize {6} -keyint_min {7} -g {7} -sc_threshold 0 -threads 0 " +
+                    //@"-c:v libx264 -preset veryfast " +
+                    @"-c:v vp8 -speed 4 " +
+                    //@"-tile-columns 4 -frame-parallel 1 " +
+                    //@"-f mp4 -c:v libx264 -pix_fmt yuv420p {7}",
+                    //@"-f webm -c:v libvpx " +
+                    //@"-acodec libvorbis -aq 90 -ac 2 {7}",
+                    //@"-f mp4 -c:v libx264 -pix_fmt yuv420p {7}",//@"-movflags +faststart {7}",
+                    //@"-f segment -segment_format mp4 " +
+                    @"-f segment " +
+                    @"-segment_time 0.5 -segment_list {9} -reset_timestamps 1 -segment_list_flags +live C:/xampp2/htdocs/t/stream/v%03d.webm",
+                    m_Capture.DestinationSize.Width, 
+                    m_Capture.DestinationSize.Height, 
+                    m_Capture.CaptureBounds.Width,
+                    m_Capture.CaptureBounds.Height,
+                    m_Capture.FramesPerSecond,
+                    textBox_videoBitRate.Text, 
+                    Convert.ToInt32(textBox_videoBitRate.Text.Remove(textBox_videoBitRate.Text.Length - 1)) * 2 + textBox_videoBitRate.Text.Last(), 
+                    (int)(0.5 * m_Capture.FramesPerSecond), //,
+                    @"\\.\pipe\ffpipein", @"\\.\pipe\ffpipeout");
+                /*
+                psInfo.Arguments = String.Format(@"-y -pix_fmt bgr24 -s {0}x{1} -r {2} -f rawvideo -vcodec rawvideo -i {6} " +
+                    @"-f webm -c:v libvpx -an {7}",
+                    m_Capture.DestinationSize.Width, m_Capture.DestinationSize.Height,
+                    m_Capture.FramesPerSecond, "500k", (int)(0.5 * m_Capture.FramesPerSecond), "1000k",//,
+                    @"\\.\pipe\ffpipein", @"\\.\pipe\ffpipeout");*/
+
+                psInfo.CreateNoWindow = false;
+                psInfo.UseShellExecute = false;
+                psInfo.RedirectStandardInput = true;
+
+                ffmpeg = Process.Start(psInfo);
+                ffmpeg.StandardInput.AutoFlush = true;
+
+                //var sw2 = new StreamWriter(ffmpeg.StandardOutput.BaseStream);
+
+                //ffmpeg.StandardOutput. = true;
+
+                task = Task.Run(async () =>
+                {
+                    //Invoke(new FormDelegate(() =>
+                    {
+
+                        var buf = new byte[ffpipeout.InBufferSize];
+                        //var mp4 = File.Create("o.webm");
+                        //var readL = 0;
+
+                        while (!ffpipeout.IsConnected) ;
+                        Console.WriteLine("connected");
+
+                        using (var reader = new StreamReader(ffpipeout))
+                        {
+                            while (ffpipeout.IsConnected)
+                            {
+                                //if (ffpipeout.InBufferSize <= 0) continue;
+                                //Console.WriteLine("buf : " + ffpipeout.InBufferSize);
+                                var message = await reader.ReadLineAsync();
+                                //readL = ffpipeout.Read(buf, 0, buf.Length);
+                                //Console.WriteLine("buf : " + ffpipeout.InBufferSize);
+                                //ffpipeout.Flush();
+                                //mp4.Write(buf, 0, readL);
+                                Console.WriteLine(message);
+                                //Thread.Sleep(1000);
+
+                                if (m_WebSocketClients.ContainsKey(0))
+                                {
+                                    /*
+                                    var buffer = new byte[readL];
+                                    Buffer.BlockCopy(buf, 0, buffer, 0, readL);
+                                    m_WebSocketClients[0].Send(buffer);*/
+
+                                    var data = new { type = 0xe, data = message, };
+                                    var json = JsonConvert.SerializeObject(data);
+
+                                    m_WebSocketClients[0].Send(json);
+
+
+                                }
+                            }
+                        }
+
+
+                        //mp4.Close();
+                        Console.WriteLine("closed");
+
+                        if (m_WebSocketClients.ContainsKey(0))
+                        {
+                            //m_WebSocketClients[0].Send(buf);
+                        }
+                    }//));
+
+                });
+            };
+#endif
+
+
+            m_Capture.OnCapturedBitmap += (s, bmp) =>
+            {
+                /*lock (lockObj)
+                    bmp.Save(stream.BaseStream, System.Drawing.Imaging.ImageFormat.Jpeg);*/
+
+            };
+            m_Capture.OnStopped += (s, e) =>
+            {
+#if !BROADCAST_IMAGE
+                /*lock (lockObj)
+                    stream.Close();*/
+                try
+                {
+                    ffmpeg.StandardInput.WriteLine("q");
+                    //ffmpeg.Kill();
+                    //ffmpeg.Close();
+                    //ffmpeg.WaitForExit();
+                    //ffpipe.Disconnect();
+                    ffpipein.Close();
+
+                    task.Wait();
+                    ffpipeout.Close();
+
+                    ffpipein.Dispose();
+                    ffpipeout.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+#endif
+                Console.WriteLine("stop");
+            };
+
+
 
             //m_Recorder.BufferMilliseconds = 100;
             m_Recorder.DataAvailable += (s, we) =>
@@ -278,10 +452,7 @@ namespace ScreenShare
                     normalizedSampleBuffer[j++] = sampleByte[3];
                 }
 
-                var frameHeader = new AudioHeader
-                {
-                    type = BufferType.AudioBuffer,
-                };
+                var frameHeader = new AudioHeader();
                 var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
                 var buffer = ByteUtils.Concatenation(headerBuffer, normalizedSampleBuffer);
 
@@ -349,8 +520,7 @@ namespace ScreenShare
                                 {
                                     foreach (var buffer in m_LatestIntraFrameBuffer)
                                         m_WebSocketClients[id].Send(buffer);
-                                }
-                                    * */
+                                }*/
                             }
 
                             if (parent != null)
@@ -441,7 +611,7 @@ namespace ScreenShare
                                 Debug.Log("RemoveID = LastID");
                                 return;
                             }
-                           
+
                             data = new MessageData { type = MessageData.Type.RemoveAnswer, id = rmId, };
                             json = JsonConvert.SerializeObject(data);
                             foreach (var child in rmChildren)
@@ -507,16 +677,20 @@ namespace ScreenShare
                             var recv = JsonConvert.DeserializeObject<MessageData>(json);
                             try
                             {
-                                var dest = m_WebSocketClients[recv.targetId];
 
-                                if (dest != null)
+
+                                switch (recv.type)
                                 {
-                                    dest.Send(json);
-                                    Debug.Log("Relay '" + recv.type + "' from id:" + recv.id + " to id: " + recv.targetId);
-                                }
-                                else
-                                {
-                                    Debug.Log("Failed to Relay Message: id = " + recv.targetId);
+                                    case MessageData.Type.SDPOffer:
+                                    case MessageData.Type.SDPAnswer:
+                                    case MessageData.Type.ICECandidateOffer:
+                                    case MessageData.Type.ICECandidateAnswer:
+                                        var dest = m_WebSocketClients[recv.targetId];
+                                        dest.Send(json);
+                                        break;
+
+                                    case MessageData.Type.RequestReconnect:
+                                        break;
                                 }
                             }
                             catch (Exception e)
@@ -527,12 +701,24 @@ namespace ScreenShare
                         }
                         catch (Exception e)
                         {
-                            Debug.Log("Receive Error : " + e.Message);
+                            Debug.Log("Deserialize Error : " + e.Message);
                         }
                     }
                 },
                 TimeOut = new TimeSpan(0, 5, 0),
             };
+
+
+        }
+
+        private void M_Capture_OnStarted(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void M_Capture_OnStopped(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -552,9 +738,7 @@ namespace ScreenShare
             Debug.Log(m_HttpServer.TopPage);
 
             m_HttpServer.Start();
-
             m_WebSocketServer.Start();
-
 
             m_ServerRunning = true;
         }
@@ -573,7 +757,7 @@ namespace ScreenShare
 
                 var data = new MessageData { type = MessageData.Type.Disconnect };
                 var json = JsonConvert.SerializeObject(data);
-                foreach (var pair in m_WebSocketClients) 
+                foreach (var pair in m_WebSocketClients)
                     pair.Value.Send(json);
 
                 m_WebSocketClients.Clear();
@@ -592,7 +776,7 @@ namespace ScreenShare
         private void ReloadRunningProcesses()
         {
             m_RunningProcesses = Process.GetProcesses().Where((p) => { return p.MainWindowHandle != IntPtr.Zero && p.MainWindowTitle.Length != 0; }).ToArray();
-            
+
             comboBox_process.Items.Clear();
 
             var maxWidth = comboBox_process.DropDownWidth;
@@ -652,7 +836,6 @@ namespace ScreenShare
                 audioChannels = 0;
 
 
-            m_Capture.CaptureProcess = null;
             if (radioButton_process.Checked)
             {
                 var index = comboBox_process.SelectedIndex;
@@ -666,8 +849,7 @@ namespace ScreenShare
 
                 m_Capture.CaptureProcess = m_RunningProcesses[index];
             }
-
-            if (radioButton_area.Checked)
+            else if (radioButton_area.Checked)
             {
                 m_Capture.UseCaptureBounds = true;
                 m_Capture.CaptureBounds = m_CaptureBounds;
@@ -680,7 +862,7 @@ namespace ScreenShare
 
             captureScale = (1.0f - (float)comboBox_captureScale.SelectedIndex / 10);
             captureDivisionNum = comboBox_divisionNumber.SelectedIndex + 1;
-            captureEncordingQuality = Convert.ToInt32(textBox_captureQuality.Text);
+            //captureEncordingQuality = Convert.ToInt32(textBox_videoBitRate.Text);
             captureFps = Convert.ToInt32(textBox_captureFps.Text);
 
             audioSampleRate = Convert.ToInt32(comboBox_audioQuality.SelectedItem);
@@ -689,7 +871,7 @@ namespace ScreenShare
 
             m_Capture.Scale = captureScale;
             m_Capture.CaptureDivisionNum = captureDivisionNum;
-            m_Capture.EncoderQuality = captureEncordingQuality;
+            //m_Capture.EncoderQuality = captureEncordingQuality;
             m_Capture.FramesPerSecond = captureFps;
 
             m_Recorder.WaveFormat = new WaveFormat(audioSampleRate, audioBps, audioChannels);
@@ -719,38 +901,11 @@ namespace ScreenShare
         private bool StartRecording()
         {
             int captureWidth = (int)(m_Capture.CaptureBounds.Width * m_Capture.Scale),
-                captureHeight = (int)(m_Capture.CaptureBounds.Height * m_Capture.Scale),
-                codecSelectedIndex = comboBox_videoCodec.SelectedIndex,
-                codecQuality = Convert.ToInt32(textBox_recordQuality.Text);
+                captureHeight = (int)(m_Capture.CaptureBounds.Height * m_Capture.Scale);
 
             try
             {
-                m_AviWriter = new AviWriter(m_AviFilePath)
-                {
-                    FramesPerSecond = m_Capture.FramesPerSecond,
-                    EmitIndex1 = true,
-                };
 
-                if (codecSelectedIndex == 0)
-                {
-                    m_AviVideoStream = m_AviWriter.AddVideoStream(captureWidth, captureHeight);
-                }
-                else if (codecSelectedIndex == 1)
-                {
-                    m_AviVideoStream = m_AviWriter.AddMotionJpegVideoStream(captureWidth, captureHeight, codecQuality);
-                }
-                else
-                {
-                    var codecs = Mpeg4VideoEncoderVcm.GetAvailableCodecs();
-                    var encoder = new Mpeg4VideoEncoderVcm(captureWidth, captureHeight, m_Capture.FramesPerSecond, 0, codecQuality, codecs[codecSelectedIndex - 2].Codec);
-                    m_AviVideoStream = m_AviWriter.AddEncodingVideoStream(encoder);
-                }
-
-
-                if (checkBox_recordAudio.Checked)
-                {
-                    m_AviAudioStream = m_AviWriter.AddAudioStream(m_Recorder.WaveFormat.Channels, m_Recorder.WaveFormat.SampleRate, m_Recorder.WaveFormat.BitsPerSample);
-                }
             }
             catch
             {
@@ -783,17 +938,17 @@ namespace ScreenShare
         /// <summary>
         /// 画面キャプチャ(音声録音)の停止
         /// </summary>
-        private void StopCapture()
+        private async void StopCapture()
         {
+            await Task.Run(() => m_Capture.Stop());
+
             foreach (var pair in m_WebSocketClients)
             {
-                var data = new MessageData { type = MessageData.Type.StopCapture };
+                var data = new MessageData { type = MessageData.Type.StopCasting };
                 var json = JsonConvert.SerializeObject(data);
 
                 pair.Value.Send(json);
             }
-
-            m_Capture.StopAsync();
 
             if (checkBox_sendAudio.Checked || checkBox_recordAudio.Checked)
             {
@@ -809,7 +964,7 @@ namespace ScreenShare
                 m_AviAudioStream = null;
             }
         }
-     
+
 
         private void SendCaptureStartMessage(UserContext ctx)
         {
@@ -823,6 +978,9 @@ namespace ScreenShare
                 captureSettingData = new SettingData.CaptureSettingData
                 {
                     divisionNum = m_Capture.CaptureDivisionNum,
+                    aspectRatio = m_Capture.AspectRatio,
+                    width = m_Capture.DestinationSize.Width,
+                    height = m_Capture.DestinationSize.Height,
                 },
             };
             var data = new MessageData { type = MessageData.Type.Settings, data = setting };
@@ -830,7 +988,7 @@ namespace ScreenShare
 
             ctx.Send(json);
 
-            data = new MessageData { type = MessageData.Type.StartCapture };
+            data = new MessageData { type = MessageData.Type.StartCasting };
             json = JsonConvert.SerializeObject(data);
 
             ctx.Send(json);
@@ -891,7 +1049,7 @@ namespace ScreenShare
 
             textBox_ip.Enabled = true;
             button_connect.Enabled = true;
-            
+
             label_message.Text = Resources.ServerClosed;
         }
 
@@ -929,7 +1087,7 @@ namespace ScreenShare
 
             if (checkBox_recordCapture.Enabled && checkBox_recordCapture.Checked)
             {
-                if(!PrepareRecording())
+                if (!PrepareRecording())
                 {
                     label_message.Text = Resources.RecordCancelled;
                     return;
@@ -970,7 +1128,6 @@ namespace ScreenShare
 
             comboBox_process.Enabled = chk;
             checkBox_recordCapture.Enabled = !chk;
-            panel_record.Enabled = checkBox_recordCapture.Checked && !chk;
         }
 
         private void radioButton_area_CheckedChanged(object sender, EventArgs e)
@@ -1022,26 +1179,6 @@ namespace ScreenShare
         {
             var chk = ((CheckBox)sender).Checked;
 
-            //label_videoCodec.Enabled = radioButton_area.Checked && chk;
-            //comboBox_videoCodec.Enabled = radioButton_area.Checked && chk;
-            panel_record.Enabled = chk;
-
-        }
-        
-        private void comboBox_videoCodec_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var idx = ((ComboBox)sender).SelectedIndex;
-
-            if (idx == 0)
-            {
-                label_recordQualty.Enabled = false;
-                textBox_recordQuality.Enabled = false;
-            }
-            else
-            {
-                label_recordQualty.Enabled = true;
-                textBox_recordQuality.Enabled = true;
-            }
         }
 
         private void comboBox_waveInDevices_SelectedIndexChanged(object sender, EventArgs e)
@@ -1081,34 +1218,23 @@ namespace ScreenShare
             {
                 textBox.Text = "" + UInt16.MaxValue;
             }
-            
+
         }
 
-        private void textBox_captureQuality_KeyPress(object sender, KeyPressEventArgs e)
+        private static Regex reg_videoBitRate_key = new Regex(@"[0-9\bkM]");
+        private void textBox_videoBitRate_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if ((e.KeyChar < '0' || '9' < e.KeyChar) && e.KeyChar != '\b')
+            if (!reg_videoBitRate_key.IsMatch(""+e.KeyChar))
                 e.Handled = true;
         }
 
-        private void textBox_captureQuality_Validating(object sender, CancelEventArgs e)
+        private static Regex reg_videoBitRate_text = new Regex(@"^[1-9]\d{0,3}[kM]$");
+        private void textBox_videoBitRate_Validating(object sender, CancelEventArgs e)
         {
             var textBox = (TextBox)sender;
 
-            if (textBox.Text.Length == 0)
-                textBox.Text = "0";
-
-            try
-            {
-                var val = Convert.ToInt32(textBox.Text);
-                if (val > MaxQuality)
-                    textBox.Text = "" + MaxQuality;
-                else if (val < 0)
-                    textBox.Text = "" + MinQuality;
-            }
-            catch
-            {
-                textBox.Text = "" + MaxQuality;
-            }
+            if (!reg_videoBitRate_text.IsMatch(textBox.Text))
+                textBox.Text = "1M";
         }
 
         private void textBox_captureFps_Validating(object sender, CancelEventArgs e)

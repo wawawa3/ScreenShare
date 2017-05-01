@@ -61,13 +61,85 @@ namespace ScreenShare.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SpecificCulture {
             get {
                 return ((string)(this["SpecificCulture"]));
             }
             set {
                 this["SpecificCulture"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        public int ImageQuality {
+            get {
+                return ((int)(this["ImageQuality"]));
+            }
+            set {
+                this["ImageQuality"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ntp.ibaraki.ac.jp")]
+        public string NtpServer {
+            get {
+                return ((string)(this["NtpServer"]));
+            }
+            set {
+                this["NtpServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://calc.cis.ibaraki.ac.jp/time.php")]
+        public string NtpHttpUrl {
+            get {
+                return ((string)(this["NtpHttpUrl"]));
+            }
+            set {
+                this["NtpHttpUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int Scaling {
+            get {
+                return ((int)(this["Scaling"]));
+            }
+            set {
+                this["Scaling"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Division {
+            get {
+                return ((int)(this["Division"]));
+            }
+            set {
+                this["Division"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public string FramePerSecond {
+            get {
+                return ((string)(this["FramePerSecond"]));
+            }
+            set {
+                this["FramePerSecond"] = value;
             }
         }
     }

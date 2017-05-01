@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace ScreenShare
 {
@@ -41,6 +43,16 @@ namespace ScreenShare
             }
                 
             return concat;
+        }
+
+        public static byte[] Convert(object obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var bf = new BinaryFormatter();
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
         }
     }
 }

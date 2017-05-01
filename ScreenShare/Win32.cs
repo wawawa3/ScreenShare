@@ -86,6 +86,9 @@ namespace ScreenShare
         public static extern IntPtr GetDC(IntPtr hwnd);
 
         [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateDC(string pszDriver, string pszDevice, string pszOutput, IntPtr pInitData);
+
+        [DllImport("gdi32.dll")]
         public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
         [DllImport("user32.dll")]
@@ -103,11 +106,15 @@ namespace ScreenShare
         [DllImport("user32.dll")]
         public static extern IntPtr ReleaseDC(IntPtr hwnd, IntPtr hdc);
 
-
         public delegate bool WNDENUMPROC(IntPtr hWnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         public static extern bool EnumWindows(WNDENUMPROC lpEnumFunc, IntPtr lParam);
+
+        delegate bool EnumMonitorsDelegate(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
+
+        [DllImport("user32.dll")]
+        static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, EnumMonitorsDelegate lpfnEnum, IntPtr dwData);
 
         [DllImport("user32")]
         public static extern bool IsWindowVisible(IntPtr hWnd);
@@ -116,7 +123,10 @@ namespace ScreenShare
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BITMAPINFO pbmi, uint pila, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
+        public static extern IntPtr CreateDIBSection(IntPtr hdc, ref BITMAPINFO pbmi, uint pila, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
+
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateDIBitmap(IntPtr hdc, ref BITMAPINFOHEADER lpbmih, uint fdwInit, byte[] lpbInit, ref BITMAPINFO lpbmi, uint fuUsage);
 
         [DllImport("gdi32.dll")] 
         public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);

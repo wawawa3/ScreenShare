@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using System.Net;
 using System.Net.WebSockets;
+using System.Security.Principal;
 
 using System.IO;
 using System.IO.Compression;
@@ -47,8 +48,10 @@ namespace ScreenShare
         /// </summary>
         public string SpecificCulture { get; set; }
 
+
+        public event EventHandler<Exception> OnError = delegate { };
+
         private HttpListener HttpListener;
-        private List<WebSocket> Clients = new List<WebSocket>();
 
         /// <summary>
         /// HTTPサーバを初期化します。
@@ -120,25 +123,20 @@ namespace ScreenShare
                     }
                     catch (Exception e)
                     {
-                        Debug.Log(e.Message);
+                        OnError(this, e);
                     }
 
                     res.Close();
                 }
-
-                Debug.Log("Exit");
             });
         }
 
         /// <summary>
         /// サーバを閉じます。
         /// </summary>
-        public void Close()
+        public void Stop()
         {
-            //HttpListener.Stop();
-            HttpListener.Close();
-
-            Debug.Log("HttpServer Closed.");
+            HttpListener.Stop();
         }
     }
 }

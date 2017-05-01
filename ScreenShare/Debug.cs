@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,31 @@ namespace ScreenShare
     /// </summary>
     class Debug
     {
+        public static TextWriter Writer { get; set; }
+
         /// <summary>
         /// ログ
         /// </summary>
         /// <param name="log">文字列</param>
-        [Conditional("DEBUG")]
-        public static void Log(string log)
+        //[Conditional("DEBUG")]
+        public static void Log(string tag, string log)
         {
-            Console.WriteLine(log);
+            //Console.WriteLine(log);
+            if (Writer == null)
+            {
+                Writer = new StreamWriter("debug.log", true);
+                Writer.WriteLine("------------------------------------s");
+            }
+
+            Writer.WriteLine(DateTime.Now + " : ["+ tag +"] "+ log);
+        }
+
+        public static void Terminate()
+        {
+            if (Writer != null)
+            {
+                Writer.Close();
+            }
         }
 
         /// <summary>
@@ -39,7 +57,7 @@ namespace ScreenShare
             act.Invoke();
             sw.Stop();
 
-            Debug.Log(tag + ":" + sw.ElapsedMilliseconds);
+            Debug.Log(tag, "" + sw.ElapsedMilliseconds);
         }
     }
 }

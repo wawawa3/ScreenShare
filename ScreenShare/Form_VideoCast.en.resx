@@ -162,13 +162,13 @@
     <value>NoControl</value>
   </data>
   <data name="label_interval.Location" type="System.Drawing.Point, System.Drawing">
-    <value>307, 52</value>
+    <value>336, 52</value>
   </data>
   <data name="label_interval.Size" type="System.Drawing.Size, System.Drawing">
-    <value>138, 12</value>
+    <value>109, 12</value>
   </data>
   <data name="label_interval.Text" xml:space="preserve">
-    <value>Capture Frame Rate(FPS)</value>
+    <value>Capture Frame Rate</value>
   </data>
   <data name="button_area.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -199,39 +199,6 @@
   </data>
   <data name="checkBox_recordCapture.Text" xml:space="preserve">
     <value>Record Video</value>
-  </data>
-  <data name="label_videoCodec.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label_videoCodec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 6</value>
-  </data>
-  <data name="label_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
-    <value>50, 12</value>
-  </data>
-  <data name="label_videoCodec.Text" xml:space="preserve">
-    <value>Encorder</value>
-  </data>
-  <data name="label_recordQualty.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label_recordQualty.Location" type="System.Drawing.Point, System.Drawing">
-    <value>208, 6</value>
-  </data>
-  <data name="label_recordQualty.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 12</value>
-  </data>
-  <data name="label_recordQualty.Text" xml:space="preserve">
-    <value>Record Quality(0-100)</value>
-  </data>
-  <data name="comboBox_videoCodec.Items" xml:space="preserve">
-    <value>Non-compression</value>
-  </data>
-  <data name="comboBox_videoCodec.Size" type="System.Drawing.Size, System.Drawing">
-    <value>118, 20</value>
-  </data>
-  <data name="panel_record.Size" type="System.Drawing.Size, System.Drawing">
-    <value>388, 27</value>
   </data>
   <data name="checkBox_recordAudio.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -320,6 +287,16 @@
   <data name="label_captureScale.Text" xml:space="preserve">
     <value>Scaling</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="textBox_videoBitRate.MaxLength" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="textBox_videoBitRate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>49, 19</value>
+  </data>
+  <data name="textBox_videoBitRate.Text" xml:space="preserve">
+    <value>1M</value>
+  </data>
   <data name="label_divisionNumber.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -332,17 +309,23 @@
   <data name="label_divisionNumber.Text" xml:space="preserve">
     <value>Division</value>
   </data>
-  <data name="label_imageCompressQuality.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="label_videoBitRate.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Right</value>
+  </data>
+  <data name="label_videoBitRate.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label_videoBitRate.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label_imageCompressQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>332, 24</value>
+  <data name="label_videoBitRate.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
   </data>
-  <data name="label_imageCompressQuality.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 12</value>
+  <data name="label_videoBitRate.Size" type="System.Drawing.Size, System.Drawing">
+    <value>81, 12</value>
   </data>
-  <data name="label_imageCompressQuality.Text" xml:space="preserve">
-    <value>Image Quality(0-100)</value>
+  <data name="label_videoBitRate.Text" xml:space="preserve">
+    <value>Video Bit Rate</value>
   </data>
   <data name="groupBox_sending.Text" xml:space="preserve">
     <value>Send</value>

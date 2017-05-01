@@ -16,6 +16,8 @@ namespace ScreenShare
         public delegate void AreaSelectedEventHandler(Rectangle rect);
         public event AreaSelectedEventHandler Selected;
 
+        public Screen Display { get; set; }
+
         bool MouseDowned = false;
         Point DownPoint = new Point();
         Pen Pen = new Pen(Color.Red, 3f);
@@ -23,7 +25,6 @@ namespace ScreenShare
         public Form_CaptureArea()
         {
             InitializeComponent();
-            this.WindowState = FormWindowState.Maximized;
         }
 
         private void Form_CaptureArea_MouseDown(object sender, MouseEventArgs e)
@@ -61,7 +62,7 @@ namespace ScreenShare
         {
             if (!MouseDowned) return;
 
-            var rect = GetRect(System.Windows.Forms.Cursor.Position);
+            var rect = GetRect(new Point(Cursor.Position.X - this.Location.X, Cursor.Position.Y - this.Location.Y));
 
             GraphicsPath path = new GraphicsPath();
             path.AddRectangle(this.DisplayRectangle);
@@ -73,6 +74,14 @@ namespace ScreenShare
 
             e.Graphics.Clear(SystemColors.Control);
             e.Graphics.DrawRectangle(Pen, rect);
+        }
+
+        private void Form_CaptureArea_Activated(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Normal;
+            if (Display != null)
+                this.Location = Display.Bounds.Location;
+            this.WindowState = FormWindowState.Maximized;
         }
     }
 }

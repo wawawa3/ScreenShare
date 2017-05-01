@@ -117,29 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="button_reloadWaveInDevices.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAADJUExURf////z8/K2trUhISAgICAEBAQICAhUVFVFRUcbGxubm5j4+PgAAAGhoaPT09Ojo6B8f
-        HwMDAyIiIkNDQ/b29v7+/kxMTAwMDJiYmO7u7uLi4nh4eH9/f7KysszMzKqqqt3d3VNTU5GRkWJiYoGB
-        gQ0NDby8vBgYGO3t7ePj4xwcHN7e3vX19dTU1FhYWHFxcZOTkxISEr6+vm9vb2tra/v7+0dHR/Hx8To6
-        OgcHB2VlZQkJCZeXl9jY2CwsLBAQEDk5OYODg+Dg4Hjuka4AAACqSURBVChTLY5XEoJAEAWfymJ6Kijm
-        nBADCphzuP+h3F3or+muqamB4ll6vcPP9wcESp2boOb+CEIfOF+UXG3dVNiT4uAfN9EpDpGg6OtLQRy2
-        5C72UOFjRa512Pga2MxqVyw9z4PJRaIS1/UwpygkCteyXIzJSeKYkjP0SWMQ+5A0R6g3yGarDXS6JtmT
-        vWLJh+yqJZU1R20WinLUlMrKgVQ6Ywgzm8sDwB+JyBGawJE7yAAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="button_reloadProcesses.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAADJUExURf////z8/K2trUhISAgICAEBAQICAhUVFVFRUcbGxubm5j4+PgAAAGhoaPT09Ojo6B8f
-        HwMDAyIiIkNDQ/b29v7+/kxMTAwMDJiYmO7u7uLi4nh4eH9/f7KysszMzKqqqt3d3VNTU5GRkWJiYoGB
-        gQ0NDby8vBgYGO3t7ePj4xwcHN7e3vX19dTU1FhYWHFxcZOTkxISEr6+vm9vb2tra/v7+0dHR/Hx8To6
-        OgcHB2VlZQkJCZeXl9jY2CwsLBAQEDk5OYODg+Dg4Hjuka4AAACqSURBVChTLY5XEoJAEAWfymJ6Kijm
-        nBADCphzuP+h3F3or+muqamB4ll6vcPP9wcESp2boOb+CEIfOF+UXG3dVNiT4uAfN9EpDpGg6OtLQRy2
-        5C72UOFjRa512Pga2MxqVyw9z4PJRaIS1/UwpygkCteyXIzJSeKYkjP0SWMQ+5A0R6g3yGarDXS6JtmT
-        vWLJh+yqJZU1R20WinLUlMrKgVQ6Ywgzm8sDwB+JyBGawJE7yAAAAABJRU5ErkJggg==
-</value>
-  </data>
 </root>

@@ -15,7 +15,11 @@ namespace ScreenShare
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#if BROADCAST_IMAGE
+            Application.Run(new Form_ImageCast());
+#else
             Application.Run(new Form_tcp());
+#endif
         }
     }
 }
