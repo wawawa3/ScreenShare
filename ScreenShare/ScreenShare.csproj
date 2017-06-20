@@ -143,7 +143,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ByteUtils.cs" />
-    <Compile Include="SizeConverter.cs" />
     <Compile Include="TimeUtils.cs" />
     <Compile Include="Tree.cs" />
     <Compile Include="Win32.cs" />
