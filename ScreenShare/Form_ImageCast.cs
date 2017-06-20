@@ -12,21 +12,14 @@ using System.IO;
 using System.IO.Pipes;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.NetworkInformation;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Text;
-using System.Reflection;
+
 
 using Alchemy;
 using Alchemy.Classes;
 
-
 using NAudio.Wave;
-
-using SharpAvi.Codecs;
-using SharpAvi.Output;
-using Accord.Video;
 
 using Newtonsoft.Json;
 

@@ -20,7 +20,7 @@
 x64/
 x86/
 bld/
-[Bb]in/
+#[Bb]in/
 [Oo]bj/
 [Ll]og/
 
@@ -286,3 +286,13 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# bin
+#bin/*
+#!bin/batch/
+#!bin/documents/libs/
+#!index.html
+#!script.js
+#!style.css
+#!bin/dll/
+#!ffmpeg.exe
