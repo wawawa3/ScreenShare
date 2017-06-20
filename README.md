@@ -3,7 +3,7 @@ LANで利用できる画面・音声の配信ツールです。
 WebRTCに対応したブラウザで配信画面の閲覧と、配信音声を聞くことができます。
 
 ## ビルド
-vsprojを開いてビルドすると、「bin/ScreenShare.exe」が作られます。(VS2015環境で確認)
+csprojを開いてビルドすると、「bin/ScreenShare.exe」が作られます。(VS2015環境で確認)
 
 ## 手順
 1. 共有元となるPCで「bin/ScreenShare.exe」を実行します。
