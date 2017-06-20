@@ -133,7 +133,7 @@ function onLoad() {
 		"Settings"				: 0x9,
 		"StartCasting"			: 0xa,
 		"StopCasting"			: 0xb,
-		"RequestReconnect"		: 0xc,
+		"Report"		: 0xc,
 		"Disconnect"			: 0xd,
 	};
 
@@ -448,12 +448,12 @@ function onLoad() {
 	function requestTimerFunc() {
 		if (directReceive) {
 			console.log("send to server: req : -1");
-			//sendToServer(socket, MessageType.RequestReconnect, peerId, -1, {});
+			//sendToServer(socket, MessageType.Report, peerId, -1, {});
 			return;
 		}
 
 		debugLog("request reconnection : "+ peer_answer.offerId, "red");
-		sendToServer(socket, MessageType.RequestReconnect, peerId, peer_answer.offerId, {});
+		sendToServer(socket, MessageType.Report, peerId, peer_answer.offerId, {});
 
 		requestTimer = setTimeout(function(){ requestTimerFunc(); }, 1000 / framePerSecond + requestTimeout);
 	}
@@ -748,6 +748,10 @@ function onLoad() {
 
 		peer_offer = [];
 		peer_answer = null;
+
+		setInfo("_sv", [0,3,4,5], "-");
+		setInfo("_sv", 1, "connecting");
+		setInfo("_sv", 2, "no");
 	}
 
 	socket = new Alchemy({
@@ -925,7 +929,7 @@ function onLoad() {
 				break;
 
 
-				case MessageType.RequestReconnect:
+				case MessageType.Report:
 				closeAllConnection();
 				clearDelayTimer();
 
@@ -964,9 +968,6 @@ function onLoad() {
 	};
 
 	setLoader("Connecting...");
-	setInfo("_sv", [0,3,4,5], "-");
-	setInfo("_sv", 1, "connecting");
-	setInfo("_sv", 2, "no");
 
 	connectTime = Date.now();
 

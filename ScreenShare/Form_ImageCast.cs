@@ -258,6 +258,8 @@ namespace ScreenShare
 
             #region Capture
 
+            long b = 0;
+            var sw = new Stopwatch();
             m_Capture.OnCaptured += (s, data) =>
             {
                 if (m_WebSocketClients.ContainsKey(0))
@@ -283,6 +285,19 @@ namespace ScreenShare
                 }
 
                 m_LastFrameBuffer[data.segmentIdx] = (byte[])buffer.Clone();
+
+                try
+                {
+                    b += data.encodedFrameBuffer.LongLength;
+                    if (!sw.IsRunning)
+                        sw.Start();
+                    if (sw.ElapsedMilliseconds != 0)
+                        Debug.Log("Ws", "Byte:" + b / (sw.ElapsedMilliseconds / 1000));
+                }
+                catch (Exception e) { }
+               
+                
+                
             };
 
             m_Capture.OnError += (s, ex) =>
@@ -601,7 +616,7 @@ namespace ScreenShare
                                         }
                                         break;
 
-                                    case MessageData.Type.RequestReconnect:
+                                    case MessageData.Type.Report:
                                         { 
                                             if (recv.targetId == -1)
                                             {

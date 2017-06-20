@@ -28,7 +28,7 @@ namespace ScreenShare
             Settings,
             StartCasting,
             StopCasting,
-            RequestReconnect,
+            Report,
             Disconnect,
         };
 
