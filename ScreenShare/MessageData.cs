@@ -9,6 +9,11 @@ using System.Drawing;
 
 namespace ScreenShare
 {
+    public interface IPackable
+    {
+        byte[] Pack();
+    }
+
     /// <summary>
     /// WebSocketでやり取りされるメッセージ構造
     /// </summary>
@@ -29,6 +34,7 @@ namespace ScreenShare
             StartCasting,
             StopCasting,
             Report,
+            Reset,
             Disconnect,
         };
 
@@ -113,70 +119,133 @@ namespace ScreenShare
     /// <summary>
     /// WebRTCのDataChannelで送信されるデータの型
     /// </summary>
-    public enum BufferType : byte
+    public enum DataType : byte
     {
-        FrameBuffer = 0x00, AudioBuffer = 0x01,
+        CapturedImage = 0x00,
+        CapturedAudio = 0x01,
     }
 
-    /// <summary>
-    /// WebRTCのDataChannelで送信されるデータの主ヘッダ
-    /// 9 byte
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct BufferHeader
+    public class CommunicationData : IPackable
     {
-        public BufferType type { get; private set; }
-        public int totalms { get; private set; }
-        public int currentms { get; private set; }
+        public CommunicationDataHeader Header { get; set; }
+        public IPackable Body { get; set; }
 
-        public BufferHeader(BufferType t, int ms)
+        public byte[] Pack()
         {
-            type = t;
-            //ticks = (int)(DateTime.UtcNow.Ticks / TimeSpan.TicksPerMillisecond);
+            var packedBody = Body.Pack();
+            Header.BodyChank.SetBodyLength(packedBody.Length);
 
-            totalms = ms;
-            currentms = ms;
+            return ByteUtils.Concatenation(Header.Pack(), packedBody);
+        }
+    }
+
+    public class CommunicationDataHeader : IPackable
+    {
+        public TimeChank TimeChank { get; set; }
+        public BodyChank BodyChank { get; set; }
+
+        public byte[] Pack()
+        {
+            return ByteUtils.Concatenation(TimeChank.Pack(), BodyChank.Pack());
         }
     }
 
     /// <summary>
-    /// WebRTCのDataChannelで送信されるキャプチャデータのヘッダ
-    /// 10 byte
+    /// データを送信/受信した時刻を格納するチャンク
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct FrameHeader
+    public struct TimeChank : IPackable
     {
-        public BufferHeader bufferheader { get; private set; }
-        public byte segmentIndex { get; private set; }
+        private uint totalms;
+        private uint currentms;
 
-        public FrameHeader(byte segIdx, int ms)
+        public TimeChank(int ms)
         {
-            bufferheader = new BufferHeader(BufferType.FrameBuffer, ms);
-            segmentIndex = segIdx;
+            totalms = (uint)ms;
+            currentms = (uint)ms;
+        }
+
+        public byte[] Pack()
+        {
+            return ByteUtils.GetBytesFromStructure(this);
         }
     }
 
-    /// <summary>
-    /// WebRTCのDataChannelで送信される音声データのヘッダ
-    /// 12 byte
-    /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct AudioHeader
+    public struct BodyChank : IPackable
     {
-        public BufferHeader bufferheader { get; private set; }
-        public byte dum1, dum2, dum3;
+        private DataType bodyType;
+        private int bodyLength;
 
-        public AudioHeader(int ms)
+        public BodyChank(DataType type)
         {
-            bufferheader = new BufferHeader(BufferType.AudioBuffer, ms);
-            dum1 = dum2 = dum3 = 0;
+            bodyType = type;
+            bodyLength = -1;
+        }
+
+        public void SetBodyLength(int length)
+        {
+            bodyLength = length;
+        }
+
+        public byte[] Pack()
+        {
+            return ByteUtils.GetBytesFromStructure(this);
+        }
+    }
+
+
+    public class CapturedImage : IPackable
+    {
+        private List<CapturedImageSegmentChank> capturedImageSegments = new List<CapturedImageSegmentChank>();
+
+        public void AddSegment(CapturedImageSegmentChank segment)
+        {
+            capturedImageSegments.Add(segment);
+        }
+
+        public byte[] Pack()
+        {
+            var buf = BitConverter.GetBytes((short)capturedImageSegments.Count);
+            foreach (var seg in capturedImageSegments)
+            {
+                buf = ByteUtils.Concatenation(buf, seg.Pack());
+            }
+            return buf;
+        }
+    }
+
+
+    public class CapturedImageSegmentChank : IPackable
+    {
+        public Rect_s capturedRect { get; set; }
+        public int capturedSize { get; set; }
+        public byte[] capturedData { get; set; }
+
+        public byte[] Pack()
+        {
+            var buf = ByteUtils.GetBytesFromStructure(capturedRect);
+            buf = ByteUtils.Concatenation(buf, BitConverter.GetBytes(capturedSize));
+            buf = ByteUtils.Concatenation(buf, capturedData);
+
+            return buf;
+        }
+    }
+
+    public class CapturedAudio : IPackable
+    {
+        public byte[] normalizedSamples { get; set; }
+
+        public byte[] Pack()
+        {
+            return normalizedSamples;
         }
     }
 
     /// <summary>
     /// サイズ用
     /// </summary>
-    struct Vec2
+    public struct Vec2
     {
         public ushort x, y;
 
@@ -187,8 +256,21 @@ namespace ScreenShare
         }
     }
 
+    public struct Rect_s
+    {
+        public short x, y, width, height;
+
+        public Rect_s(int x, int y, int w, int h)
+        {
+            this.x = (short)x;
+            this.y = (short)y;
+            this.width = (short)w;
+            this.height = (short)h;
+        }
+    }
+
     public class Commons
     {
-        public const string CheckPacketIdentifier = "cp";
+        public const string CheckContinuesMessage = "cp";
     }
 }

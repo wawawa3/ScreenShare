@@ -109,7 +109,7 @@ namespace ScreenShare.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int Scaling {
             get {
                 return ((int)(this["Scaling"]));
@@ -133,7 +133,7 @@ namespace ScreenShare.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
         public string FramePerSecond {
             get {
                 return ((string)(this["FramePerSecond"]));

@@ -59,8 +59,6 @@
             this.label_captureScale = new System.Windows.Forms.Label();
             this.textBox_captureQuality = new System.Windows.Forms.TextBox();
             this.comboBox_captureScale = new System.Windows.Forms.ComboBox();
-            this.label_divisionNumber = new System.Windows.Forms.Label();
-            this.comboBox_divisionNumber = new System.Windows.Forms.ComboBox();
             this.groupBox_capture = new System.Windows.Forms.GroupBox();
             this.panel_captureDesktop = new System.Windows.Forms.Panel();
             this.button_areaReset = new System.Windows.Forms.Button();
@@ -268,8 +266,6 @@
             this.panel_manualCasting.Controls.Add(this.label_captureScale);
             this.panel_manualCasting.Controls.Add(this.textBox_captureQuality);
             this.panel_manualCasting.Controls.Add(this.comboBox_captureScale);
-            this.panel_manualCasting.Controls.Add(this.label_divisionNumber);
-            this.panel_manualCasting.Controls.Add(this.comboBox_divisionNumber);
             this.panel_manualCasting.Name = "panel_manualCasting";
             // 
             // label_captureQuality
@@ -313,28 +309,6 @@
             resources.ApplyResources(this.comboBox_captureScale, "comboBox_captureScale");
             this.comboBox_captureScale.Name = "comboBox_captureScale";
             this.comboBox_captureScale.TabStop = false;
-            // 
-            // label_divisionNumber
-            // 
-            resources.ApplyResources(this.label_divisionNumber, "label_divisionNumber");
-            this.label_divisionNumber.Name = "label_divisionNumber";
-            // 
-            // comboBox_divisionNumber
-            // 
-            this.comboBox_divisionNumber.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox_divisionNumber.FormattingEnabled = true;
-            this.comboBox_divisionNumber.Items.AddRange(new object[] {
-            resources.GetString("comboBox_divisionNumber.Items"),
-            resources.GetString("comboBox_divisionNumber.Items1"),
-            resources.GetString("comboBox_divisionNumber.Items2"),
-            resources.GetString("comboBox_divisionNumber.Items3"),
-            resources.GetString("comboBox_divisionNumber.Items4"),
-            resources.GetString("comboBox_divisionNumber.Items5"),
-            resources.GetString("comboBox_divisionNumber.Items6"),
-            resources.GetString("comboBox_divisionNumber.Items7")});
-            resources.ApplyResources(this.comboBox_divisionNumber, "comboBox_divisionNumber");
-            this.comboBox_divisionNumber.Name = "comboBox_divisionNumber";
-            this.comboBox_divisionNumber.TabStop = false;
             // 
             // groupBox_capture
             // 
@@ -466,8 +440,6 @@
         private System.Windows.Forms.ComboBox comboBox_audioQuality;
         private System.Windows.Forms.Label label_audioQuality;
         private System.Windows.Forms.CheckBox checkBox_stereo;
-        private System.Windows.Forms.ComboBox comboBox_divisionNumber;
-        private System.Windows.Forms.Label label_divisionNumber;
         private System.Windows.Forms.TextBox textBox_captureQuality;
         private System.Windows.Forms.ComboBox comboBox_captureScale;
         private System.Windows.Forms.Label label_captureScale;

@@ -20,6 +20,11 @@ namespace ScreenShare
             return arr;
         }
 
+        public static void GetBytesFromPtr(IntPtr ptr, byte[] buf)
+        {
+            Marshal.Copy(ptr, buf, 0, buf.Length);
+        }
+
         public static byte[] GetBytesFromPtr(IntPtr ptr, long size)
         {
             byte[] buf = new byte[size];

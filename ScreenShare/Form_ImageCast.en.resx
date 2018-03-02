@@ -118,9 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="button_startCapture.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
   <data name="button_startCapture.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -131,9 +128,6 @@
   <data name="button_startCapture.Text" xml:space="preserve">
     <value>Start Capture</value>
   </data>
-  <data name="button_stopCapture.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
   <data name="button_stopCapture.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -143,17 +137,8 @@
   <data name="button_stopCapture.Text" xml:space="preserve">
     <value>Stop Capture</value>
   </data>
-  <data name="textBox_ip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>117, 14</value>
-  </data>
   <data name="label_ip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
-  </data>
-  <data name="label_ip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>92, 12</value>
-  </data>
-  <data name="label_ip.Text" xml:space="preserve">
-    <value>Local IP Address</value>
   </data>
   <data name="button_connect.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -163,12 +148,6 @@
   </data>
   <data name="button_disconnect.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
-  </data>
-  <data name="button_disconnect.Text" xml:space="preserve">
-    <value>Close Server</value>
-  </data>
-  <data name="label_message.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
   </data>
   <data name="label_message.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -212,22 +191,7 @@
   <data name="comboBox_process.Location" type="System.Drawing.Point, System.Drawing">
     <value>199, 95</value>
   </data>
-  <data name="panel_capture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 508</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="groupBox_recording.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="groupBox_recording.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 428</value>
-  </data>
-  <data name="groupBox_recording.Size" type="System.Drawing.Size, System.Drawing">
-    <value>506, 77</value>
-  </data>
-  <data name="groupBox_recording.Text" xml:space="preserve">
-    <value>Recording</value>
-  </data>
   <data name="checkBox_recordVideo.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -237,35 +201,17 @@
   <data name="checkBox_recordVideo.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 16</value>
   </data>
-  <data name="checkBox_recordVideo.Text" xml:space="preserve">
-    <value>Record Video</value>
-  </data>
   <data name="checkBox_recordAudio.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="checkBox_recordAudio.Size" type="System.Drawing.Size, System.Drawing">
-    <value>93, 16</value>
+  <data name="groupBox_recording.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 428</value>
   </data>
-  <data name="checkBox_recordAudio.Text" xml:space="preserve">
-    <value>Record Voice</value>
+  <data name="groupBox_recording.Size" type="System.Drawing.Size, System.Drawing">
+    <value>506, 82</value>
   </data>
-  <data name="groupBox_voice.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="groupBox_voice.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
-    <value>GrowAndShrink</value>
-  </data>
-  <data name="groupBox_voice.Size" type="System.Drawing.Size, System.Drawing">
-    <value>505, 110</value>
-  </data>
-  <data name="groupBox_voice.Text" xml:space="preserve">
-    <value>Voice</value>
-  </data>
-  <data name="panel_voice.Location" type="System.Drawing.Point, System.Drawing">
-    <value>179, 18</value>
-  </data>
-  <data name="panel_voice.Size" type="System.Drawing.Size, System.Drawing">
-    <value>320, 74</value>
+  <data name="groupBox_recording.Text" xml:space="preserve">
+    <value>Recording</value>
   </data>
   <data name="label_audioQuality.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -282,12 +228,6 @@
   <data name="checkBox_stereo.Location" type="System.Drawing.Point, System.Drawing">
     <value>260, 55</value>
   </data>
-  <data name="checkBox_stereo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 16</value>
-  </data>
-  <data name="checkBox_stereo.Text" xml:space="preserve">
-    <value>Stereo</value>
-  </data>
   <data name="label_waveInDevices.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -303,6 +243,12 @@
   <data name="comboBox_waveInDevices.Location" type="System.Drawing.Point, System.Drawing">
     <value>93, 3</value>
   </data>
+  <data name="panel_voice.Location" type="System.Drawing.Point, System.Drawing">
+    <value>179, 18</value>
+  </data>
+  <data name="panel_voice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>338, 74</value>
+  </data>
   <data name="checkBox_captureVoice.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -312,50 +258,11 @@
   <data name="checkBox_captureVoice.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 16</value>
   </data>
-  <data name="checkBox_captureVoice.Text" xml:space="preserve">
-    <value>Capture Voice</value>
+  <data name="groupBox_voice.Size" type="System.Drawing.Size, System.Drawing">
+    <value>523, 110</value>
   </data>
-  <data name="groupBox_casting.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 258</value>
-  </data>
-  <data name="groupBox_casting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>501, 84</value>
-  </data>
-  <data name="groupBox_casting.Text" xml:space="preserve">
-    <value>Casting</value>
-  </data>
-  <data name="textBox_captureFps.Location" type="System.Drawing.Point, System.Drawing">
-    <value>446, 46</value>
-  </data>
-  <data name="comboBox_captureScale.Location" type="System.Drawing.Point, System.Drawing">
-    <value>232, 21</value>
-  </data>
-  <data name="label_captureScale.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label_captureScale.Location" type="System.Drawing.Point, System.Drawing">
-    <value>184, 24</value>
-  </data>
-  <data name="label_captureScale.Size" type="System.Drawing.Size, System.Drawing">
-    <value>42, 12</value>
-  </data>
-  <data name="label_captureScale.Text" xml:space="preserve">
-    <value>Scaling</value>
-  </data>
-  <data name="textBox_captureQuality.Location" type="System.Drawing.Point, System.Drawing">
-    <value>446, 21</value>
-  </data>
-  <data name="label_divisionNumber.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>180, 49</value>
-  </data>
-  <data name="label_divisionNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>46, 12</value>
-  </data>
-  <data name="label_divisionNumber.Text" xml:space="preserve">
-    <value>Division</value>
+  <data name="groupBox_voice.Text" xml:space="preserve">
+    <value>Voice</value>
   </data>
   <data name="label_captureQuality.Location" type="System.Drawing.Point, System.Drawing">
     <value>361, 24</value>
@@ -366,20 +273,29 @@
   <data name="label_captureQuality.Text" xml:space="preserve">
     <value>Cature Quality</value>
   </data>
-  <data name="comboBox_divisionNumber.Location" type="System.Drawing.Point, System.Drawing">
-    <value>232, 46</value>
+  <data name="textBox_captureFps.Location" type="System.Drawing.Point, System.Drawing">
+    <value>446, 46</value>
   </data>
-  <data name="groupBox_capture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>505, 133</value>
+  <data name="label_captureScale.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="groupBox_capture.Text" xml:space="preserve">
-    <value>Capture Source</value>
+  <data name="label_captureScale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>184, 24</value>
   </data>
-  <data name="panel_captureDesktop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>183, 12</value>
+  <data name="textBox_captureQuality.Location" type="System.Drawing.Point, System.Drawing">
+    <value>446, 21</value>
   </data>
-  <data name="panel_captureDesktop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>316, 77</value>
+  <data name="comboBox_captureScale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>232, 21</value>
+  </data>
+  <data name="panel_manualCasting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>498, 68</value>
+  </data>
+  <data name="groupBox_casting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 258</value>
+  </data>
+  <data name="groupBox_casting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>637, 104</value>
   </data>
   <data name="button_areaReset.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -414,8 +330,11 @@
   <data name="comboBox_targetDisplay.Size" type="System.Drawing.Size, System.Drawing">
     <value>224, 20</value>
   </data>
-  <data name="radioButton_desktop.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="panel_captureDesktop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>183, 12</value>
+  </data>
+  <data name="panel_captureDesktop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>316, 77</value>
   </data>
   <data name="radioButton_desktop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -429,8 +348,14 @@
   <data name="radioButton_desktop.Text" xml:space="preserve">
     <value>Desktop</value>
   </data>
-  <data name="label_Client.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="groupBox_capture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>505, 136</value>
+  </data>
+  <data name="groupBox_capture.Text" xml:space="preserve">
+    <value>Capture Source</value>
+  </data>
+  <data name="panel_capture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>644, 513</value>
   </data>
   <data name="label_Client.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -444,9 +369,6 @@
   <data name="label_Client.Text" xml:space="preserve">
     <value>Connected : </value>
   </data>
-  <data name="label_ConnectionNum.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
-  </data>
   <data name="label_ConnectionNum.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -454,6 +376,6 @@
     <value>91, 582</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>536, 631</value>
+    <value>542, 631</value>
   </data>
 </root>

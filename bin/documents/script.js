@@ -1,82 +1,174 @@
+/**
+ * @fileoverview Client side for ScreenShare
+ * @preserve © 2015 Daiki Ito
+ */
+
+/**
+ * スクリプト本体
+ */
 function onLoad() {
-	var __INFO__ = true;
-	var __DEBUG__ = false;
+	/**
+	 * アプリケーション情報を表示する
+	 * @const {boolean}
+	 */
+	const __INFO__ = true;
 
-	if (__DEBUG__) {
-		var dLabelID = document.createElement("p");
-		var dLabelOffer = [];
-		var dLabelAns = [];
-		var dBody = document.getElementById("_body");
-		var dLabelLog = document.createElement("p");
-		var dButton = document.createElement("input");
-		var dCast = true;
-		dButton.type = "button";
-		dButton.onclick = function() { dCast = !dCast; }
-		dButton.value = "chk";
-		dBody.appendChild(dLabelLog);
-		dBody.appendChild(dLabelID);
-		dBody.appendChild(dButton);
+	/**
+	 * アプリケーションデバッグを有効にする
+	 * @const {boolean}
+	 */
+	const __DEBUG__ = true;
 
-		var debugLog = function(log, col = "black") {
-			dLabelLog.innerHTML += "</br><font color="+col+">"+log+"</font>";
+	// 状態要素を準備する
+	if (__INFO__) {
+		var setInfo = (pt, ch, text) => {
+			if (!Array.isArray(ch)) ch = [ch];
+			for (let k in ch) {
+				let dom = document.getElementById(pt).children[0].children[ch[k]];
+				if (ch[k] == 0) dom.children[2].innerHTML = text;
+				else dom.children[1].innerHTML = text;
+			}
 		}
 	}
 	else {
-		var debugLog = function(log, col = "black") {}
+		var setInfo = (pt, ch, text) => {};
+	}
+
+	// デバッグ用要素を準備する
+	if (__DEBUG__) {
+		var d_LabelID = document.createElement(`p`);
+		var d_LabelOffer = [];
+		var d_LabelAns = [];
+		var d_Body = document.getElementById(`_body`);
+		var d_DivLog = document.createElement(`div`);
+		var d_TableLog = document.createElement(`table`);
+		var d_LabelChkboxCast = document.createElement(`p`);
+		var d_LabelChkboxReceive = document.createElement(`p`);
+		var d_LabelChkboxSegment = document.createElement(`p`);
+		var d_LabelChkboxRectangle = document.createElement(`p`);
+		var d_CheckboxCast = document.createElement(`input`);
+		var d_CheckboxReceive = document.createElement(`input`);
+		var d_CheckboxSegment = document.createElement(`input`);
+		var d_CheckboxRectangle = document.createElement(`input`);
+
+		d_DivLog.style = `overflow-y:scroll;`;
+		d_TableLog.border = 1;
+		//d_TableLog.innerHTML = `<th><td>Tag</td><td>Log</td></th>`
+
+		d_LabelChkboxCast.innerHTML = `Casting`;
+		d_LabelChkboxReceive.innerHTML = `Receiving`;
+		d_LabelChkboxSegment.innerHTML = `DrawCastedSegmentsOnly`;
+		d_LabelChkboxRectangle.innerHTML = `DrawCastedSegmentsRectangle`;
+		d_CheckboxCast.type = d_CheckboxReceive.type = d_CheckboxSegment.type = d_CheckboxRectangle.type = `checkbox`;
+		d_CheckboxCast.checked = d_CheckboxReceive.checked = true;
+
+		d_Body.appendChild(d_LabelID);
+		d_Body.appendChild(d_DivLog);
+
+		d_DivLog.appendChild(d_TableLog);
+
+		d_LabelChkboxCast.appendChild(d_CheckboxCast);
+		d_LabelChkboxReceive.appendChild(d_CheckboxReceive);
+		d_LabelChkboxSegment.appendChild(d_CheckboxSegment);
+		d_LabelChkboxRectangle.appendChild(d_CheckboxRectangle);
+
+		d_Body.appendChild(d_LabelChkboxCast);
+		d_Body.appendChild(d_LabelChkboxReceive);
+		d_Body.appendChild(d_LabelChkboxSegment);
+		d_Body.appendChild(d_LabelChkboxRectangle);
+
+		var d_log = (tag, log, col = `black`) => {
+			// var row = d_TableLog.insertRow(-1);
+			// row.insertCell(-1).innerHTML = `<font color=${col}>${tag}</font>`;
+			// row.insertCell(-1).innerHTML = log;
+			//d_TableLog.innerHTML += `<font color=${col}><tr><td>${tag}</td><td>${log}</td></tr>`;
+			// cconsole.trace();
+			console.log(`%c:[${tag}]${Array(10-tag.length + 1).join(' ')}${log}`, `color : ${col}`);
+		}
+	}
+	else {
+		var d_log = (tag, log, col = `black`) => {}
 	}
 
 	// Utility ------------------------------------------------------------
-	if (!ArrayBuffer.prototype.slice) {
-		ArrayBuffer.prototype.slice = function (start, end) {
-			var that = new Uint8Array(this);
-			if (end == undefined) 
-				end = that.length;
 
-			var result = new ArrayBuffer(end - start);
-			var resultArray = new Uint8Array(result);
-
-			for (var i = 0; i < resultArray.length; i++)
-			   resultArray[i] = that[i + start];
-
-			return result;
-		}
-	}
-
+	/**
+	 * ArrayBufferの分割
+	 * @param {number} segmentSize - 分割バイト数
+	 * @return {Array} 分割された配列
+	 */
 	if (!ArrayBuffer.prototype.segmentation) {
 		ArrayBuffer.prototype.segmentation = function(segmentSize) {
 			if (this.byteLength <= segmentSize)
 				return [this];
 
-			var segments = [];
+			let segments = [];
 
-			for(var i = 0; i * segmentSize < this.byteLength; i++)
+			for(let i = 0; i * segmentSize < this.byteLength; i++)
 				segments.push(this.slice(i * segmentSize, (i + 1) * segmentSize));
 
 			return segments;
 		}
 	}
 
-	function average(arr) {
-		if (arr.length <= 1) 
-			return arr.length == 0 ? 0 : arr[0];
+	/**
+	 * Uint32Arrayの数値の平均値
+	 * @return {number} 平均値
+	 */
+	if (!Int32Array.prototype.average) {
+		Int32Array.prototype.average = function() {
+			if (this.length <= 1)
+				return this.length == 0 ? 0 : this[0];
 
-		var sum = arr.reduce(function(previousValue, currentValue, index, array) {
-			return previousValue + currentValue;
-		});
-//console.log(sum);
-		return sum / arr.length;
+			let sum = this.reduce((pre, cur, index, array) => pre + cur);
+
+			return sum / this.length;
+		}
 	}
 
-	function concatenation(segments) {
-		var sumLength = 0;
+	/**
+	 * Canavsをblobに落とし込む({@link https://developer.mozilla.org/ja/docs/Web/API/HTMLCanvasElement/toBlob ポリフィル})
+	 * @param {function(Blob)} callback - コールバック関数
+	 * @param {string} type - 画像のmime type
+	 * @param {number} quality - 画像の品質
+	 */
+	if (!HTMLCanvasElement.prototype.toBlob) {
+		Object.defineProperty(HTMLCanvasElement.prototype, `toBlob`, {
+			value: function (callback, type, quality) {
+				let binStr = atob( this.toDataURL(type, quality).split(`,`)[1] ),
+				len = binStr.length,
+				arr = new Uint8Array(len);
 
-		for(var i = 0; i < segments.length; i++)
+				for (let i=0; i<len; i++ ) {
+					arr[i] = binStr.charCodeAt(i);
+				}
+
+				callback( new Blob( [arr], {type: type || `image/png`} ) );
+  			}
+	 	});
+	}
+
+	/**
+	 * 音声再生関数を同一にする
+	 */
+	if (!AudioBufferSourceNode.prototype.start)
+		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
+
+	/**
+	 * ArrayBufferの結合
+	 * @param {ArrayBuffer[]} segments - 連結したいArrayBuffer配列
+	 * @return {ArrayBuffer} 結合したArrayBuffer
+	 */
+	function concatenation(segments) {
+		let sumLength = 0;
+
+		for(let i = 0; i < segments.length; i++)
 			sumLength += segments[i].byteLength;
 
-		var whole = new Uint8Array(sumLength);
-		var pos = 0;
+		let whole = new Uint8Array(sumLength);
+		let pos = 0;
 
-		for(var i = 0; i < segments.length; i++)
+		for(let i = 0; i < segments.length; i++)
 		{
 			whole.set(new Uint8Array(segments[i]), pos);
 			pos += segments[i].byteLength;
@@ -85,820 +177,1144 @@ function onLoad() {
 		return whole.buffer;
 	}
 
+	/**
+	 * 数値を範囲内に固定する
+	 * @param {number} num - 固定したい数値
+	 * @param {number} min - 最低値
+	 * @param {number} max - 最高値
+	 * @return {number} 範囲内に固定されたnum
+	 */
 	function clamp(num, min, max) {
 		return (num > max ? max : (num < min ? min : num));
 	}
 
+	/**
+	 * 大きい数値を返す
+	 * @param {number} a - 数値1
+	 * @param {number} b - 数値2
+	 * @param {number} 大きいほうの数値
+	 */
 	function max(a, b) {
 		return a > b ? a : b;
 	}
 
-	function clone(src) {
-		var dst = {}
-		
-		for(var k in src)
-			dst[k] = src[k];
-
-		return dst;
-	}
-
+	/**
+	 * 現在時刻を`hh:mm:ss`で返す
+	 * @return {string} 現在時刻
+	 */
 	function nowTime() {
-		var now = new Date();
-		return now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
+		let now = new Date();
+		return `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 	}
 
 	function nowTimeM(date) {
-		return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + ":" + date.getMilliseconds();
+		return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`;
 	}
 
-	// Def ------------------------------------------------------------
-	const BrunchCount = 2;
-	const ChankSize = 1024 * 32;
-	const FrameHeaderLength = 0x0a;
-	const AudioHeaderLength = 0x0c;
-	const MaxHeaderLength = max(FrameHeaderLength, AudioHeaderLength);
-	const TimeOutMillisecond = 2000;
-	const CheckPacketIdentifier = "cp";
+	// Constants ------------------------------------------------------------
 
+	/**
+	 * サーバが管理しているクライアント木構造の枝数(=子ノード数)
+	 * @const {number}
+	 */
+	const BranchCount = 2;
+
+	/**
+	 * サーバから送信されるデータ内の`TimeChunk`のバイト長
+	 * @const {number}
+	 */
+	const Header_TimeChunkLength = 0x08;
+
+	/**
+	 * サーバから送信されるデータ内の`BodyChunk`のバイト長
+	 * @const {number}
+	 */
+	const Header_BodyChunkLength = 0x05;
+
+	/**
+	 * サーバから送信されるデータのヘッダー長
+	 * @const {number}
+	 */
+	const HeaderLength = Header_TimeChunkLength + Header_BodyChunkLength;
+
+	/**
+	 * 親ノードから送信されるCCPのタイムアウト期間
+	 * @const {number}
+	 */
+	const CCPDelayTimeout = 1000;
+
+	/**
+	 * 遅延平均タイムアウト間隔
+	 * @const {number}
+	 */
+	const DelayAverageTimeout = 2000;
+
+	/**
+	 * ディレイの時間平均窓数
+	 * @const {string}
+	 */
+	const DelayAverageWindowCount = 5;
+
+	/**
+	 * サーバ、親ノードから送信される通信継続確認用メッセージ
+	 * @const {string}
+	 */
+	const CheckContinuesMessage = `cp`;
+
+	/**
+	 * サーバから送信されるメッセージ型
+	 * @enum {string}
+	 */
 	const MessageType = {
-		"Connected"				: 0x0,
-		"UpdateID"				: 0x1,
-		"PeerConnection"		: 0x2,
-		"SDPOffer"				: 0x3,
-		"SDPAnswer"				: 0x4,
-		"ICECandidateOffer"		: 0x5,
-		"ICECandidateAnswer"	: 0x6,
-		"RemoveOffer"			: 0x7,
-		"RemoveAnswer"			: 0x8,
-		"Settings"				: 0x9,
-		"StartCasting"			: 0xa,
-		"StopCasting"			: 0xb,
-		"Report"		: 0xc,
-		"Disconnect"			: 0xd,
+		Connected			: 0x0,
+		UpdateID			: 0x1,
+		PeerConnection		: 0x2,
+		SDPOffer			: 0x3,
+		SDPAnswer			: 0x4,
+		ICECandidateOffer	: 0x5,
+		ICECandidateAnswer	: 0x6,
+		RemoveOffer			: 0x7,
+		RemoveAnswer		: 0x8,
+		Settings			: 0x9,
+		StartCasting		: 0xa,
+		StopCasting			: 0xb,
+		Report				: 0xc,
+		Reset				: 0xd,
+		Disconnect			: 0xe,
 	};
 
+	/**
+	 * サーバから送信されるデータ型
+	 * @enum {string}
+	 */
 	const DataType = {
-		"FrameBuffer" : 0x0,
-		"AudioBuffer" : 0x1,
+		FrameBuffer : 0x0,
+		AudioBuffer : 0x1,
 	};
 
-	const AverageLength = 100;
+	/**
+	 * 画像と音声のデータチャネル
+	 * @const {string}
+	 */
+	const WebRTCDataChannel_Frame = `dataChannel-frame`;
 
-	const DocumentTitle = "ScreenShare";
+	/**
+	 * 通信持続確認用のデータチャネル
+	 * @const {string}
+	 */
+	const WebRTCDataChannel_CCP = `dataChannel-ccp`;
+
+	/**
+	 * キャンバス画像送受信用のデータチャネル
+	 * @const {string}
+	 */
+	const WebRTCDataChannel_CanvasImage = `dataChannel-canvasImage`;
+
+	/**
+	 * WebPの圧縮品質
+	 * @const {number}
+	 */
+	const WebPQuality = 0.4;
+
+	/**
+	 * タイトル
+	 * @const {string}
+	 */
+	const DocumentTitle = `ScreenShare`;
 
 	// Application ------------------------------------------------------------
-	var urlCreator = (window.URL || window.webkitURL);
 
-	var elm_frame = document.getElementById("_frame");
-	var elm_canvas = document.getElementById("_canvas");
-	var canvas_ctx = elm_canvas.getContext('2d');
-	var elm_audioCheckBox = document.getElementById("_audio");
-	//var elm_block = document.getElementById("_block");
-	var elm_idview = document.getElementById("_idview");
-	var elm_loader = document.getElementById("_loader");
-	var elm_phase = document.getElementById("_phase");
-	var elm_info = document.getElementById("_nodeid");
-
-	var frameBuffer = new Uint8Array();
-	var chanks = [];
-
-	var canvasLocking = false;
-	var isCasting = false;
-	
-	var divisionNum = 1;
-	var aspectRatio = 1.5;
-	var canvasSize = {};
-	var framePerSecond = 10;
-
-	var receivedCount = 0;
-	var connectTime;
-	var connectedServerDate = null;
-	var ntpInitialDelay = 0;
-	var serverDelay = new Array(AverageLength);
-	var parentDelay = new Array(AverageLength);
-
-	var initializedLocalDate;
-	var initializedNetworkTime;
-
-	var delayTimeout = 1000;
-	var requestTimeout = 2000;
-	
-	var loadingQueue;
-
-	var lastImage = [];
-
-	function totalMillisecond(date) {
-		console.log("ms"+date.getUTCMilliseconds());
-		console.log("sc"+date.getUTCSeconds());
-		console.log("mn"+date.getUTCMinutes());
-		console.log("hr"+date.getUTCHours());
-		return date.getUTCMilliseconds() + 1000*(date.getUTCSeconds() + 60*(date.getUTCMinutes() + 60*date.getUTCHours()));
-	}
-
-	function setId(id) {
-		peerId = id;
-		peerDepth = Math.floor(Math.LOG2E * Math.log(peerId + 1));
-		elm_idview.innerHTML = peerId;
-		document.title = DocumentTitle + " [ID = " + peerId + ", Depth = "+ peerDepth +"]";
-	}
-
-	function setLoader(text) {
-		elm_phase.innerHTML = text;
-		elm_loader.style.display = "";
-	}
-
-	function clearLoader() {
-		elm_phase.innerHTML = "";
-		elm_loader.style.display = "none";
-	}
-
-	function setInfo(pt, ch, text) {
-		if (!__INFO__) return;
-
-		if (!Array.isArray(ch)) ch = [ch];
-		for (var k in ch) {
-			var dom = document.getElementById(pt).children[0].children[ch[k]];
-			if (ch[k] == 0) dom.children[2].innerHTML = text;
-			else dom.children[1].innerHTML = text;
-		}
-	}
-
-	function updateSettings(data) {
-		audioSampleRate = data.audioSettingData.sampleRate;
-		audioIsStereo = data.audioSettingData.isStereo ? 2 : 1;
-
-		divisionNum = data.captureSettingData.divisionNum;
-		aspectRatio = data.captureSettingData.aspectRatio;
-		canvasSize = {width:data.captureSettingData.width, height:data.captureSettingData.height};
-		framePerSecond = data.captureSettingData.framePerSecond;
-
-		loadingQueue = Array.apply(null, Array(divisionNum * divisionNum)).map(function () { return 0 });
-
-		/*
-		while (elm_block.firstChild)
-			elm_block.removeChild(elm_block.firstChild);
-
-		for (var row = 0; row < divisionNum; row++) {
-			var rowElem = document.createElement("div");
-			elm_block.appendChild(rowElem);
-
-			for (var cell = 0; cell < divisionNum; cell++) {
-				var cellElem = document.createElement('div');
-				var base = document.createElement('img');
-				var cover = document.createElement('img');
-				//cover.className = "cover";
-				cellElem.appendChild(base);
-				cellElem.appendChild(cover);
-
-				rowElem.appendChild(cellElem);
-			}
-		}*/
-	}
-
-	function resizeCanvas(redraw = true) {
-		var windowAspectRatio = window.innerWidth / window.innerHeight;
-		if (windowAspectRatio < aspectRatio) {
-			elm_frame.style.width = "100%";
-			elm_frame.style.height = (elm_frame.clientWidth / aspectRatio) + "px";
-		}
-		else {
-			elm_frame.style.height = "100%";
-			elm_frame.style.width = (elm_frame.clientHeight * aspectRatio) + "px";
-		}
-
-		var divWidth = elm_frame.clientWidth / divisionNum;
-		var divHeight = divWidth / aspectRatio;
-
-		if (!redraw) return;
-
-		elm_canvas.width = elm_frame.clientWidth;
-		elm_canvas.height = elm_frame.clientHeight;
-
-		var dw = elm_canvas.width / divisionNum;
-		var dh = elm_canvas.height / divisionNum;
-		for (var k in lastImage) {
-			var segX = k % divisionNum;
-			var segY = Math.floor(k / divisionNum);
-			canvas_ctx.drawImage(lastImage[k], dw * segX, dh * segY, dw, dh);
-		}
-		/*
-		for (var idxY in elm_block.children) {
-			var cY = elm_block.children[idxY].children;
-			for (var idxX in cY) {
-				var cX = cY[idxX].children;
-				for (var idxI in cX) {
-					cX[idxI].width = divWidth;
-					cX[idxI].height = divHeight;
-				}
-			}
-		}*/
-	}
-
-	function decodeBuffer(data) {
-		receivedCount++;
-		var arr = new Uint8Array(data, 0, MaxHeaderLength);
-		var type = arr[0];
-
-		var elapsedMs = Date.now() - initializedLocalDate;
-		var receivedTotalMs = connectedServerDate + elapsedMs;
-		var serverTotalMs = 0;
-		var parentTotalMs = 0;
-		for (var i = 0; i < 4; i++)
-			serverTotalMs += (arr[i+1] << (8*i));
-		for (var i = 0; i < 4; i++)
-			parentTotalMs += (arr[i+5] << (8*i));
-		for (var i = 0; i < 4; i++)
-			arr[i+5] = (receivedTotalMs >> (8*i)) & 0xff;
-
-		var di = receivedCount % AverageLength;
-		serverDelay[di] = receivedTotalMs - serverTotalMs;
-		parentDelay[di] = receivedTotalMs - parentTotalMs;
-
-		serverDelayAvg = average(serverDelay.slice(0, clamp(receivedCount, 0, AverageLength)));
-		parentDelayAvg = average(parentDelay.slice(0, clamp(receivedCount, 0, AverageLength)));
-
-		setInfo("_sv", 4, serverDelayAvg);
-
-		//setInfo("_sv", 4, ""+Date.now());
-		if (!directReceive) setInfo("_pt", 5, parentDelayAvg);
-		var segIdx = null;
-
-		switch (type) {
-			case DataType.FrameBuffer:
-			segIdx = arr[9];
-			setFrame(segIdx, data);
-
-			break;
-
-			case DataType.AudioBuffer:
-			if (elm_audioCheckBox.checked)
-				playAudio(data);
-
-			break;
-		}
-
-		return [arr.buffer, parentDelayAvg];
-	}
-
-	function setFrame(segIdx, frameBuffer) {
-		if (loadingQueue[segIdx] >= 1) return;
-
-		var dataArr = new Uint8Array(frameBuffer, FrameHeaderLength);
-		var blob = new Blob([dataArr], {type:'image/jpeg'});
-		var url = urlCreator.createObjectURL(blob);
-
-		var segX = segIdx % divisionNum;
-		var segY = Math.floor(segIdx / divisionNum);
-
-		var dw = elm_canvas.width / divisionNum;
-		var dh = elm_canvas.height / divisionNum;
-		var img = new Image();
-		img.src = url;
-		img.onload = function() {
-			canvas_ctx.drawImage(img, dw * segX, dh * segY, dw, dh);
-			urlCreator.revokeObjectURL(url);
-			lastImage[segIdx] = img;
-			loadingQueue[segIdx]--;
-	  	}
-
-		/*
-		var elem = elm_block.children[segY].children[segX];
-
-		elem.children[1].onload = function() {
-			var newimg = elem.children[1];
-			var oldimg = elem.children[0];
-			newimg.style.zIndex = 10;
-			oldimg.style.zIndex = 0;
-			elem.insertBefore(newimg, oldimg);
-			if (oldimg != null)
-				urlCreator.revokeObjectURL(oldimg.src);
-			loadingQueue[segIdx]--;
-		}*/
-
-		//elem.children[1].src = url;
-
-		loadingQueue[segIdx]++;
-
-		//latestSegmentData[segIdx] = frameBuffer.slice(0);
-	}
-
-	function playAudio(audioBuffer) {
-		var audioSrc = audioCtx.createBufferSource();
-		var audioBuf = audioCtx.createBuffer(audioIsStereo, audioArr.length, audioSampleRate);
-
-		var audioArr = new Float32Array(audioBuffer, AudioHeaderLength);
-		audioBuf.getChannelData(0).set(audioArr);
-
-		audioSrc.buffer = audioBuf;
-		audioSrc.connect(audioCtx.destination);
-		audioSrc.start(audioTime);
-
-		if (audioCtx.currentTime < audioTime)
-			audioTime += audioBuf.duration;
-		else
-			audioTime = audioCtx.currentTime + audioBuf.duration;
-	}
-
-	function sendToServer(socket, type, id, targetId, data) {
-		var data = {
-			"type" : type,
-			"id": id,
-			"targetId": targetId,
-			"data": data,
-		};
-		var json = JSON.stringify(data);
-		socket.Send(json);
-		debugLog("[send] type:"+data.type+",id:"+data.id+",target:"+data.targetId);
-	}
-
-	function onCheckPacket(data) {
-		setDelayTimer();
-
-		if (__DEBUG__ && !dCast) return;
-
-		for (var k in peer_offer)
-			peer_offer[k].send(data);
-	}
-
-	function setDelayTimer() {
-		if (peerId != 0 && (peerId - 1) % BrunchCount != 0) return;
-
-		clearDelayTimer();
-		delayTimer = setTimeout(function(){ delayTimerFunc(); }, 1000 / framePerSecond + delayTimeout);
-	}
-
-	function clearDelayTimer() {
-		if (delayTimer != null) clearTimeout(delayTimer);
-		if (requestTimer != null) clearTimeout(requestTimer);
-		delayTimer = null;
-		requestTimer = null;
-	}
-
-	function delayTimerFunc() {
-		if (!isCasting) return;
-
-		for (var k in peer_offer)
-			peer_offer[k].send(CheckPacketIdentifier);
-
-		if (requestTimer == null)
-			requestTimer = setTimeout(function(){ requestTimerFunc(); }, 1000 / framePerSecond + delayTimeout);
-		delayTimer = setTimeout(function(){ delayTimerFunc(); }, 1000 / framePerSecond);
-	}
-
-	function requestTimerFunc() {
-		if (directReceive) {
-			console.log("send to server: req : -1");
-			//sendToServer(socket, MessageType.Report, peerId, -1, {});
-			return;
-		}
-
-		debugLog("request reconnection : "+ peer_answer.offerId, "red");
-		sendToServer(socket, MessageType.Report, peerId, peer_answer.offerId, {});
-
-		requestTimer = setTimeout(function(){ requestTimerFunc(); }, 1000 / framePerSecond + requestTimeout);
-	}
-
-	resizeCanvas(false);
-	window.onresize = resizeCanvas;
-
-	// WebRTC ------------------------------------------------------------
-	var webRTCPeerConnection = (window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection);
-	var webRTCSessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription ||　window.webkitRTCSessionDescription || window.msRTCSessionDescription);
-	var webRTCIceCandidate = (window.RTCIceCandidate || window.mozRTCIceCandidate ||　window.webkitRTCIceCandidate || window.msRTCIceCandidate);
-
-	var pc_config = null;//{"iceServers":[]};
-
-	var peer_child = [null, null];
-	var peer_offer = [];
-	var peer_answer = null;
-
-	var dataChannel_offer = [];
-	var dataChannel_answer = [];
-
-	var peerId = null;
-	var peerDepth = 0;
-	var directReceive = false;
-
-	var delayTimer = null;
-	var requestTimer = null;
-	var periodicallyInterval = null;
-	var reconnectRequested = false;
-
-	var settings = null;
-
-	// Offer Side -----------------------------
-	function webRTCPeerConnectionOffer(config, childIdx, id, answerId) {
-		var inst = this;
-		inst.childIdx = childIdx;
-		inst.id = id;
-		inst.answerId = answerId;
-		inst.connection = new webRTCPeerConnection(config);
-		inst.dataChannel = inst.connection.createDataChannel('dataChannel' + inst.answerId);
-
-		inst.dataChannel.onopen = function(evt) { inst._onDataChannelOpen(evt); };
-		inst.connection.onicecandidate = function(evt) { inst._onIceCandidate(evt); };
-		inst.connection.oniceconnectionstatechange = function(evt) {
-			setInfo("_ch"+inst.childIdx, 1, inst.dataChannel.readyState);
-			setInfo("_ch"+inst.childIdx, 3, inst.connection.iceConnectionState); 
-		};
-
-		inst.connection.createOffer().then(function(sdp) {
-			return inst.connection.setLocalDescription(sdp);
-		}).then(function() {
-			inst._onCreateOffer();
-		}).catch(function(reason) {
-			console.log(reason);debugLog(reason);
-		});
-	}
-
-	webRTCPeerConnectionOffer.prototype = {
-		send : function(data) {
-			if(this.dataChannel.readyState != 'open') return;
-			if (__DEBUG__ && !dCast) return;
-
-			this.dataChannel.send(data);
-		},
-		sendChanks: function(chanks) {
-			if(this.dataChannel.readyState != 'open') return;
-			if (__DEBUG__ && !dCast) return;
-
-			for (var k in chanks)
-				this.dataChannel.send(chanks[k]);
-
-			this.dataChannel.send("\0");
-		},
-		setRemoteDescription: function(sdp) {
-			var inst = this;
-			inst.connection.setRemoteDescription(
-				new webRTCSessionDescription(sdp),
-				function() { 
-					setInfo("_ch"+inst.childIdx, 1, inst.dataChannel.readyState);
-					setInfo("_ch"+inst.childIdx, 2, "completed");
-					debugLog("setRemoteDescription succeeded.", "blue"); 
-				},
-				function() { debugLog("setRemoteDescription failed.", "red"); }
-			);
-		},
-		addIceCandidate: function(iceCandidate) {
-			this.connection.addIceCandidate(new webRTCIceCandidate(iceCandidate));
-		},
-		close: function() {
-			this.connection.close();
-		},
-
-		_onCreateOffer: function() {
-			sendToServer(socket, MessageType.SDPOffer, this.id, this.answerId, this.connection.localDescription);
-			setInfo("_ch"+this.childIdx, 2, "offerring");
-		},
-		_onIceCandidate: function(evt) {
-			debugLog("offer_icecandidate");
-			if (evt.candidate) {
-				sendToServer(socket, MessageType.ICECandidateOffer, this.id, this.answerId, evt.candidate);
-				//console.dir(evt.candidate)
-				//debugLog("send ICECandidateOffer to id: " + message.targetId);
-			}
-			else {
-				//debugLog("icecandidate phase: " + evt.eventPhase);
-			}
-		},
-		_onDataChannelOpen: function(evt) {
-			this.dataChannel.binaryType = "arraybuffer";
-			//debugLog("connection to offer(child) is opened. id : " + message.targetId);
-
-			if (latestSegmentData.length != 0) {
-				debugLog("send buffer to new user", "yellow");
-				for (var k in latestSegmentData) {
-					//console.dir(latestSegmentData[k]);
-					//console.log(latestSegmentData);
-					var chank = latestSegmentData[k].segmentation(ChankSize);
-					this.sendChanks(chank);
-				}
-			}
-
-			setInfo("_ch"+this.childIdx, 1, "opened");
-
-			if (__DEBUG__) {
-				dLabelOffer[this.answerId] = dLabelID.cloneNode(true);
-				dLabelOffer[this.answerId].innerHTML = "child ID : " + this.answerId;
-				dBody.appendChild(dLabelOffer[this.answerId]);
-				debugLog("childID: "+this.answerId);
-			}
-		},
-	}
-
-	// Answer Side -----------------------------
-	function webRTCPeerConnectionAnswer(pc_config, id) {
-		var inst = this;
-		inst.id = id;
-		inst.dataChannel = null;
-		inst.connection = new webRTCPeerConnection(pc_config);
-		inst.connectionOffer = [];
-
-		inst.connection.oniceconnectionstatechange = function(evt) {
-			if (inst.dataChannel != null) 
-				setInfo("_pt", 1, inst.dataChannel.readyState);
-			setInfo("_pt", 3, inst.connection.iceConnectionState);
-		};
-	}
-
-	webRTCPeerConnectionAnswer.prototype = {
-		setRemoteDescription: function(remoteSdp) {
-			var inst = this;
-			inst.connection.setRemoteDescription(new webRTCSessionDescription(remoteSdp)).then(function() {
-				inst._onSetRemoteDescription();
-			})
-			.catch(function(reason) {
-				debugLog(reason, "red");
-			});
-		},
-		addIceCandidate: function(iceCandidate) {
-			this.connection.addIceCandidate(new webRTCIceCandidate(iceCandidate));
-		},
-		close: function() {
-			this.connection.close();
-		},
-
-		_onSetRemoteDescription: function() {
-			var inst = this;
-			this.connection.onicecandidate = function (evt) {
-				inst._onIceCandidate(evt);
-			};
-
-			this.connection.createAnswer().then(function(sdp) {
-				return inst.connection.setLocalDescription(sdp);
-			})
-			.then(function() {
-				inst._onCreateAnswer();
-				if (inst.dataChannel != null)
-					setInfo("_pt", 1, inst.dataChannel.readyState);
-				setInfo("_pt", 2, "completed"); 
-			})
-			.catch(function(reason) {
-				console.log(reason);debugLog(reason);
-			});
-		},
-		_onCreateAnswer: function() {
-			var inst = this;
-			debugLog("setLocalDescription succeeded.");
-
-			this.connection.ondatachannel = function(evt) {
-				inst._onDataChannel(evt);
-			};
-			sendToServer(socket, MessageType.SDPAnswer, this.id, this.offerId, this.connection.localDescription);
-		},
-		_onIceCandidate: function(evt) {
-			//debugLog("onicecandidate");
-
-			if (evt.candidate) {
-				sendToServer(socket, MessageType.ICECandidateAnswer, this.id, this.offerId, evt.candidate);
-				//debugLog("send ICECandidateAnswer to id: " + message.id);
-			}
-			else {
-				//debugLog("icecandidate phase: " + evt.eventPhase);
-			}
-		},
-		_onDataChannel: function(evt) {
-			var inst = this;
-			this.dataChannel = evt.channel;
-			this.dataChannel.binaryType = "arraybuffer";
-			this.dataChannel.onmessage = function (evt) {
-				inst._onDataChannelMessage(evt);
-			};
-
-			if (!isCasting)
-				setLoader("Ready");
-			else
-				clearLoader();
-
-			setInfo("_pt", 1, "opened");
-
-			if (__DEBUG__) {
-				dLabelAns[this.offerId] = dLabelID.cloneNode(true);
-				dLabelAns[this.offerId].innerHTML = "parent ID : " + this.offerId;
-				dBody.appendChild(dLabelAns[this.offerId]);
-				debugLog("parentID: "+this.offerId);
-			}
-		},
-		_onDataChannelMessage: function(evt) {
-			//if (!isCasting) return;
-
-			/*
-			var isUpdateTimer = true;
-			if (evt.data == "empty") {console.log("get empty");
-				for (var key in this.connectionOffer)
-					this.connectionOffer[key].sendChanks(evt.data);
-			}
-			else */
-
-			if (evt.data == CheckPacketIdentifier) {
-				onCheckPacket(evt.data);
-			} else if (evt.data != "\0") {
-				chanks.push(evt.data);
-			}
-			else {
-				if (isCasting) {
-					var data = concatenation(chanks);
-					decodeBuffer(data);
-					//isUpdateTimer = decodeBuffer(data)[2] == 0;
-
-					for (var k in peer_offer)
-						peer_offer[k].sendChanks(chanks);
-				}
-
-				chanks = [];
-			}
-
-			//setPeriodicallyTimer();
-			//if (isUpdateTimer)  setDelayTimer(pc);
-		},
-	}
-
-	// AudioBuffer -------------------------------------------------------
-	var audioContext = (window.AudioContext || window.webkitAudioContext);
-	var audioSamplerate = 4000;
-	var audioIsStereo = false;
-	var audioTime = 0;
-
-	if (!AudioBufferSourceNode.prototype.start)
-		AudioBufferSourceNode.prototype.start = AudioBufferSourceNode.prototype.node;
-
-
-	// Support ------------------------------------------------------------
+	/**
+	 * クロスブラウザクラス
+	 * @type {object}
+	 */
+	let urlCreator = (window.URL || window.webkitURL);
+	let webRTCPeerConnection = (window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.msRTCPeerConnection);
+	let webRTCSessionDescription = (window.RTCSessionDescription || window.mozRTCSessionDescription ||　window.webkitRTCSessionDescription || window.msRTCSessionDescription);
+	let webRTCIceCandidate = (window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate || window.msRTCIceCandidate);
+	let audioContext = (window.AudioContext || window.webkitAudioContext);
+
+	// WebRTCやAudioContextのサポートを確認する
 	if (!webRTCPeerConnection || !webRTCSessionDescription || !webRTCIceCandidate || !audioContext) {
-		var language = (navigator.browserLanguage || navigator.language || navigator.userLanguage);
-		var language2L = language ? language.substr(0,2) : "ja";
+		let language = (navigator.browserLanguage || navigator.language || navigator.userLanguage);
+		let language2L = language ? language.substr(0,2) : `ja`;
 
-		var supportLabel = document.getElementById("_support_" + language2L);
-		supportLabel.style.display = "block";
+		let supportLabel = document.getElementById(`_support_${language2L}`);
+		supportLabel.style.display = `block`;
 
 		return;
 	}
 
-	var audioCtx = new audioContext();
+	/**
+	 * DOM
+	 * @type {object}
+	 */
+	let elm_frame = document.getElementById(`_frame`);			// キャンバスをラップするフレーム
+	let elm_canvas = document.getElementById(`_canvas`);		// キャンバス
+	let elm_audioCheckBox = document.getElementById(`_audio`);	// 音声スイッチ
+	let elm_idview = document.getElementById(`_idview`);		// ID表示枠
+	let elm_loader = document.getElementById(`_loader`);		// ローディングアイコン
+	let elm_phase = document.getElementById(`_phase`);			// ローディングのテキスト
+	let elm_info = document.getElementById(`_info`);			// コネクションステータス
+
+	/**
+	 * キャンバスコンテキスト
+	 * @type {object}
+	 */
+	let canvas_ctx = elm_canvas.getContext(`2d`);
+
+	/**
+	 * 配信中かどうか
+	 * @type {boolean}
+	 */
+	let isCasting = false;
+
+	/**
+	 * キャンバスのアスペクト比率
+	 * @type {number}
+	 */
+	let aspectRatio = 1.5;
+
+	/**
+	 * キャンバスサイズ
+	 * @type {object}
+	 */
+	let canvasSize = {};
+
+	/**
+	 * 配信フレームレート
+	 * @type {number}
+	 */
+	let framePerSecond = 10;
+
+	/**
+	 * フレームデータを受信した回数
+	 * @type {number}
+	 */
+	let receivedCount = 0;
+
+	/**
+	 * サーバに接続開始した時のローカル時刻
+	 * @type {number}
+	 */
+	let connectTime;
+
+	/**
+	 * サーバに接続した時のローカル時刻
+	 * @type {number}
+	 */
+	let connectedLocalDate;
+
+	/**
+	 * サーバに接続した時のサーバ時刻
+	 * @type {number}
+	 */
+	let connectedServerDate = null;
+
+	/**
+	 * 時間平均を計るためにサーバとwebアプリとの遅延を格納する配列
+	 * @type {Int32Array[]}
+	 */
+	let serverDelay = new Int32Array(DelayAverageWindowCount);
+
+	/**
+	 * 時間平均を計るために親ノードとwebアプリとの遅延を格納する配列
+	 * @type {Int32Array[]}
+	 */
+	let parentDelay = new Int32Array(DelayAverageWindowCount);
+
+	/**
+	 * CCPのタイムアウトを計るためのタイマー
+	 * @type {object}
+	 */
+	let delayTimer = null;
+
+	/**
+	 * 連続タイムアウトを計るためのタイマー
+	 * @type {object}
+	 */
+	let reportTimer = null;
+
+	/**
+	 * キャンバスに描画されたかどうか
+	 * @type {boolean}
+	 */
+	let reported = false;
+	/**
+	 * キャンバスに描画されたかどうか
+	 * @type {boolean}
+	 */
+	let canvasDrawn = false;
+
+	/**
+	 * WebRTCの設定用オブジェクト
+	 * @type {object}
+	 */
+	let pcConfigures = null;//{`iceServers`:[]};
+
+	/**
+	 * 子ノードのWebRTCピア
+	 * IDを添え字にする連想配列
+	 * @type {Array}
+	 */
+	let peerChildren = [];
+
+	/**
+	 * 親ノードのWebRTCピア
+	 * @type {Array}
+	 */
+	let peerParent = null;
+
+	/**
+	 * 自ノードID
+	 * @type {number}
+	 */
+	let peerId;
+
+	/**
+	 * 自ノードの二分木上の深さ
+	 * @type {number}
+	 */
+	let peerDepth;
+
+	/**
+	 * サーバから直にフレームデータを受け取るかどうか
+	 * @type {boolean}
+	 */
+	let directReceive = false;
+
+	/**
+	 * 再接続要求を出したかどうか
+	 * @type {boolean}
+	 */
+	let reconnectRequested = false;
+
+	/**
+	 * 音声再生コンテキスト
+	 * @type {AudioContext}
+	 */
+	//let audioCtx = new audioContext();
+
+	/**
+	 * 音声再生サンプルレート
+	 * @type {number}
+	 */
+	let audioSamplerate = 4000;
+
+	/**
+	 * 音声サンプルがステレオかどうか
+	 * @type {boolean}
+	 */
+	let audioIsStereo = false;
+
+	/**
+	 * 音声再生時間
+	 * @type {number}
+	 */
+	let audioPlaybackTime = 0;
+
+
+/*
+	function totalMillisecond(date) {
+		return date.getUTCMilliseconds() + 1000*(date.getUTCSeconds() + 60*(date.getUTCMinutes() + 60*date.getUTCHours()));
+	}
+*/
+
+	/**
+	 * 自ノードのIDを設定する
+	 * @param {number} id - ノードID
+	 */
+	function setId(id) {
+		peerId = id;
+		peerDepth = Math.floor(Math.LOG2E * Math.log(peerId + 1));
+		elm_idview.innerHTML = peerId;
+		document.title = `${DocumentTitle}[ID = ${peerId}, Depth = ${peerDepth}]`;
+	}
+
+	/**
+	 * 読み込み中テキストを表示する
+	 * @param {string} text - 読み込み中テキスト
+	 */
+	function setLoader(text) {
+		elm_phase.innerHTML = text;
+		elm_loader.style.display = ``;
+	}
+
+	/**
+	 * 読み込み中テキストを非表示にする
+	 */
+	function clearLoader() {
+		elm_phase.innerHTML = ``;
+		elm_loader.style.display = `none`;
+	}
+
+	/**
+	 * 配信設定を更新する
+	 * @param {object} data - 配信設定
+	 */
+	function updateSettings(data) {
+		audioSampleRate = data.audioSettingData.sampleRate;
+		audioIsStereo = data.audioSettingData.isStereo ? 2 : 1;
+
+		aspectRatio = data.captureSettingData.aspectRatio;
+		[elm_canvas.width, elm_canvas.height] = [data.captureSettingData.width, data.captureSettingData.height];
+		framePerSecond = data.captureSettingData.framePerSecond;
+	}
+
+	/**
+	 * キャンバスをウィンドウのサイズに合わせる
+	 */
+	function resizeCanvas() {
+		let windowAspectRatio = window.innerWidth / window.innerHeight;
+		if (windowAspectRatio < aspectRatio) {
+			elm_frame.style.width = `100%`;
+			elm_frame.style.height = `${elm_frame.clientWidth / aspectRatio}px`;
+		}
+		else {
+			elm_frame.style.height = `100%`;
+			elm_frame.style.width = `${elm_frame.clientHeight * aspectRatio}px`;
+		}
+	}
+
+	/**
+	 * 受信したフレームデータを処理する
+	 * @param {ArrayBuffer} data - 受信したフレームデータ
+	 * @param {function} timeModifiedCallback - TimeChunkを処理した後のコールバック関数
+	 * @return {ArrayBuffer} 処理したフレームデータ
+	 */
+	function decodeData(data, timeModifiedCallback = null) {
+		receivedCount++;
+
+		decodeHeader_TimeChunk(data);
+
+		if (timeModifiedCallback !== null)
+			timeModifiedCallback();
+
+		let bodyInfo = decodeHeader_BodyChunk(data);
+
+		switch (bodyInfo.type) {
+			case DataType.FrameBuffer:
+			decodeBody_CapturedImage(data);
+			break;
+
+			case DataType.AudioBuffer:
+			if (elm_audioCheckBox.checked)
+				decodeBody_CapturedAudio(data);
+
+			break;
+		}
+
+		return data;
+	}
+
+	/**
+	 * 受信したフレームデータのヘッダー(TimeChunk)を処理する
+	 * @param {ArrayBuffer} data - 受信したフレームデータ
+	 */
+	function decodeHeader_TimeChunk(data) {
+		let view = new DataView(data, 0, Header_TimeChunkLength);
+		let elapsedMs = Date.now() - connectedLocalDate;
+		let receivedTotalMs = connectedServerDate + elapsedMs;
+		let serverTotalMs = view.getInt32(0, true);
+		let parentTotalMs = view.getInt32(4, true);
+
+		view.setInt32(4, receivedTotalMs, true);
+
+		let di = receivedCount % DelayAverageWindowCount;
+		serverDelay[di] = receivedTotalMs - serverTotalMs;
+		parentDelay[di] = receivedTotalMs - parentTotalMs;
+		//console.log("serverTotalMs:"+serverTotalMs+"\nparentTotalMs:"+parentTotalMs+"\nreceivedTotalMs:"+receivedTotalMs+"\nserverDelay[di]:"+serverDelay[di]+"\nparentDelay[di]:"+parentDelay[di]);
+
+		let count = clamp(receivedCount, 0, DelayAverageWindowCount);
+		serverDelayAvg = new Int32Array(serverDelay.buffer, 0, count).average();
+		parentDelayAvg = new Int32Array(parentDelay.buffer, 0, count).average();
+
+		if (parentDelayAvg >= DelayAverageTimeout) {
+			if (!reported && reportTimer === null)
+				reportTimer = setTimeout(() => { reportTimerFunc(); }, 1000 / framePerSecond + CCPDelayTimeout);
+		}
+
+		setInfo(`_sv`, 4, serverDelayAvg);
+		if (!directReceive)
+			setInfo(`_pt`, 5, parentDelayAvg);
+	}
+
+	/**
+	 * 受信したフレームデータのヘッダー(BodyChunk)を処理する
+	 * @param {ArrayBuffer} data - 受信したフレームデータ
+	 * @return {object} フレームデータの型とバイト長
+	 */
+	function decodeHeader_BodyChunk(data) {
+		let view = new DataView(data, Header_TimeChunkLength, Header_BodyChunkLength);
+		let type = view.getInt8(0, true);
+		let length = view.getInt32(1, true);
+
+		return { type: type, length: length, };
+	}
+
+	/**
+	 * 受信したフレームデータのボディー(画像データ)を処理する
+	 * @param {ArrayBuffer} data - 受信したフレームデータ
+	 */
+	function decodeBody_CapturedImage(data) {
+		if (__DEBUG__ && d_CheckboxSegment.checked) {
+			canvas_ctx.fillStyle = `black`;
+			canvas_ctx.fillRect(0, 0, elm_canvas.width, elm_canvas.height);
+		}
+
+		let view = new DataView(data, HeaderLength);
+
+		let capturedSegmentCnt = view.getInt16(0, true);
+
+		let viewPoint = 2;
+		let array = new Uint8Array(data, HeaderLength + viewPoint);
+
+		for (let i = 0; i < capturedSegmentCnt; i++) {
+			view = new DataView(data, HeaderLength + viewPoint);
+			let capturedSegmentRect = {
+				x: view.getInt16(0, true),
+				y: view.getInt16(2, true),
+				width: view.getInt16(4, true),
+				height: view.getInt16(6, true),
+			};
+			let capturedSegmentLength = view.getInt32(8, true);
+			let capturedSegmentBuffer = array.subarray(12, 12 + capturedSegmentLength);
+
+			setCapturedImageSegment(capturedSegmentBuffer, capturedSegmentRect);
+
+			viewPoint += 12 + capturedSegmentLength;
+			array = array.subarray(12 + capturedSegmentLength);
+		}
+	}
+
+	/**
+	 * 受信したフレームデータのボディー(音声データ)を処理する
+	 * @param {ArrayBuffer} data - 受信したフレームデータ
+	 */
+	function decodeBody_CapturedAudio(data) {
+		let audioArr = new Float32Array(data, HeaderLength);
+		let audioSrc = audioCtx.createBufferSource();
+		let audioBuf = audioCtx.createBuffer(audioIsStereo, audioArr.length, audioSampleRate);
+
+		audioBuf.getChannelData(0).set(audioArr);
+
+		audioSrc.buffer = audioBuf;
+		audioSrc.connect(audioCtx.destination);
+		audioSrc.start(audioPlaybackTime);
+
+		if (audioCtx.currentTime < audioPlaybackTime)
+			audioPlaybackTime += audioBuf.duration;
+		else
+			audioPlaybackTime = audioCtx.currentTime + audioBuf.duration;
+	}
+
+	/**
+	 * 画像データをキャンバスに描画する
+	 * @param {ArrayBuffer} capturedSegmentBuffer - 画像データ
+	 * @param {object} capturedSegmentRect - 描画先矩形
+	 */
+	function setCapturedImageSegment(capturedSegmentBuffer, capturedSegmentRect) {
+		let blob = new Blob([capturedSegmentBuffer], {type:`image/webp`});
+		let url = urlCreator.createObjectURL(blob);
+		let img = new Image();
+		img.onload = () => {
+			canvas_ctx.drawImage(img, capturedSegmentRect.x, capturedSegmentRect.y, capturedSegmentRect.width, capturedSegmentRect.height);
+			urlCreator.revokeObjectURL(url);
+
+			if (!canvasDrawn) {
+				canvasDrawn = true;
+			}
+
+			if (__DEBUG__ && d_CheckboxRectangle.checked) {
+				canvas_ctx.strokeStyle = `blue`;
+				canvas_ctx.strokeRect(capturedSegmentRect.x, capturedSegmentRect.y, capturedSegmentRect.width, capturedSegmentRect.height);
+			}
+		}
+
+		if (!capturedSegmentRect)
+			capturedSegmentRect = { x:0, y:0, width:canvasSize.width, height:canvasSize.height, };
+
+		img.src = url;
+	}
+
+	/**
+	 * キャンバス画像を取得する
+	 * @param {function} callback - 取得した画像データを引数に持つコールバック
+	 */
+	function getCanvasImage(callback) {
+		elm_canvas.toBlob((blob) => { callback(blob); }, `image/webp`, WebPQuality);
+	}
+
+	/**
+	 * サーバにメッセージを送信する
+	 * @param {MessageType} type - メッセージの型
+	 * @param {number} id - 自ノードID
+	 * @param {number} targetId - 送信先ノードID
+	 * @param {object} data - 送信データ
+	 */
+	function sendToServer(type, id, targetId, data) {
+		let sendData = {
+			type		: type,
+			id			: id,
+			targetId	: targetId,
+			data		: data,
+		};
+		let json = JSON.stringify(sendData);
+		socket.Send(json);
+
+		//d_log(`send`, `type : ${ data.type }, from ID : ${ data.id }, to ID : ${ data.targetId);
+	}
+
+	/**
+	 * CCPを受信した際の処理
+	 * @param {string} ccpMessage - CCPメッセージ
+	 */
+	function onCheckContinuesMessage(ccpMessage) {
+		setCCPTimer();
+
+		if (__DEBUG__ && !d_CheckboxCast.checked) return;
+
+		for (let k in peerChildren){
+			peerChildren[k].sendCCP(ccpMessage);
+		}
+	}
+
+	/**
+	 * CCPTimerをセットする
+	 * この関数がCCPDelayTimeoutを超えても発火しなかった際にCCPTimerFuncが呼ばれる
+	 */
+	function setCCPTimer() {
+		clearDelayTimer();
+		delayTimer = setTimeout(() => { CCPTimerFunc(); }, 1000 / framePerSecond + CCPDelayTimeout);
+	}
+
+	/**
+	 * CCPTimer, reportTimerを消去する
+	 */
+	function clearDelayTimer() {
+		if (delayTimer !== null) clearTimeout(delayTimer);
+		if (reportTimer !== null) clearTimeout(reportTimer);
+		delayTimer = null;
+		reportTimer = null;
+	}
+
+	/**
+	 * CCPのタイムアウトが発火した際の処理
+	 * 子にCCPを送信してreportTimerをセットする
+	 */
+	function CCPTimerFunc() {
+		for (let k in peerChildren)
+			peerChildren[k].sendCCP(CheckContinuesMessage);
+
+		delayTimer = setTimeout(() => { CCPTimerFunc(); }, 1000 / framePerSecond);
+		if (peerId >= 1 && (peerId - 1) % BranchCount != 0) return;
+
+		if (!reported && reportTimer === null)
+			reportTimer = setTimeout(() => { reportTimerFunc(); }, 1000 / framePerSecond + CCPDelayTimeout);
+	}
+
+	/**
+	 * reportTimerが発火した際の処理
+	 * Reportメッセージを送信する
+	 */
+	function reportTimerFunc() {
+		if (directReceive) {
+			d_log(`report`, `requested reconnection to SERVER`, `red`);
+			//sendToServer(MessageType.Report, peerId, -1, {});
+			setLoader(`Error`);
+			return;
+		}
+
+		d_log(`report`, `request reconnection to ${peerParent.offerId}`, `red`);
+		sendToServer(MessageType.Report, peerId, peerParent.offerId, {});
+
+		reported = true;
+	}
+
+	// ウィンドウとキャンバスのサイズを同期する
+	resizeCanvas(false);
+	window.onresize = resizeCanvas;
+
+	// Offer Side -----------------------------
+	class WebRTCPeerConnectionOffer {
+		static get DATAGRAM_MAXLENGTH() { return 64 * 1024; }
+
+		constructor(config, id, answerId) {
+			if (!WebRTCPeerConnectionOffer.count)
+				WebRTCPeerConnectionOffer.count = 0;
+
+			this.id = id;
+			this.childIdx = WebRTCPeerConnectionOffer.count++;
+			this.answerId = answerId;
+			this.connection = new webRTCPeerConnection(config);
+
+			this.connection.onicecandidate = (evt) => this._onIceCandidate(evt);
+			this.connection.oniceconnectionstatechange = (evt) => {
+				setInfo(`_ch${this.childIdx}`, 1, this.dc_frame.readyState);
+				setInfo(`_ch${this.childIdx}`, 3, this.connection.iceConnectionState);
+			};
+
+			this.dc_frame = this.connection.createDataChannel(`${this.answerId}:${WebRTCDataChannel_Frame}`);
+			this.dc_ccp = this.connection.createDataChannel(`${this.answerId}:${WebRTCDataChannel_CCP}`);
+			this.dc_canvasImage = this.connection.createDataChannel(`${this.answerId}:${WebRTCDataChannel_CanvasImage}`);
+			this.dc_frame.onopen = (evt) => this._onDataChannelOpened_frame(evt);
+			this.dc_ccp.onopen = (evt) => this._onDataChannelOpened_ccp(evt);
+			this.dc_canvasImage.onopen = (evt) => this._onDataChannelOpened_canvasImage(evt);
+
+			this.connection.createOffer().then((sdp) => {
+				d_log(`webRTC`, `[offer => ${this.answerId}] created Offer`);
+				return this.connection.setLocalDescription(sdp);
+			})
+			.then(() => this._onCreateOffer())
+			.catch((reason) => {
+				d_log(`webRTC`, `[offer => ${this.answerId}] createOffer failed. : ${reason}`, `red`);
+			});
+
+			d_log(`webRTC`, `[offer => ${this.answerId}] started peer connection to ${this.answerId}`);
+		}
+
+		send(data) {
+			if(this.dc_frame.readyState != `open`) return;
+			if (__DEBUG__ && !d_CheckboxCast.checked) return;
+
+			let len = !data.length ? data.byteLength : data.length;
+			if (len > WebRTCPeerConnectionOffer.DATAGRAM_MAXLENGTH) {
+				let chunk = data.segmentation(WebRTCPeerConnectionOffer.DATAGRAM_MAXLENGTH);
+
+				this.dc_frame.send(`Chunk`);
+				for (let k in chunk)
+					this.dc_frame.send(chunk[k]);
+				this.dc_frame.send(`\0`);
+			}
+			else {
+				this.dc_frame.send(data);
+			}
+		}
+
+		sendCCP() {
+			this.dc_ccp.send(CheckContinuesMessage);
+		}
+
+		sendCanvasImage(data) {
+			this.dc_canvasImage.send(data);
+		}
+
+		setRemoteDescription(sdp) {
+			this.connection.setRemoteDescription(
+				new webRTCSessionDescription(sdp),
+				() => {
+					setInfo(`_ch${this.childIdx}`, 1, this.dc_frame.readyState);
+					setInfo(`_ch${this.childIdx}`, 2, `completed`);
+					d_log(`webRTC`, `[offer => ${this.answerId}] setRemoteDescription succeeded.`);
+				},
+				() => {
+					d_log(`webRTC`, `[offer => ${this.answerId}] setRemoteDescription failed.`, `red`);
+				}
+			);
+		}
+
+		addIceCandidate(iceCandidate) {
+			this.connection.addIceCandidate(new webRTCIceCandidate(iceCandidate));
+		}
+
+		close() {
+			this.connection.close();
+			WebRTCPeerConnectionOffer.count--;
+		}
+
+		_onCreateOffer() {
+			sendToServer(MessageType.SDPOffer, this.id, this.answerId, this.connection.localDescription);
+			setInfo(`_ch${this.childIdx}`, 2, `offerring`);
+
+			d_log(`webRTC`, `[offer => ${this.answerId}] send sdp to ${this.answerId}`);
+		}
+
+		_onIceCandidate(evt) {
+			if (evt.candidate) {
+				sendToServer(MessageType.ICECandidateOffer, this.id, this.answerId, evt.candidate);
+
+				d_log(`webRTC`, `[offer => ${this.answerId}] get ICE candidate`);
+				d_log(`webRTC`, `[offer => ${this.answerId}] send ICE candidate to ID : ${this.answerId}`);
+			}
+			else {
+				d_log(`webRTC`, `[offer => ${this.answerId}] ICE candidate phase ${evt.eventPhase}`, `orange`);
+			}
+		}
+
+		_onDataChannelOpened_frame(evt) {
+			d_log(`webRTC`, `[offer => ${this.answerId}] data channel for 'frame' opened`);
+			this.dc_frame.binaryType = `arraybuffer`;
+
+			this.dc_frame.onclose = (evt) => {
+				d_log(`webRTC`, `[offer => ${this.answerId}] datachannel for 'frame' closed`);
+			}
+
+			setInfo(`_ch${this.childIdx}`, 1, `opened`);
+
+			if (__DEBUG__) {
+				d_LabelOffer[this.answerId] = d_LabelID.cloneNode(true);
+				d_LabelOffer[this.answerId].innerHTML = `child ID : ${this.answerId}`;
+				d_Body.appendChild(d_LabelOffer[this.answerId]);
+			}
+		}
+
+		_onDataChannelOpened_ccp(evt) {
+			d_log(`webRTC`, `[offer => ${this.answerId}] data channel for 'check continue message' opened`);
+
+			this.dc_ccp.onclose = (evt) => {
+				d_log(`webRTC`, `[offer => ${this.answerId}] datachannel for 'check continue message' closed`);
+			}
+		}
+
+		_onDataChannelOpened_canvasImage(evt) {
+			d_log(`webRTC`, `[offer => ${this.answerId}] data channel for 'canvas image' opened`);
+			this.dc_canvasImage.binaryType = `arraybuffer`;
+
+			this.dc_canvasImage.onclose = (evt) => {
+				d_log(`webRTC`, `[offer => ${this.answerId}] datachannel for 'canvas image' closed`);
+			}
+
+			//this.task_canvasImage.pass();
+			this._onTaskPassed_canvasImage();
+		}
+
+		_onTaskPassed_canvasImage() {
+			getCanvasImage((blob) => {
+				let fr = new FileReader();
+				fr.onload = (frEvt) => {
+					this.sendCanvasImage(fr.result);
+					this.dc_canvasImage.close();
+					d_log(`webRTC`, `[offer => ${this.answerId}] sent canvas image`);
+				};
+				fr.onerror = (frEvt) => {
+					d_log(`webRTC`, `[offer => ${this.answerId}] failed to send canvas image`, `orange`);
+				};
+				fr.readAsArrayBuffer(blob);
+			});
+		}
+	}
+
+	// Answer Side -----------------------------
+	class WebRTCPeerConnectionAnswer {
+		constructor(pcConfigures, id) {
+			this.id = id;
+			this.dc_frame = null;
+			this.dc_ccp = null;
+			this.dc_canvasImage = null;
+			this.collecting = false;
+			this.chunk = [];
+			this.connection = new webRTCPeerConnection(pcConfigures);
+			this.connectionOffer = [];
+
+			this.connection.oniceconnectionstatechange = (evt) => {
+				if (this.dc_frame != null) 
+					setInfo(`_pt`, 1, this.dc_frame.readyState);
+				setInfo(`_pt`, 3, this.connection.iceConnectionState);
+			};
+		}
+
+		setRemoteDescription(remoteSdp) {
+			this.connection.setRemoteDescription(new webRTCSessionDescription(remoteSdp)).then(() =>{
+				this._onSetRemoteDescription();
+			})
+			.catch((reason) => {
+				d_log(`webRTC`, `[answer <= ${this.offerId}] createOffer failed. : ${reason}`, `red`);
+			});
+		}
+
+		addIceCandidate(iceCandidate) {
+			this.connection.addIceCandidate(new webRTCIceCandidate(iceCandidate));
+		}
+
+		close() {
+			this.connection.close();
+		}
+
+		_onSetRemoteDescription() {
+			this.connection.onicecandidate = (evt) => {
+				this._onIceCandidate(evt);
+			};
+
+			this.connection.createAnswer().then((sdp) => {
+				return this.connection.setLocalDescription(sdp);
+			})
+			.then(() => {
+				this._onCreateAnswer();
+
+				if (this.dc_frame != null)
+					setInfo(`_pt`, 1, this.dc_frame.readyState);
+				setInfo(`_pt`, 2, `completed`); 
+			})
+			.catch((reason) => {
+				console.log(reason);
+				d_log(`webRTC`, `[answer <= ${this.offerId}] createAnswer failed. : ${reason}`, `red`);
+			});
+		}
+
+		_onCreateAnswer() {
+			d_log(`webRTC`, `[answer <= ${this.offerId}] setLocalDescription succeeded.`);
+
+			this.connection.ondatachannel = (evt) => {
+				if (evt.channel.label.indexOf(WebRTCDataChannel_Frame) !== -1)
+					this._onDataChannelOpened_frame(evt);
+				else if (evt.channel.label.indexOf(WebRTCDataChannel_CCP) !== -1)
+					this._onDataChannelOpened_ccp(evt);
+				else if (evt.channel.label.indexOf(WebRTCDataChannel_CanvasImage) !== -1)
+					this._onDataChannelOpened_canvasImage(evt);
+				else
+					d_log(`webRTC`, `[answer <= ${this.offerId}] unknown datachannel opened`, `red`);
+			};
+			sendToServer(MessageType.SDPAnswer, this.id, this.offerId, this.connection.localDescription);
+		}
+
+		_onIceCandidate(evt) {
+			if (evt.candidate) {
+				sendToServer(MessageType.ICECandidateAnswer, this.id, this.offerId, evt.candidate);
+
+				d_log(`webRTC`, `[answer <= ${this.offerId}] get ICE candidate`);
+				d_log(`webRTC`, `[answer <= ${this.offerId}] send ICE candidate to ID : ${this.offerId}`);
+			}
+			else {
+				d_log(`webRTC`, `[answer <= ${this.offerId}] ICE candidate phase ${evt.eventPhase}`, `orange`);
+			}
+		}
+
+		_onDataChannelOpened_frame(evt) {
+			d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'frame' opened`);
+
+			this.dc_frame = evt.channel;
+			this.dc_frame.onmessage = (evt) => {
+				this._onDataChannelMessage_frame(evt);
+			};
+
+			this.dc_frame.onclose = (evt) => {
+				d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'frame' closed`);
+			}
+
+			if (!isCasting)
+				setLoader(`Ready`);
+			else
+				clearLoader();
+
+			setInfo(`_pt`, 1, `opened`);
+
+			if (__DEBUG__) {
+				d_LabelAns[this.offerId] = d_LabelID.cloneNode(true);
+				d_LabelAns[this.offerId].innerHTML = `parent ID : ${this.offerId}`;
+				d_Body.appendChild(d_LabelAns[this.offerId]);
+			}
+		}
+
+		_onDataChannelOpened_ccp(evt) {
+			d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'check continues message' opened`);
+
+			this.dc_ccp = evt.channel;
+			this.dc_ccp.onmessage = (evt) => {
+				onCheckContinuesMessage(evt.data);
+			};
+
+			this.dc_ccp.onclose = (evt) => {
+				d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'check continues message' closed`);
+			};
+
+			setCCPTimer();
+		}
+
+		_onDataChannelOpened_canvasImage(evt) {
+			d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'canvas image' opened`);
+
+			this.dc_canvasImage = evt.channel;
+			this.dc_canvasImage.onmessage = (evt) => {
+				setCapturedImageSegment(evt.data);
+				d_log(`webRTC`, `[answer <= ${this.offerId}] received & set canvas image`);
+			};
+
+			this.dc_canvasImage.onclose = (evt) => {
+				d_log(`webRTC`, `[answer <= ${this.offerId}] data channel for 'canvas image' closed`);
+			}
+		}
+
+		_onDataChannelMessage_frame(evt) {
+			if (__DEBUG__ && !d_CheckboxReceive.checked) return;
+
+			if (this.collecting) {
+				if (evt.data == `\0`) {
+					let data = concatenation(this.chunk);
+
+					this._decode(data);
+
+					this.chunk = [];
+					this.collecting = false;
+				} else {
+					this.chunk.push(evt.data);
+				}
+			}
+			else if (evt.data == `Chunk`) {
+				this.collecting = true;
+			}
+			else {
+				this._decode(evt.data);
+			}
+		}
+
+		_decode(data) {
+			decodeData(data, () => {
+				for (let k in peerChildren)
+					peerChildren[k].send(data);
+			});
+		}
+	}
+
 
 
 	// WebSocket ------------------------------------------------------------
 
 	function closeAllConnection() {
-		for (var k in peer_offer)
-			peer_offer[k].close();
+		for (let k in peerChildren)
+			peerChildren[k].close();
 
-		if (peer_answer != null)
-			peer_answer.close();
+		if (peerParent != null)
+			peerParent.close();
 
-		peer_offer = [];
-		peer_answer = null;
+		peerChildren = [];
+		peerParent = null;
 
-		setInfo("_sv", [0,3,4,5], "-");
-		setInfo("_sv", 1, "connecting");
-		setInfo("_sv", 2, "no");
+		setInfo(`_sv`, [0,3,4,5], `-`);
+		setInfo(`_sv`, 1, `connecting`);
+		setInfo(`_sv`, 2, `no`);
 	}
 
 	socket = new Alchemy({
-		Server: location.hostname,
-		Port: "8081",
-		BinaryType: "arraybuffer",
-		DebugMode: false,
+		Server 		: location.hostname,
+		Port 		: `8081`,
+		BinaryType 	: `arraybuffer`,
+		DebugMode 	: false,
 	});
 
-	socket.Connected = function() {
-		setInfo("_sv", 1, "connected");
-		//ntpInitialDelay = (Date.now() - connectTime) / 2;
-
-		/*
-		if (__INFO__)
-		{
-			var ntpRequest = new NtpRequest("http://calc.cis.ibaraki.ac.jp/time.php");
-			ntpRequest.onResponse = function(res) {
-				ntpInitialDelay = (ntpRequest.responseTime - ntpRequest.requestTime) / 2;
-				var local = Date.now();
-				var	net = new Date(res * 1000 - ntpInitialDelay);
-				//var utc = net.getTime() + net.getTimezoneOffset()*60*1000;
-				initializedLocalDate = local;
-				initializedNetworkTime = totalMillisecond(net);
-				console.log("initializedLocalDate:"+initializedLocalDate);
-				console.log("initializedNetworkTime:"+initializedNetworkTime);
-				setInfo("_sv", 5, ntpInitialDelay);
-			};
-			ntpRequest.begin();
-		}*/
+	socket.Connected = () => {
+		setInfo(`_sv`, 1, `connected`);
 	}
 
-	socket.Disconnected = function() {
-		setInfo("_sv", 1, "disconnected");
-		debugLog("disconnected", "blue");
+	socket.Disconnected = () => {
+		setInfo(`_sv`, 1, `disconnected`);
+		d_log(`WebSocket`, `connection disconnected`, `blue`);
 	};
 
-	socket.MessageReceived = function(event) {
-		setInfo("_sv", 3, nowTime());
-		if (typeof event.data == "string") {
-			if (event.data == CheckPacketIdentifier) {
-				onCheckPacket(event.data);
+	socket.MessageReceived = (event) => {
+		if (__DEBUG__ && !d_CheckboxReceive.checked) return;
+
+		setInfo(`_sv`, 3, nowTime());
+		if (typeof event.data == `string`) {
+			if (event.data == CheckContinuesMessage) {
+				onCheckContinuesMessage(event.data);
 				return;
 			}
 
-			var message = JSON.parse(event.data);
+			let message = JSON.parse(event.data);
 			switch (message.type) {
 				case MessageType.Connected:
 				connectedServerDate = message.data;
-				initializedLocalDate = new Date();
+				connectedLocalDate = new Date();
 				setId(message.id);
 				directReceive = (message.id == 0);
 
 				if (directReceive) {
-					if (!isCasting) setLoader("Ready");
+					if (!isCasting) setLoader(`Ready`);
 					else clearLoader();
 				}
 				else {
-					peer_answer = new webRTCPeerConnectionAnswer(pc_config, message.id);
+					peerParent = new WebRTCPeerConnectionAnswer(pcConfigures, message.id);
 				}
 
-				setInfo("_sv", 0, message.id);
+				setInfo(`_sv`, 0, message.id);
 
-				debugLog("connected. my id: " + message.id, "blue");
-				if (__DEBUG__) dLabelID.innerHTML = "ID : " + message.id;
+				d_log(`WebSocket`, `connection established. ID => ${message.id}`, `blue`);
+				d_log(`WebSocket`, `server date: ${connectedServerDate}`);
+				if (__DEBUG__) d_LabelID.innerHTML = `ID : ${message.id}`;
 				break;
 
 
 				case MessageType.UpdateID:
 				setId(message.id);
-				peer_answer.id = message.id;
-				directReceive = (message.id == 0);
-				setInfo("_sv", 0, message.id);
+				peerParent.id = message.id;
+				directReceive = (message.id === 0);
+				setInfo(`_sv`, 0, message.id);
 
 				clearDelayTimer();
-				debugLog("update id. my id: " + message.id, "blue");
-				if (__DEBUG__) dLabelID.innerHTML = "ID : " + message.id;
+				d_log(`WebSocket`, `update ID => ${message.id}`, `blue`);
+				if (__DEBUG__) d_LabelID.innerHTML = `ID : ${message.id}`
 				break;
 
 
 				case MessageType.PeerConnection: // new peer connected
-				var targetId = message.targetId;
-				if (peer_offer[targetId] != null) break;
+				let targetId = message.targetId;
 
-				var childIdx = peer_child[0] == null ? 0 : 1;
-				peer_offer[targetId] = new webRTCPeerConnectionOffer(pc_config, childIdx, peerId, targetId);
-				peer_child[childIdx] = peer_offer[targetId];
+				if (Object.keys(peerChildren).length >= BranchCount) {
+					d_log(`WebSocket`, `rejected peer: too many peers. peer count = ${peerChildren.length}`, `red`);
+					break;
+				}
 
-				if (peer_answer !== null)
-					peer_answer.connectionOffer[targetId] = peer_offer[targetId];
+				if (peerChildren[targetId] != null) {
+					d_log(`WebSocket`, `rejected peer: same peer id as existing peer. peer count = ${peerChildren.length}`, `red`);
+					break;
+				}
 
-				setInfo("_ch"+childIdx, 0, targetId);
+				peerChildren[targetId] = new WebRTCPeerConnectionOffer(pcConfigures, peerId, targetId);
 
-				debugLog("new user connected. id: " + message.targetId, "blue");
-				//dButton.onclick = function(){console.dir(peer_offer[message.targetId]);}
-				//setInterval(function(){console.dir(peer_offer[message.targetId]);},3000);
-				//debugLog("webRTC peer count: " + peerConnectionCount);
+				if (peerParent != null)
+					peerParent.connectionOffer[targetId] = peerChildren[targetId];
+
+				setInfo(`_ch${peerChildren[targetId].childIdx}`, 0, targetId);
+
+				d_log(`WebSocket`, `peer connected as child. child ID : ${message.targetId}`, `blue`);
 				break;
 
+
 				case MessageType.SDPOffer: // SDP Offer Received
-				peer_answer.offerId = message.id;
-				peer_answer.setRemoteDescription(message.data);
-				setInfo("_pt", 0, message.id);
-				debugLog("received SDPOffer from id: " + message.id, "blue");
-				//dButton.onclick = function(){console.dir(peer_answer);}
+				peerParent.offerId = message.id;
+				peerParent.setRemoteDescription(message.data);
+				setInfo(`_pt`, 0, message.id);
+				d_log(`WebSocket`, `received SDPOffer from ID : ${message.id}`, `blue`);
+				//d_CheckboxCast.onclick = function(){console.dir(peerParent);}
 				break;
 
 
 				case MessageType.SDPAnswer: // SDP Answer Received
-				peer_offer[message.id].setRemoteDescription(message.data);
-				debugLog("received answer from id: " + message.id, "green");
+				peerChildren[message.id].setRemoteDescription(message.data);
+				d_log(`WebSocket`, `received answer from ID : ${message.id}`, `blue`);
 				break;
 
 
 				case MessageType.ICECandidateOffer: // ICECandidate Received from Offer
-				peer_answer.addIceCandidate(message.data);
-				debugLog("received ICECandidate from offer id: " + message.id, "blue");
+				peerParent.addIceCandidate(message.data);
+				d_log(`WebSocket`, `received ICECandidate from offer ID : ${message.id}`, `blue`);
 				break;
 
 
 				case MessageType.ICECandidateAnswer: // ICECandidate Received from Answer
-				peer_offer[message.id].addIceCandidate(message.data);
-				debugLog("received ICECandidate from answer id: " + message.id, "green");
+				peerChildren[message.id].addIceCandidate(message.data);
+				d_log(`WebSocket`, `received ICECandidate from answer ID : ${message.id}`, `blue`);
 				break;
 
 
 				case MessageType.RemoveOffer: // Remove Offer
-				var childIdx = peer_child[0] == peer_offer[message.id] ? 0 : 1;
-				if (peer_offer[message.id]) peer_offer[message.id].close();
-				peer_child[childIdx] = null;
-				delete peer_offer[message.id];
+				setInfo(`_ch${peerChildren[message.id].childIdx}`, [0,1,2,3], `-`);
 
+				if (peerChildren[message.id]) peerChildren[message.id].close();
+				delete peerChildren[message.id];
 
-				setInfo("_ch"+childIdx, [0,1,2,3], "-");
-
-				debugLog("remove offer id: " + message.id, "yellow");
+				d_log(`WebSocket`, `remove offer ID : ${message.id}`, `orange`);
 				break;
 
 
 				case MessageType.RemoveAnswer: // Remove Answer
-				if (peer_answer) peer_answer.close();
-				peer_answer = new webRTCPeerConnectionAnswer(pc_config, peerId);
+				if (peerParent) peerParent.close();
+				peerParent = new WebRTCPeerConnectionAnswer(pcConfigures, peerId);
 
 
-				setInfo("_pt", [0,1,2,3,4,5], "-");
+				setInfo(`_pt`, [0,1,2,3,4,5], `-`);
 
-				debugLog("remove answer id: " + message.id, "yellow");
+				d_log(`WebSocket`, `remove answer ID : ${message.id}`, `orange`);
 				break;
 
 
@@ -906,68 +1322,74 @@ function onLoad() {
 				updateSettings(message.data);
 				resizeCanvas();
 
-				//settings = clone(message.data);
-				debugLog("setting received", "blue");
+				d_log(`WebSocket`, `settings received`, `blue`);
 				break;
 
 
 				case MessageType.StartCasting:
 				isCasting = true;
 				receivedCount = 0;
-				setDelayTimer();
+
+				setCCPTimer();
 				clearLoader();
-				setInfo("_sv", 2, "yes");
+
+				setInfo(`_sv`, 2, `yes`);
+
+				d_log(`WebSocket`, `casting started`, `blue`);
 				break;
 
 
 				case MessageType.StopCasting:
 				isCasting = false;
-				setLoader("Ready");
-				setInfo("_sv", 2, "no");
-
-				clearDelayTimer();
-				break;
-
-
-				case MessageType.Report:
-				closeAllConnection();
 				clearDelayTimer();
 
-				debugLog("accept reconnection", "red");
-				dCast = true;
+				setLoader(`Ready`);
+				setInfo(`_sv`, 2, `no`);
+
+				d_log(`WebSocket`, `casting stopped`, `blue`);
 				break;
 
-
+				case MessageType.Reset:
 				case MessageType.Disconnect:
 				closeAllConnection();
 				clearDelayTimer();
 
 				socket.Stop();
-				socket.Start();
+				setTimeout(() => { socket.Start(); }, 1000);
 
-				setLoader("Connecting...");
-				debugLog("accept reconnection", "red");
-				dCast = true;
+				if (message.type === MessageType.Reset) {
+					d_log(`WebSocket`, `accept reset from ID :${message.id}`, `red`);
+					setLoader(`Connecting...`);
+				}
+				else {
+					d_log(`WebSocket`, `disconnected`, `red`);
+					setLoader(`Disconnected`);
+				}
+				break;
+
+				default:
+				d_log(`WebSocket`, `An unexpected message received. : ${message.type}`, `red`);
 				break;
 			}
 
-			debugLog("[recv] type:"+message.type+",id:"+message.id+",target:"+message.targetId);
+			d_log(`recv`,`type:${message.type},id:${message.id},target:${message.targetId}`);
 		}
-		else if (directReceive && isCasting) {
-			var modified = decodeBuffer(event.data)[0];
-			var chank = modified.segmentation(ChankSize);
-			for (var k in peer_offer)
-				peer_offer[k].sendChanks(chank);
+		else {
+			let modified = decodeData(event.data);
+			if (!directReceive || !isCasting) return;
 
-			//setDelayTimer(null);
+			for (let k in peerChildren)
+				peerChildren[k].send(modified);
+
+			//setCCPTimer(null);
 		}
 	};
 
-	socket.Error = function(evt) {
+	socket.Error = (evt) => {
 		document.location.reload(true);
 	};
 
-	setLoader("Connecting...");
+	setLoader(`Connecting...`);
 
 	connectTime = Date.now();
 
@@ -976,5 +1398,5 @@ function onLoad() {
 	//---------------------------------------------------------------------------
 
 	if (!__INFO__)
-		document.getElementById("_info").style.display = "none";
+		document.getElementById(`_info`).style.display = `none`;
 }

@@ -91,14 +91,18 @@ namespace ScreenShare
         [DllImport("gdi32.dll")]
         public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
 
+        [DllImport("gdi32.dll")]
+        public static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth, int nHeight);
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetWindowDC(IntPtr hwnd);
 
         [DllImport("gdi32.dll")]
-        public static extern int BitBlt(IntPtr hDestDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
+        public static extern int BitBlt(IntPtr hDestDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, uint dwRop);
 
         [DllImport("gdi32.dll")]
-        public static extern int StretchBlt(IntPtr hDestDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int nSrcWidth, int nSrcHeight, int dwRop);
+        public static extern int StretchBlt(IntPtr hDestDC, int x, int y, int nWidth, int nHeight, 
+            IntPtr hSrcDC, int xSrc, int ySrc, int nSrcWidth, int nSrcHeight, int dwRop);
 
         [DllImport("gdi32.dll")]
         public static extern int SetStretchBltMode(IntPtr hdc, int iStretchMode);
@@ -127,6 +131,10 @@ namespace ScreenShare
 
         [DllImport("gdi32.dll")]
         public static extern IntPtr CreateDIBitmap(IntPtr hdc, ref BITMAPINFOHEADER lpbmih, uint fdwInit, byte[] lpbInit, ref BITMAPINFO lpbmi, uint fuUsage);
+
+        [DllImport("gdi32.dll")]
+        public static extern int StretchDIBits(IntPtr hdc, int XDest, int YDest, int nDestWidth, int nDestHeight,
+            int XSrc, int YSrc, int nSrcWidth, int nSrcHeight, byte[] lpBits, ref BITMAPINFO lpBitsInfo, uint iUsage, uint dwRop);
 
         [DllImport("gdi32.dll")] 
         public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
@@ -13,6 +16,7 @@ namespace ScreenShare
 {
     using Timer = System.Timers.Timer;
     using Size = System.Drawing.Size;
+    using Point = OpenCvSharp.Point;
 
     /// <summary>
     /// キャプチャ時のデータを格納します
@@ -36,24 +40,36 @@ namespace ScreenShare
     }
 
     /// <summary>
-    /// 分割画面のキャプチャ時のデータを格納します
+    /// 前フレームとの差分が生じた領域のキャプチャデータを格納します
     /// </summary>
     public struct SegmentCaptureData
     {
         /// <summary>
-        /// キャプチャされた領域の識別子
+        /// キャプチャされた短径
         /// </summary>
-        public int segmentIdx;
-
-        /// <summary>
-        /// キャプチャされた領域
-        /// </summary>
-        public Rectangle rect;
+        public Rectangle segment;
 
         /// <summary>
         /// キャプチャされた領域のエンコード済みバッファ
         /// </summary>
         public byte[] encodedFrameBuffer;
+    }
+
+
+    /// <summary>
+    /// 過去のフレームと同じ部分の領域のキャプチャデータを格納します
+    /// </summary>
+    public struct SegmentCopyData
+    {
+        /// <summary>
+        /// 過去のフレームのコピー領域
+        /// </summary>
+        public Rectangle source;
+
+        /// <summary>
+        /// 過去のフレームのコピー領域の貼り付け先領域
+        /// </summary>
+        public Rectangle dest;
     }
 
     /// <summary>
@@ -127,7 +143,7 @@ namespace ScreenShare
         public int FramesPerSecond { get; set; }
 
         /// <summary>
-        /// キャプチャした画面のエンコード形式を文字列で設定、取得します。デフォルトは ".jpg" です。
+        /// キャプチャした画面のエンコード形式を文字列で設定(".jpeg", ".png", ".webp")、取得します。デフォルトは ".webp" です。
         /// </summary>
         public string EncodeFormatExtension
         { 
@@ -141,6 +157,10 @@ namespace ScreenShare
 
                 switch (m_EncodeFormatExtension)
                 {
+                    case ".webp":
+                        m_EncodingParam.EncodingId = ImwriteFlags.WebPQuality;
+                        break;
+
                     case ".jpg":
                         m_EncodingParam.EncodingId = ImwriteFlags.JpegQuality;
                         break;
@@ -150,14 +170,14 @@ namespace ScreenShare
                         break;
 
                     default:
-                        m_EncodingParam.EncodingId = ImwriteFlags.JpegQuality;
+                        m_EncodingParam.EncodingId = ImwriteFlags.WebPQuality;
                         break;
                 }
             }
         }
 
         /// <summary>
-        /// キャプチャした画面のエンコード品質を設定、取得します。デフォルトは 95 です。
+        /// キャプチャした画面のエンコード品質を設定、取得します。デフォルトは 20 です。
         /// </summary>
         public int EncoderQuality
         { 
@@ -172,43 +192,42 @@ namespace ScreenShare
         }
 
         /// <summary>
-        /// キャプチャした画面の、差分の割合(異なる画素の数)が画素総数の何割かを超えた場合に元画像として得るかの割合を設定、取得します。デフォルトは 0.25f です。
+        /// キャプチャ後のスケールされたサイズを取得します。
         /// </summary>
-        public float DiffFrameRatio 
-        { 
+        public Size DestinationSize { get; private set; }
+
+        /// <summary>
+        /// 現在送信しているかどうかを返します。
+        /// </summary>
+        public bool Capturing { get; private set; }
+
+        /// <summary>
+        /// 送信されるセグメントのグリッド幅を設定します。デフォルトは 16 です。
+        /// </summary>
+        public int GridWidth
+        {
             get
             {
-                return m_DiffFrameRatio;
+                return m_GridWidth;
             }
             set
             {
-                if (value < 0.0f || value > 1.0f)
-                    throw new ArgumentOutOfRangeException();
-
-                m_DiffFrameRatio = value;
+                if (value <= 2) value = 2;
+                m_GridWidth = value;
             }
         }
 
-        /// <summary>
-        /// キャプチャ画面を分割する縦、横の分割数を設定、取得します。デフォルトは 3 です。
-        /// </summary>
-        public int CaptureDivisionNum { get; set; }
-
-        /// <summary>
-        /// キャプチャ後のスケールされたサイズを取得します。
-        /// </summary>
-        public Size DestinationSize { get { return m_DstSize; } }
+        public int CapturedCount { get; private set; }
 
         /// <summary>
         /// 画面がキャプチャされた時に発生します。
         /// </summary>
         public event EventHandler<CaptureData> OnCaptured = delegate {};
-        public event EventHandler<Bitmap> OnCapturedBitmap = delegate { };
 
         /// <summary>
-        /// 分割画面がキャプチャされた時に発生します。
+        /// 前フレームとの差分が生じた時に発生します。
         /// </summary>
-        public event EventHandler<SegmentCaptureData> OnSegmentCaptured = delegate { };
+        public event EventHandler<List<SegmentCaptureData>> OnSegmentCaptured = delegate { };
 
         /// <summary>
         /// キャプチャが開始されたときに発生します。
@@ -225,10 +244,7 @@ namespace ScreenShare
         /// </summary>
         public event EventHandler<Exception> OnError = delegate { };
 
-        /// <summary>
-        /// 現在送信しているかどうかを返します。
-        /// </summary>
-        public bool Capturing { get; private set; }
+
 
         /// <summary>
         /// キャプチャスクリーン
@@ -238,27 +254,12 @@ namespace ScreenShare
         /// <summary>
         /// エンコードパラメータ
         /// </summary>
-        private ImageEncodingParam m_EncodingParam = new ImageEncodingParam(ImwriteFlags.JpegQuality, 95);
+        private ImageEncodingParam m_EncodingParam = new ImageEncodingParam(ImwriteFlags.WebPQuality, 20);
         
         /// <summary>
         /// エンコードフォーマット
         /// </summary>
-        private string m_EncodeFormatExtension = ".jpg";
-
-        /// <summary>
-        /// 差分割合
-        /// </summary>
-        private float m_DiffFrameRatio = 0.25f;
-
-        /// <summary>
-        /// Iフレーム
-        /// </summary>
-        private Mat m_IntraFrameMat;
-
-        /// <summary>
-        /// キャプチャタイマー
-        /// </summary>
-        private Timer m_Timer = new Timer();
+        private string m_EncodeFormatExtension = ".webp";
 
         /// <summary>
         /// キャプチャデバイスコンテキスト
@@ -274,22 +275,17 @@ namespace ScreenShare
         private IntPtr m_Bits;
 
         /// <summary>
-        /// キャプチャする短形
+        /// キャプチャ短形
         /// </summary>
         private Rectangle m_SrcRect;
 
         /// <summary>
-        /// キャプチャするプロセス
+        /// キャプチャプロセス
         /// </summary>
         private Process m_CaptureProcess;
 
         /// <summary>
-        /// キャプチャイメージサイズ
-        /// </summary>
-        private Size m_DstSize;
-        
-        /// <summary>
-        /// キャプチャ状態
+        /// 内部キャプチャ状態
         /// </summary>
         private bool m_IsCapturing = false;
 
@@ -298,6 +294,14 @@ namespace ScreenShare
         /// </summary>
         private Task m_Task;
 
+        /// <summary>
+        /// セグメントグリッド幅
+        /// </summary>
+        private int m_GridWidth = 16;
+
+        private int m_LastImageGotCount = 0;
+        private SegmentCaptureData m_LastCapturedImage;
+        
         /// <summary>
         /// インスタンスを初期化します。
         /// </summary>
@@ -316,7 +320,6 @@ namespace ScreenShare
             {
                 OnError(this, new ObjectDisposedException(CaptureProcess.ProcessName, "プロセス オブジェクトは既に破棄されています。"));
             }
-              
 
             Capturing = true;
 
@@ -341,11 +344,23 @@ namespace ScreenShare
             
             CleanUp();
 
-            m_IntraFrameMat = null;
-
             Capturing = false;
             
             OnStopped(this, EventArgs.Empty);
+        }
+
+        public SegmentCaptureData GetLastCapturedImage(string ext = null)
+        {
+            if (CapturedCount == m_LastImageGotCount) return m_LastCapturedImage;
+
+            m_LastImageGotCount = CapturedCount;
+            m_LastCapturedImage = new SegmentCaptureData()
+            {
+                encodedFrameBuffer = new Mat(DestinationSize.Height, DestinationSize.Width, MatType.CV_8UC3, m_Bits).ImEncode(ext == null ? m_EncodeFormatExtension : ext),
+                segment = new Rectangle(0, 0, DestinationSize.Width, DestinationSize.Height),
+            };
+
+            return m_LastCapturedImage;
         }
 
         /// <summary>
@@ -358,104 +373,119 @@ namespace ScreenShare
             //Parallel.Invoke(() =>
             m_Task = Task.Run(() =>
             {
-                var capCnt = 0;
                 var sw = new Stopwatch();
-
-                var mat = new Mat(m_DstSize.Height, m_DstSize.Width, MatType.CV_8UC4, m_Bits);
-                var mat_xor = new Mat();
-                var mat_diff = new Mat();
-
-                var segRect = new Rectangle(0, 0, m_DstSize.Width / CaptureDivisionNum, m_DstSize.Height / CaptureDivisionNum);
-
                 var cData = new CaptureData()
                 {
                     captureData = m_Bits,
-                    captureSize = m_DstSize,
-                    bitCount = 8 * 4,
+                    captureSize = DestinationSize,
+                    bitCount = 32,
                 };
 
-                m_IntraFrameMat = new Mat(m_DstSize.Height, m_DstSize.Width, MatType.CV_8UC4);
+                byte[] imageBuffer;
+
+                var mat = new Mat(DestinationSize.Height, DestinationSize.Width, MatType.CV_8UC4, m_Bits);
+                var mat_U3 = new Mat(mat.Size(), MatType.CV_8UC3);
+                var mat_prev = new Mat(mat.Size(), MatType.CV_8UC3, Scalar.All(0x00));
+                var mat_xor = new Mat(mat.Size(), MatType.CV_8UC3, Scalar.All(0xff));
+                var mat_gray = new Mat(mat.Size(), MatType.CV_8UC1);
+                var mat_diff = new Mat(mat.Size(), MatType.CV_8UC1, Scalar.All(0xff));
+                var mat_close = new Mat(mat.Size(), MatType.CV_8UC1, Scalar.All(0xff));
+                var mat_mask = new Mat(mat.Size(), MatType.CV_8UC1, Scalar.All(0xff));
+                var mat_maskedU3 = new Mat(mat.Size(), MatType.CV_8UC3);
+                var mat_masked = new Mat(mat.Size(), MatType.CV_8UC4);
+
+                var segCapData = new SegmentCaptureData();
+                var segCaptureList = new List<SegmentCaptureData>();
+
+                CapturedCount = 0;
                 sw.Start();
-                
+
+                var srcHdc = CaptureTarget == CaptureTarget.Desktop ? m_Hdc : m_ProcessHdc;
+
                 while (m_IsCapturing)
                 {
-                    //Win32.BitBlt(hdc, 0, 0, dstSize.Height, dstSize.Width, m_ProcessDC, 0, 0, Win32.SRCCOPY);
-                    var srcHdc = CaptureTarget == CaptureTarget.Desktop ? m_Hdc : m_ProcessHdc;
-                    Win32.StretchBlt(m_HdcMem, 0, m_DstSize.Height, m_DstSize.Width, -m_DstSize.Height, srcHdc, 
-                        m_SrcRect.X, m_SrcRect.Y, m_SrcRect.Width, m_SrcRect.Height, Win32.SRCCOPY);
+                    
+                    var t = sw.ElapsedMilliseconds;
+                    
+                    Win32.StretchBlt(m_HdcMem, 0, DestinationSize.Height, DestinationSize.Width, -DestinationSize.Height, srcHdc,
+                        m_SrcRect.X, m_SrcRect.Y, m_SrcRect.Width, m_SrcRect.Height, Win32.SRCCOPY | Win32.CAPTUREBLT);
 
+                    Debug.Log("test", "" + (sw.ElapsedMilliseconds - t));
                     OnCaptured(this, cData);
 
 #if BROADCAST_IMAGE
                     try
                     {
-                        //OpenCvSharp.Extensions.BitmapConverter.ToBitmap(mat, bmp);
-                        //bmp?.Save("test.jpeg", ImageFormat.Jpeg);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                    
-                    //OnCapturedBitmap(this, bmp);
-                    
-                    try
-                    {
-                        Cv2.BitwiseXor(mat, m_IntraFrameMat, mat_xor);
-                        Cv2.CvtColor(mat_xor, mat_diff, ColorConversionCodes.RGB2GRAY);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
+                        Cv2.CvtColor(mat, mat_U3, ColorConversionCodes.BGRA2BGR);
+                        mat_mask.SetTo(Scalar.All(0xff));
+                        mat_maskedU3.SetTo(Scalar.All(0x00));
+                        mat_masked.SetTo(Scalar.All(0x00));
 
-                    for (int y = 0; y < CaptureDivisionNum; y++)
-                    {
-                        for (int x = 0; x < CaptureDivisionNum; x++)
+                        if (CapturedCount == 0)
                         {
-                            var segIdx = y * CaptureDivisionNum + x;
+                            Cv2.ImEncode(EncodeFormatExtension, mat_U3, out imageBuffer, m_EncodingParam);
+                            segCapData.segment = new Rectangle(0, 0, mat_U3.Width, mat_U3.Height);
+                            segCapData.encodedFrameBuffer = imageBuffer;
 
-                            segRect.X = segRect.Width * x;
-                            segRect.Y = segRect.Height * y;
+                            segCaptureList.Add(segCapData);
+                        }
+                        else
+                        {
+                            mat_xor = mat_U3 ^ mat_prev;
+                            Cv2.CvtColor(mat_xor, mat_gray, ColorConversionCodes.BGR2GRAY);
+                            Cv2.Threshold(mat_gray, mat_diff, 1, 0xff, ThresholdTypes.Binary);
+                            Cv2.MorphologyEx(mat_diff, mat_close, MorphTypes.Close, new Mat(), null, 8);
 
-                            var sRect = new Rect(segRect.X, segRect.Y, segRect.Width, segRect.Height);
-                            var segDiff = mat_diff.SubMat(sRect);
-                            var nonZero = segDiff.CountNonZero();
-
-                            if (nonZero != 0)
+                            var cc = Cv2.ConnectedComponentsEx(mat_close);
+                            foreach (var blob in cc.Blobs.Skip(1))
                             {
-                                var segCapture = mat.SubMat(sRect);
-                                var img_buffer = segCapture.ImEncode(EncodeFormatExtension, m_EncodingParam);
+                                var rect = blob.Rect;
+                                var mat_label = new Mat(mat_U3, rect);
+                                var mat_labelMask = new Mat(mat_mask, rect);
+                                var mat_labelMaskedU3 = new Mat(mat_maskedU3, rect);
+                                var mat_labelMasked = new Mat(mat_masked, rect);
 
-                                var sData = new SegmentCaptureData()
+                                var dx = (rect.X + rect.Width) / GridWidth;
+                                var dy = (rect.Y + rect.Height) / GridWidth;
+                                for (var x = rect.X / GridWidth; x <= dx; ++x)
                                 {
-                                    segmentIdx = segIdx,
-                                    rect = segRect,
-                                    encodedFrameBuffer = img_buffer,
-                                };
+                                    for (var y = rect.Y / GridWidth; y <= dy; ++y)
+                                    {
+                                        var segRect = new Rect(x * GridWidth, y * GridWidth,
+                                            Math.Min(mat.Width - x * GridWidth, GridWidth),
+                                            Math.Min(mat.Height - y * GridWidth, GridWidth));
 
-                                OnSegmentCaptured(this, sData);
+                                        if (new Mat(mat_close, segRect).CountNonZero() == 0)
+                                            new Mat(mat_mask, segRect).SetTo(Scalar.All(0x00));
+                                    }
+                                }
 
-                                var segIntra = m_IntraFrameMat.SubMat(sRect);
-                                segCapture.CopyTo(segIntra);
+                                mat_label.CopyTo(mat_labelMaskedU3, mat_labelMask);
+                                Cv2.Merge(new Mat[] { mat_labelMaskedU3, mat_labelMask }, mat_labelMasked);
+                                Cv2.ImEncode(EncodeFormatExtension, mat_labelMasked, out imageBuffer, m_EncodingParam);
+                                segCapData.segment = new Rectangle(blob.Rect.X, blob.Rect.Y, blob.Rect.Width, blob.Rect.Height);
+                                segCapData.encodedFrameBuffer = imageBuffer;
+                                segCaptureList.Add(segCapData);
                             }
                         }
+
+                        mat_U3.CopyTo(mat_prev);
+
                     }
+                    catch (Exception e) { Debug.Log("OpenCV", e.ToString()); continue; }
+
+                    if (segCaptureList.Count != 0)
+                        OnSegmentCaptured(this, segCaptureList);
+                    segCaptureList.Clear();
+                            
 #endif
 
-                    var sleepMs = (ms * capCnt) - sw.Elapsed.TotalMilliseconds;
+                    var sleepMs = (ms * CapturedCount) - sw.Elapsed.TotalMilliseconds;
                     if (sleepMs > 0) Thread.Sleep((int)sleepMs);
-                    capCnt++;
-
-                    //Debug.Log(""+capCnt);
-                    //GC.Collect();
-                    //File.WriteAllBytes("dump/"+capCnt+".jpg", mat.ImEncode(EncodeFormatExtension, m_EncodingParam));
+                    CapturedCount++;
                 }
 
                 sw.Stop();
-
-                //Win32.SelectObject(hdc, hbmpPrev);
-                
             });
         }
 
@@ -483,7 +513,7 @@ namespace ScreenShare
             var w = (int)(m_SrcRect.Width * Scale);
             var h = (int)(m_SrcRect.Height * Scale);
 
-            m_DstSize = new Size(w + (w & 1), h + (h & 1));
+            DestinationSize = new Size(w + (w & 1), h + (h & 1));
             //m_DstSize = new Size(w, h);
 
             //m_DstSize = new Size(927, 692);
@@ -492,8 +522,8 @@ namespace ScreenShare
             var bmiHeader = new Win32.BITMAPINFOHEADER();
 
             bmiHeader.biSize = (uint)Marshal.SizeOf(bmiHeader);
-            bmiHeader.biWidth = m_DstSize.Width;
-            bmiHeader.biHeight = m_DstSize.Height;
+            bmiHeader.biWidth = DestinationSize.Width;
+            bmiHeader.biHeight = DestinationSize.Height;
             bmiHeader.biPlanes = 1;
             bmiHeader.biBitCount = 32;
             bmiHeader.biSizeImage = 0;// (uint)(m_DstSize.Width * m_DstSize.Height * 4);
@@ -520,7 +550,8 @@ namespace ScreenShare
         /// </summary>
         private void CleanUp()
         {
-            Win32.ReleaseDC(m_Hdc, m_ProcessHdc);
+            if (m_ProcessHdc != IntPtr.Zero)
+                Win32.ReleaseDC(m_Hdc, m_ProcessHdc);
             Win32.DeleteObject(m_Hbmp);
             Win32.DeleteDC(m_HdcMem);
             Win32.DeleteDC(m_Hdc);

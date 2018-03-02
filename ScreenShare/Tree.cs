@@ -57,7 +57,7 @@ namespace ScreenShare
         /// <summary>
         /// コレクションの指定した番号の要素のキーを取得します。
         /// </summary>
-        /// <param name="index">指定する番号(0以下で最後から)</param>
+        /// <param name="index">指定する番号(0以下で降順指定)</param>
         /// <returns></returns>
         public int ElementAt(int index)
         {

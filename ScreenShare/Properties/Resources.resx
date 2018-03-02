@@ -118,67 +118,60 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AVIFilter" xml:space="preserve">
-    <value>AVIファイル(*.avi)|*.avi</value>
-  </data>
-  <data name="CaptureError" xml:space="preserve">
-    <value>キャプチャエラー</value>
-  </data>
-  <data name="CaptureFailed" xml:space="preserve">
-    <value>キャプチャ失敗</value>
-  </data>
-  <data name="CaptureStarted" xml:space="preserve">
-    <value>キャプチャ開始</value>
-  </data>
-  <data name="CaptureStarting" xml:space="preserve">
-    <value>キャプチャ開始中...</value>
-  </data>
-  <data name="CaptureStopped" xml:space="preserve">
-    <value>キャプチャ終了</value>
-  </data>
-  <data name="CaptureStopping" xml:space="preserve">
-    <value>キャプチャ終了中...</value>
-  </data>
-  <data name="ProcessNotFound" xml:space="preserve">
-    <value>プロセスが存在しません。</value>
-  </data>
-  <data name="RecordCancelled" xml:space="preserve">
-    <value>録画キャンセル</value>
-  </data>
-  <data name="RecordFailed" xml:space="preserve">
-    <value>録画失敗</value>
-  </data>
-  <data name="RecordStarting" xml:space="preserve">
-    <value>録画開始中...</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\reload.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ServerClosed" xml:space="preserve">
-    <value>サーバ切断完了</value>
-  </data>
-  <data name="ServerClosing" xml:space="preserve">
-    <value>サーバ切断中...</value>
-  </data>
-  <data name="ServerFailed" xml:space="preserve">
-    <value>サーバ設立失敗</value>
-  </data>
-  <data name="ServerStarted" xml:space="preserve">
-    <value>サーバ設立完了</value>
-  </data>
-  <data name="ServerStarting" xml:space="preserve">
-    <value>サーバ設立中...</value>
-  </data>
-  <data name="BatchNotFound" xml:space="preserve">
-    <value>バッチファイルが見つかりませんでした。</value>
-  </data>
-  <data name="CaptionError" xml:space="preserve">
-    <value>エラー</value>
+    <value>AVI file(*.avi)|*.avi</value>
   </data>
   <data name="BatchFailed" xml:space="preserve">
-    <value>バッチファイルを実行できませんでした。</value>
+    <value>Failed to execute batch file.</value>
   </data>
-  <data name="MP4Filter" xml:space="preserve">
-    <value>MP4ファイル(*.mp4)|*.mp4</value>
+  <data name="BatchNotFound" xml:space="preserve">
+    <value>Batch file not found.</value>
+  </data>
+  <data name="CaptionError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CaptureError" xml:space="preserve">
+    <value>Capture error occurred.</value>
+  </data>
+  <data name="CaptureFailed" xml:space="preserve">
+    <value>Failed to start capture.</value>
+  </data>
+  <data name="CaptureStarted" xml:space="preserve">
+    <value>Capture started.</value>
+  </data>
+  <data name="CaptureStarting" xml:space="preserve">
+    <value>Starting capture...</value>
+  </data>
+  <data name="CaptureStopped" xml:space="preserve">
+    <value>Capture stopped.</value>
+  </data>
+  <data name="CaptureStopping" xml:space="preserve">
+    <value>Stopping capture.</value>
+  </data>
+  <data name="ProcessNotFound" xml:space="preserve">
+    <value>Process not found.</value>
+  </data>
+  <data name="RecordCancelled" xml:space="preserve">
+    <value>Record cancelled.</value>
+  </data>
+  <data name="RecordFailed" xml:space="preserve">
+    <value>Failed to start record.</value>
+  </data>
+  <data name="RecordStarting" xml:space="preserve">
+    <value>Starting record.</value>
+  </data>
+  <data name="ServerClosed" xml:space="preserve">
+    <value>Server closed.</value>
+  </data>
+  <data name="ServerClosing" xml:space="preserve">
+    <value>Closing server...</value>
+  </data>
+  <data name="ServerFailed" xml:space="preserve">
+    <value>Failed to start server.</value>
+  </data>
+  <data name="ServerStarted" xml:space="preserve">
+    <value>Server started.</value>
+  </data>
+  <data name="ServerStarting" xml:space="preserve">
+    <value>Starting server...</value>
   </data>
 </root>

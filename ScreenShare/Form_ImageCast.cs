@@ -114,6 +114,11 @@ namespace ScreenShare
         private bool m_ServerRunning = false;
 
         /// <summary>
+        /// 配信が途切れていないかを確認するパケットを送信するタイマー
+        /// </summary>
+        private System.Windows.Forms.Timer m_CheckContinuesTimer;
+
+        /// <summary>
         /// 配信を開始した時刻(ns)
         /// </summary>
         private int m_CastingStartMilliseconds = 0;
@@ -132,11 +137,6 @@ namespace ScreenShare
         /// キャプチャ領域
         /// </summary>
         private Rectangle m_CaptureBounds = Screen.PrimaryScreen.Bounds;
-
-        /// <summary>
-        /// 最新の分割画面
-        /// </summary>
-        private byte[][] m_LastFrameBuffer;
 
         /// <summary>
         /// 最後に配信される画像がキャプチャされたアプリケーション時刻(ms)
@@ -227,7 +227,8 @@ namespace ScreenShare
 
             #region Form Initialization
 
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(Settings.Default.SpecificCulture);
+            Resources.Culture = CultureInfo.CreateSpecificCulture(Settings.Default.SpecificCulture);
+            //Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture(Settings.Default.SpecificCulture);
 
             InitializeComponent();
 
@@ -247,63 +248,86 @@ namespace ScreenShare
                 this.Enabled = true;
             };
 
+            m_CheckContinuesTimer = new System.Windows.Forms.Timer() { Interval = 1000 };
+            m_CheckContinuesTimer.Tick += (s, e) =>
+            {
+                if (m_WebSocketClients.ContainsKey(0))
+                    m_WebSocketClients[0].Send(Commons.CheckContinuesMessage);
+            }; 
+
             #endregion
 
             #region Capture
 
-            long b = 0;
+            long bytesSum = 0;
+            long prevBytesSum = 0;
+
             var sw = new Stopwatch();
-            m_Capture.OnCaptured += (s, data) =>
+            var timer = new System.Windows.Forms.Timer() { Interval = 1000 };
+            timer.Tick += (ss, ee) =>
             {
-                if (m_WebSocketClients.ContainsKey(0))
-                {
-                    // delay check packet
-                    m_WebSocketClients[0].Send(Commons.CheckPacketIdentifier);
-                }
+                if (sw.ElapsedMilliseconds >= 1000)
+                    Debug.Log("Capture", "BytesPerSec : " + (bytesSum - prevBytesSum) + ", Average : " + bytesSum / (sw.ElapsedMilliseconds / 1000));
+                prevBytesSum = bytesSum;
             };
 
-            m_Capture.OnSegmentCaptured += (s, data) =>
+            m_Capture.OnSegmentCaptured += (s, segCaplist) =>
             {
                 m_LatestCapturedTime = NowMilliseconds;
+                
+                var segCapCnt = 0;
 
-                var frameHeader = new FrameHeader((byte)data.segmentIdx, m_LatestCapturedTime);
-                var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
-                var buffer = ByteUtils.Concatenation(headerBuffer, data.encodedFrameBuffer);
-                //Console.WriteLine("net:"+MillisecondsOfDay+", local:"+TimeUtils_HMSM.GetTotalMilliseconds(DateTime.UtcNow));
-                //Console.WriteLine("");
+                var body = new CapturedImage();
+                var data = new CommunicationData()
+                {
+                    Header = new CommunicationDataHeader()
+                    {
+                        TimeChank = new TimeChank(m_LatestCapturedTime),
+                        BodyChank = new BodyChank(DataType.CapturedImage),
+                    },
+                    Body = body,
+                };
+
+                foreach (var seg in segCaplist)
+                {
+                    var imageSeg = new CapturedImageSegmentChank()
+                    {
+                        capturedRect = new Rect_s(seg.segment.X, seg.segment.Y, seg.segment.Width, seg.segment.Height),
+                        capturedSize = seg.encodedFrameBuffer.Length,
+                        capturedData = seg.encodedFrameBuffer,
+                    };
+
+                    body.AddSegment(imageSeg);
+
+                    segCapCnt++;
+                }
+
+                var dataBytes = data.Pack(); 
+
                 if (m_WebSocketClients.ContainsKey(0))
                 {
-                    m_WebSocketClients[0].Send(buffer);
-                        
+                    m_WebSocketClients[0].Send(dataBytes);
                 }
 
-                m_LastFrameBuffer[data.segmentIdx] = (byte[])buffer.Clone();
-
-                try
-                {
-                    b += data.encodedFrameBuffer.LongLength;
-                    if (!sw.IsRunning)
-                        sw.Start();
-                    if (sw.ElapsedMilliseconds != 0)
-                        Debug.Log("Ws", "Byte:" + b / (sw.ElapsedMilliseconds / 1000));
-                }
-                catch (Exception e) { }
-               
-                
-                
+                bytesSum += dataBytes.LongLength;
             };
 
-            m_Capture.OnError += (s, ex) =>
+            m_Capture.OnStarted += (s, e) =>
             {
-                label_message.Text = Resources.CaptureError + " : " + ex.Message;
+                bytesSum = 0;
+                prevBytesSum = 0;
+                sw.Restart();
+                timer.Start();
             };
 
-            m_Capture.OnCapturedBitmap += (s, bmp) =>
+            m_Capture.OnStopped += (s, e) =>
             {
-                /*lock (lockObj)
-                    bmp.Save(stream.BaseStream, System.Drawing.Imaging.ImageFormat.Jpeg);*/
-
+                sw.Stop();
+                timer.Stop();
             };
+
+            m_Capture.OnError += (s, ex) => label_message.Text = Resources.CaptureError + " : " + ex.Message;
+
 
             #endregion
 
@@ -312,6 +336,8 @@ namespace ScreenShare
             //m_Recorder.BufferMilliseconds = 100;
             m_Recorder.DataAvailable += (s, we) =>
             {
+                if (!checkBox_captureVoice.Checked) return;
+
                 var normalizedSampleBuffer = new byte[we.BytesRecorded / 2 * 4];
 
                 for (int i = 0, j = 0; i < we.BytesRecorded; i += 2)
@@ -326,16 +352,24 @@ namespace ScreenShare
                     normalizedSampleBuffer[j++] = sampleByte[3];
                 }
 
-                var frameHeader = new AudioHeader(NowMilliseconds);
-                var headerBuffer = ByteUtils.GetBytesFromStructure(frameHeader);
-                var buffer = ByteUtils.Concatenation(headerBuffer, normalizedSampleBuffer);
-
-                if (checkBox_captureVoice.Checked)
+                var data = new CommunicationData()
                 {
-                    if (m_WebSocketClients.ContainsKey(0))
+                    Header = new CommunicationDataHeader()
                     {
-                        m_WebSocketClients[0].Send(buffer);
-                    }
+                        TimeChank = new TimeChank(m_LatestCapturedTime),
+                        BodyChank = new BodyChank(DataType.CapturedImage),
+                    },
+                    Body = new CapturedAudio()
+                    {
+                        normalizedSamples = normalizedSampleBuffer,
+                    },
+                };
+
+                var dataBytes = data.Pack();
+
+                if (m_WebSocketClients.ContainsKey(0))
+                {
+                    m_WebSocketClients[0].Send(dataBytes);
                 }
 
                 if (ffconv == null || ffpipein_audio == null || !ffpipein_audio.IsConnected) return;
@@ -351,7 +385,6 @@ namespace ScreenShare
                 int id, parentId;
                 UserContext parent;
 
-                MessageData data;
                 string json;
 
                 Debug.Log("WebSocket", "----------------- Connection  ------------");
@@ -382,18 +415,14 @@ namespace ScreenShare
                     var childrenId = m_WebSocketClients.GetChildrenKey(id);
                     
 
-                    data = new MessageData { type = MessageData.Type.Connected, id = id, data = NowMilliseconds };
-                    json = JsonConvert.SerializeObject(data);
-
+                    json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.Connected, id = id, data = NowMilliseconds });
                     ctx.Send(json);
 
-                    if (m_Capture.Capturing)
-                        SendStartCastingMessage(ctx, true);
+                    if (m_Capture.Capturing) SendStartCastingMessage(ctx);
 
                     if (parent != null)
                     {
-                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = id, };
-                        json = JsonConvert.SerializeObject(data);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.PeerConnection, targetId = id, });
                         parent.Send(json);
 
                         Debug.Log("WebSocket", "parent : " + parentId);
@@ -401,8 +430,7 @@ namespace ScreenShare
 
                     Parallel.ForEach(childrenId, cId =>
                     {
-                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
-                        json = JsonConvert.SerializeObject(data);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, });
                         ctx.Send(json);
 
                         Debug.Log("WebSocket", "child : " + cId);
@@ -425,23 +453,26 @@ namespace ScreenShare
                 int rmId,
                     updatedId,
                     rmParentId,
-                    lastId,
-                    lastParentId;
-                int[] rmChildrenId;
+                    subId,
+                    subParentId;
+                int[] rmChildId;
 
-                UserContext rm, updated, rmParent, last, lastParent;
-                UserContext[] rmChildren;
+                UserContext rmNode, 
+                            updatedNode, 
+                            rmParentNode, 
+                            subNode, 
+                            subParentNode;
+                UserContext[] rmChildNode;
 
-                MessageData data;
                 string json;
 
                 Debug.Log("WebSocket", "----------------- Disconnection  ------------");
-                rm = ctx;
+                rmNode = ctx;
 
-                // 削除するノードIDを検索
+                // 削除ノードIDを検索
                 try
                 {
-                    rmId = m_WebSocketClients.TryGetKey(rm);
+                    rmId = m_WebSocketClients.TryGetKey(rmNode);
                 }
                 catch
                 {
@@ -452,105 +483,108 @@ namespace ScreenShare
 
                 Debug.Log("WebSocket", "disconnect node id : " + rmId);
 
-                // 削除するノードの親を検索
+                // 削除ノードの親を検索
                 try
                 {
                     rmParentId = m_WebSocketClients.GetParentKey(rmId);
-                    rmParent = m_WebSocketClients[rmParentId];
+                    rmParentNode = m_WebSocketClients[rmParentId];
                 }
                 catch
                 {
                     rmParentId = -1;
-                    rmParent = null;
+                    rmParentNode = null;
                 }
 
-                // 削除するノードの子を検索
-                rmChildrenId = m_WebSocketClients.GetChildrenKey(rmId);
-                rmChildren = m_WebSocketClients.GetValues(rmChildrenId);
+                // 削除ノードの子を検索
+                rmChildId = m_WebSocketClients.GetChildrenKey(rmId);
+                rmChildNode = m_WebSocketClients.GetValues(rmChildId);
 
-                // 入れ替え元ノードを検索
+                // 代替ノードを検索(通報済みノードは除く)
                 var notBusyClients = m_WebSocketClients.Where(c => !m_BusyClientIpAddress.Contains(c.Value.ClientAddress));
                 if (notBusyClients.Count() < 1)
-                    lastId = m_WebSocketClients.GetLastKey();
+                    subId = m_WebSocketClients.GetLastKey();
                 else
-                    lastId = notBusyClients.Last().Key;
+                    subId = notBusyClients.Last().Key;
 
-                if (lastId < rmId) lastId = rmId;
-                last = m_WebSocketClients[lastId];
+                if (subId < rmId) subId = rmId;
+                subNode = m_WebSocketClients[subId];
 
-                Debug.Log("WebSocket", "replace node id : " + lastId);
+                Debug.Log("WebSocket", "substitute node id : " + subId);
 
-                // 入れ替え元ノードの親を検索
+                // 代替ノードの親を検索
                 try
                 {
-                    lastParentId = m_WebSocketClients.GetParentKey(lastId);
-                    lastParent = m_WebSocketClients[lastParentId];
+                    subParentId = m_WebSocketClients.GetParentKey(subId);
+                    subParentNode = m_WebSocketClients[subParentId];
                 }
                 catch
                 {
-                    lastParentId = -1;
-                    lastParent = null;
+                    subParentId = -1;
+                    subParentNode = null;
                 }
 
                 try
                 {
-                    if (rmParent != null)
+                    // 削除ノードの親に子と切断するよう命令
+                    if (rmParentNode != null)
                     {
-                        data = new MessageData { type = MessageData.Type.RemoveOffer, id = rmId, };
-                        json = JsonConvert.SerializeObject(data);
-                        rmParent.Send(json);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.RemoveOffer, id = rmId, });
+                        rmParentNode.Send(json);
                     }
 
-                    data = new MessageData { type = MessageData.Type.RemoveAnswer, id = rmId, };
-                    json = JsonConvert.SerializeObject(data);
-                    Parallel.ForEach(rmChildren, child => child.Send(json));
+                    // 削除ノードの子に親と切断するよう命令
+                    json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.RemoveAnswer, id = rmId, });
+                    Parallel.ForEach(rmChildNode, child => child.Send(json));
 
-                    if (lastId == rmId)
+                    // 削除ノードが代替ノードなら終了
+                    if (subId == rmId)
                     {
-                        m_WebSocketClients.Remove(lastId);
-                        Debug.Log("WebSocket", "replace Id == disconnect Id");
+                        m_WebSocketClients.Remove(subId);
+                        Debug.Log("WebSocket", "substitute Id == disconnect Id");
                         Debug.Log("WebSocket", "-----------------------------------------------");
                         return;
                     }
 
-                    if (lastParentId != rmId)
+                    // 代替ノードの親が削除ノードでなければ、代替ノードの親に子と切断するよう命令
+                    if (subParentId != rmId)
                     {
-                        data = new MessageData { type = MessageData.Type.RemoveOffer, id = lastId };
-                        json = JsonConvert.SerializeObject(data);
-                        lastParent.Send(json);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.RemoveOffer, id = subId });
+                        subParentNode.Send(json);
                     }
 
-                    data = new MessageData { type = MessageData.Type.RemoveAnswer, id = lastParentId, };
-                    json = JsonConvert.SerializeObject(data);
-                    last.Send(json);
+                    // 代替ノードに親と切断するよう命令
+                    json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.RemoveAnswer, id = subParentId, });
+                    subNode.Send(json);
 
-                    m_WebSocketClients[rmId] = m_WebSocketClients[lastId];
-                    m_WebSocketClients.Remove(lastId);
+                    // 二文木の入れ替え
+                    m_WebSocketClients[rmId] = m_WebSocketClients[subId];
+                    m_WebSocketClients.Remove(subId);
 
                     updatedId = rmId;
-                    updated = m_WebSocketClients[rmId];
+                    updatedNode = m_WebSocketClients[updatedId];
 
-                    data = new MessageData { type = MessageData.Type.UpdateID, id = rmId, };
-                    json = JsonConvert.SerializeObject(data);
-                    updated.Send(json);
+                    // 代替ノードにID更新命令
+                    json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.UpdateID, id = updatedId, });
+                    updatedNode.Send(json);
 
-                    Debug.Log("WebSocket", "replace node Id : " + lastId + " => disconnect node Id : " + rmId);
+                    Debug.Log("WebSocket", "substitute node Id : " + subId + " => disconnect node Id : " + updatedId);
 
-                    if (rmParent != null)
+                    // 削除ノードの親に代替ノードと接続するよう命令
+                    if (rmParentNode != null)
                     {
-                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = updatedId, };
-                        json = JsonConvert.SerializeObject(data);
-                        rmParent.Send(json);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.PeerConnection, targetId = updatedId, });
+                        rmParentNode.Send(json);
                     }
 
-                    rmChildrenId = m_WebSocketClients.GetChildrenKey(rmId);
-                    rmChildren = m_WebSocketClients.GetValues(rmChildrenId);
+                    // 削除ノードの子を再検索
+                    rmChildId = m_WebSocketClients.GetChildrenKey(updatedId);
+                    rmChildNode = m_WebSocketClients.GetValues(rmChildId);
 
-                    Parallel.ForEach(rmChildrenId, cId =>
+                    // 代替ノードに削除ノードの子と接続するよう命令
+                    Parallel.ForEach(rmChildId, cId =>
                     {
-                        data = new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, };
-                        json = JsonConvert.SerializeObject(data);
-                        updated.Send(json);
+                        json = JsonConvert.SerializeObject(new MessageData { type = MessageData.Type.PeerConnection, targetId = cId, });
+                        updatedNode.Send(json);
                     });
 
                     Debug.Log("WebSocket", "-----------------------------------------------");
@@ -558,6 +592,73 @@ namespace ScreenShare
                 catch (Exception e)
                 {
                     Debug.Log("WebSocket", "Disconnection Error : " + e.Message);
+                }
+            };
+
+            Action<UserContext> handleMessage = (UserContext ctx) =>
+            {
+                try
+                {
+                    var json = ctx.DataFrame.ToString();
+                    if (json[0] == 'T') return;
+
+                    var recv = JsonConvert.DeserializeObject<MessageData>(json);
+                    try
+                    {
+                        switch (recv.type)
+                        {
+                            case MessageData.Type.SDPOffer:
+                            case MessageData.Type.SDPAnswer:
+                            case MessageData.Type.ICECandidateOffer:
+                            case MessageData.Type.ICECandidateAnswer:
+                                {
+                                    Debug.Log("WebSocket", "Relay. Type = " + recv.type + ", From = " + recv.id + ", To = " + recv.targetId);
+                                    var dest = m_WebSocketClients[recv.targetId];
+                                    dest.Send(json);
+                                }
+                                break;
+
+                            case MessageData.Type.Report:
+                                {
+                                    if (recv.targetId == -1)
+                                    {
+                                        Debug.Log("WebSocket", "failed to Send");
+                                        return;
+                                    }
+                                    Debug.Log("WebSocket", "Report Accepted. From = " + recv.id + ", To = " + recv.targetId);
+
+                                    var data_send = recv; data_send.type = MessageData.Type.Reset;
+                                    var json_send = JsonConvert.SerializeObject(data_send);
+                                    var dest = m_WebSocketClients[recv.targetId];
+                                    dest.Send(json_send);
+
+                                    var ip = dest.ClientAddress.ToString();
+                                    if (!m_BusyIpCount.ContainsKey(ip))
+                                        m_BusyIpCount[ip] = 0;
+                                    m_BusyIpCount[ip]++;
+
+                                    if (m_BusyIpCount[ip] == BusyIpCountLimit)
+                                    {
+                                        Debug.Log("WebSocket", "add [" + dest.ClientAddress + "] to Busy Client List");
+                                        m_BusyClientIpAddress.Add(dest.ClientAddress);
+                                    }
+
+                                    deleteClient(dest);
+                                    // addClient(dest);
+                                }
+                                break;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.Log("WebSocket", "Receive Error : " + e.Message + ", Type = " + recv.type + ", From = " + recv.id + ", To = " + recv.targetId);
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.Log("WebSocket", "Deserialize Error : " + e.Message);
+                    Debug.Log("WebSocket", "Data:" + ctx.DataFrame.ToString());
                 }
             };
 
@@ -585,72 +686,10 @@ namespace ScreenShare
 
                     //Debug.Log("WebSocket", "Receive : " + ctx.ClientAddress);
                     lock (m_WebSocketServer)
-                    {
-                        try
-                        {
-                            var json = ctx.DataFrame.ToString();
-                            if (json[0] == 'T') return;
-
-                            var recv = JsonConvert.DeserializeObject<MessageData>(json);
-                            try
-                            {
-
-
-                                switch (recv.type)
-                                {
-                                    case MessageData.Type.SDPOffer:
-                                    case MessageData.Type.SDPAnswer:
-                                    case MessageData.Type.ICECandidateOffer:
-                                    case MessageData.Type.ICECandidateAnswer:
-                                        {
-                                            Debug.Log("WebSocket", "Relay. Type = " + recv.type + ", From = " + recv.id + ", To = " + recv.targetId);
-                                            var dest = m_WebSocketClients[recv.targetId];
-                                            dest.Send(json);
-                                        }
-                                        break;
-
-                                    case MessageData.Type.Report:
-                                        { 
-                                            if (recv.targetId == -1)
-                                            {
-                                                Debug.Log("WebSocket", "failed to Send");
-                                                return;
-                                            }
-                                            var dest = m_WebSocketClients[recv.targetId];
-                                            dest.Send(json);
-
-                                            var ip = dest.ClientAddress.ToString();
-                                            if (!m_BusyIpCount.ContainsKey(ip))
-                                                m_BusyIpCount[ip] = 0;
-                                            m_BusyIpCount[ip]++;
-
-                                            if (m_BusyIpCount[ip] == BusyIpCountLimit)
-                                            {
-                                                Debug.Log("WebSocket", "add [" + dest.ClientAddress + "] to Busy Client List");
-                                                m_BusyClientIpAddress.Add(dest.ClientAddress);
-                                            }
-                                                
-
-                                            deleteClient(dest);
-                                            addClient(dest);
-                                        }
-                                        break;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Debug.Log("WebSocket", "Receive Error : " + e.Message+ ", Type = "+ recv.type + ", From = "+ recv.id +", To = "+recv.targetId);
-                                return;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.Log("WebSocket", "Deserialize Error : " + e.Message);
-                            Debug.Log("WebSocket", "Data:" + ctx.DataFrame.ToString());
-                        }
-                    }
+                        handleMessage(ctx);
+                    
                 },
-                TimeOut = new TimeSpan(0, 5, 0),
+                TimeOut = new TimeSpan(24, 0, 0),
             };
 
             #endregion
@@ -754,7 +793,6 @@ namespace ScreenShare
             comboBox_audioQuality.SelectedIndex = 1;
             comboBox_captureScale.SelectedIndex = Settings.Default.Scaling;
             textBox_captureFps.Text = Settings.Default.FramePerSecond;
-            comboBox_divisionNumber.SelectedIndex = Settings.Default.Division;
 
             textBox_captureQuality.Text = "" + Settings.Default.ImageQuality;
         }
@@ -777,6 +815,10 @@ namespace ScreenShare
             
 
             m_ServerRunning = true;
+            Invoke(new FormDelegate(() =>
+            {
+                m_CheckContinuesTimer.Start();
+            }));
 
             Debug.Log("App", "HTTP & WebSocket server started.");
             Debug.Log("HTTP", "home directory : " + m_HttpServer.TopPage);
@@ -817,7 +859,13 @@ namespace ScreenShare
                 }
             }
 
-            Invoke(new FormDelegate(() => m_FormOverRay.Hide()));
+            
+
+            Invoke(new FormDelegate(() =>
+            {
+                m_CheckContinuesTimer.Stop();
+                m_FormOverRay.Hide();
+            }));
 
             Debug.Log("App", "HTTP & WebSocket server closed.");
         }
@@ -872,11 +920,14 @@ namespace ScreenShare
                 comboBox_waveInDevices.SelectedIndex = Math.Min(sel, comboBox_waveInDevices.Items.Count - 1);
         }
 
+        /// <summary>
+        /// 画面キャプチャ準備
+        /// </summary>
+        /// <returns>画面キャプチャの準備に成功したかどうか</returns>
         private bool PrepareCapturing()
         {
             float captureScale = 1.0f;
-            int captureDivisionNum = 0,
-                captureEncordingQuality = 0,
+            int captureEncordingQuality = 0,
                 captureFps = 0,
                 audioSampleRate = 0,
                 audioBps = 0,
@@ -905,7 +956,6 @@ namespace ScreenShare
             }
 
             captureScale = (1.0f - (float)comboBox_captureScale.SelectedIndex / 10);
-            captureDivisionNum = comboBox_divisionNumber.SelectedIndex + 1;
             captureEncordingQuality = Convert.ToInt32(textBox_captureQuality.Text);
             captureFps = Convert.ToInt32(textBox_captureFps.Text);
 
@@ -914,18 +964,21 @@ namespace ScreenShare
             audioChannels = checkBox_stereo.Enabled ? (checkBox_stereo.Checked ? 2 : 1) : 1;
 
             m_Capture.Scale = captureScale;
-            m_Capture.CaptureDivisionNum = captureDivisionNum;
             m_Capture.EncoderQuality = captureEncordingQuality;
             m_Capture.FramesPerSecond = captureFps;
 
             m_Recorder.DeviceNumber = comboBox_waveInDevices.SelectedIndex;
             m_Recorder.WaveFormat = new WaveFormat(audioSampleRate, audioBps, audioChannels);
 
-            m_LastFrameBuffer = new byte[m_Capture.CaptureDivisionNum * m_Capture.CaptureDivisionNum][];
+            //m_LastFrameBuffer = new byte[m_Capture.CaptureDivisionNum * m_Capture.CaptureDivisionNum][];
 
             return true;
         }
 
+        /// <summary>
+        /// 録画準備
+        /// </summary>
+        /// <returns>録画の準備に成功したかどうか</returns>
         private bool PrepareRecording()
         {
             var dialog = new SaveFileDialog()
@@ -957,16 +1010,19 @@ namespace ScreenShare
         private void StartCapturing()
         {
             //m_CastingStartMilliseconds = TimeUtils.Milliseconds;
-            SendStartCastingMessage();
 
             m_Capture.Start();
+            SendStartCastingMessage();
+
+            
 
             if (checkBox_captureVoice.Checked || checkBox_recordAudio.Checked)
             {
+                Debug.Log("App", "Recorder started.");
                 m_Recorder.StartRecording();
             }
 
-            Debug.Log("App", "casting started.");
+            Debug.Log("App", "Casting started.");
         }
 
         /// <summary>
@@ -984,23 +1040,28 @@ namespace ScreenShare
                 pair.Value.Send(json);
             });
 
+            if (checkBox_captureVoice.Checked || checkBox_recordAudio.Checked)
+            {
+                Debug.Log("App", "Recorder stopped.");
+                m_Recorder.StopRecording();
+            }
+
             if (checkBox_recordVideo.Enabled && checkBox_recordVideo.Checked)
             {
-                if (checkBox_captureVoice.Checked || checkBox_recordAudio.Checked)
-                {
-                    m_Recorder.StopRecording();
-                }
-
                 m_Capture.OnStarted -= StartRecoder;
                 m_Capture.OnCaptured -= PushCapturedBuffer;
                 m_Capture.OnStopped -= TerminateRecoder;
             }
             
 
-            Debug.Log("App", "casting stopped.");
+            Debug.Log("App", "Casting stopped.");
         }
 
-        private void SendStartCastingMessage(UserContext ctx = null, bool sendLastFrame = false)
+        /// <summary>
+        /// キャスト開始メッセージを送信する
+        /// </summary>
+        /// <param name="ctx">送るユーザ。 nullで全員に送信する</param>
+        private void SendStartCastingMessage(UserContext ctx = null)
         {
             var setting = new SettingData
             {
@@ -1011,7 +1072,6 @@ namespace ScreenShare
                 },
                 captureSettingData = new SettingData.CaptureSettingData
                 {
-                    divisionNum = m_Capture.CaptureDivisionNum,
                     aspectRatio = m_Capture.AspectRatio,
                     framePerSecond = m_Capture.FramesPerSecond,
                     width = m_Capture.DestinationSize.Width,
@@ -1037,31 +1097,13 @@ namespace ScreenShare
             {
                 Parallel.ForEach(m_WebSocketClients, pair => pair.Value.Send(json));
             }
-
-            if (!sendLastFrame) return;
-
-            if (ctx != null)
-            {
-                foreach (var bytes in m_LastFrameBuffer)
-                {
-                    if (bytes != null)
-                        ctx.Send(bytes);
-                }
-            }
-            else
-            {
-                foreach (var bytes in m_LastFrameBuffer)
-                {
-                    if (bytes != null)
-                    {
-                        Parallel.ForEach(m_WebSocketClients, pair => pair.Value.Send(bytes));
-                    }
-                }
-                
-            }
-            
         }
 
+        /// <summary>
+        /// 録画を開始する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartRecoder(object sender, EventArgs e)
         {
             ffpipein_video = new NamedPipeServerStream("ffpipein_video", PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous);
@@ -1323,7 +1365,7 @@ namespace ScreenShare
             var deviceInfo = WaveIn.GetCapabilities(comboBox_waveInDevices.SelectedIndex);
 
             panel_voice.Enabled = chk;
-            checkBox_recordAudio.Enabled = chk;
+            //checkBox_recordAudio.Enabled = chk;
         }
 
         private void checkBox_recordCapture_CheckedChanged(object sender, EventArgs e)

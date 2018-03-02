@@ -24,13 +24,13 @@
       <Value Profile="(Default)">http://calc.cis.ibaraki.ac.jp/time.php</Value>
     </Setting>
     <Setting Name="Scaling" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Division" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="FramePerSecond" Type="System.String" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>
